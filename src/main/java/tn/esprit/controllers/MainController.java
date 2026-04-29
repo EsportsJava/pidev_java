@@ -61,6 +61,7 @@ public class MainController implements Initializable {
     public void showBlogs() {
         loadPage("/Blogs.fxml");
     }
+
     @FXML
     public void showStatistiques() {
         loadPage("/statistiques.fxml");
@@ -79,13 +80,16 @@ public class MainController implements Initializable {
         }
     }
 
-    // ✅ STREAM (correct)
     @FXML
     public void showStream() {
         loadPage("/stream.fxml");
     }
 
-    // ✅ méthode commune (si elle n’existe pas déjà chez toi)
+    @FXML
+    public void showOrders() {
+        loadPage("/orders.fxml");
+    }
+
     private void loadPage(String path) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
