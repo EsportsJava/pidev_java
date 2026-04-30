@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #0d1b3e;"
+            xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="tn.esprit.controllers.JeuxKpiController">
+    <VBox AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.bottomAnchor="0.0"
+          style="-fx-background-color: linear-gradient(to bottom, #0d1b3e, #111c3e);">
+        <fx:include source="Navbar.fxml"/>
+
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS"
+                    style="-fx-background: transparent; -fx-background-color: transparent;">
+            <content>
+                <VBox spacing="14" style="-fx-padding: 22 26 26 26;">
+                    <HBox alignment="CENTER_LEFT" spacing="12">
+                        <Button text="← Retour Jeux" onAction="#handleBack"
+                                style="-fx-background-color: transparent; -fx-text-fill: #93c5fd; -fx-underline: true;"/>
+                    </HBox>
+
+                    <VBox spacing="4">
+                        <Label text="KPIs Jeux" style="-fx-text-fill: white; -fx-font-size: 30; -fx-font-weight: bold;"/>
+                        <Label text="Vue décisionnelle du catalogue jeux" style="-fx-text-fill: #94a3b8; -fx-font-size: 13;"/>
+                    </VBox>
+
+                    <HBox spacing="10">
+                        <VBox prefWidth="180" style="-fx-background-color: #1e2d4a; -fx-border-color: #334155; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 10;">
+                            <Label text="Total jeux" style="-fx-text-fill: #94a3b8; -fx-font-size: 11;"/>
+                            <Label fx:id="totalJeuxLabel" text="0" style="-fx-text-fill: #a78bfa; -fx-font-size: 24; -fx-font-weight: bold;"/>
+                        </VBox>
+                        <VBox prefWidth="220" style="-fx-background-color: #1e2d4a; -fx-border-color: #334155; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 10;">
+                            <Label text="Total jeux actifs" style="-fx-text-fill: #94a3b8; -fx-font-size: 11;"/>
+                            <Label fx:id="totalActifsLabel" text="0" style="-fx-text-fill: #4ade80; -fx-font-size: 24; -fx-font-weight: bold;"/>
+                        </VBox>
+                        <VBox prefWidth="210" style="-fx-background-color: #1e2d4a; -fx-border-color: #334155; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 10;">
+                            <Label text="Taux jeux inactifs" style="-fx-text-fill: #94a3b8; -fx-font-size: 11;"/>
+                            <Label fx:id="tauxInactifsLabel" text="0%" style="-fx-text-fill: #f87171; -fx-font-size: 24; -fx-font-weight: bold;"/>
+                        </VBox>
+                        <VBox prefWidth="320" style="-fx-background-color: #1e2d4a; -fx-border-color: #334155; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 10;">
+                            <Label text="Top jeu par tournois" style="-fx-text-fill: #94a3b8; -fx-font-size: 11;"/>
+                            <Label fx:id="topJeuLabel" text="—" style="-fx-text-fill: #f8fafc; -fx-font-size: 18; -fx-font-weight: bold;"/>
+                        </VBox>
+                    </HBox>
+
+                    <HBox spacing="12">
+                        <VBox prefWidth="420" style="-fx-background-color: #1e2d4a; -fx-border-color: #334155; -fx-border-radius: 12; -fx-background-radius: 12; -fx-padding: 12;" VBox.vgrow="ALWAYS">
+                            <Label text="Répartition par genre (%)" style="-fx-text-fill: white; -fx-font-size: 15; -fx-font-weight: bold;"/>
+                            <PieChart fx:id="genrePieChart" labelsVisible="false" legendVisible="true" prefHeight="290"/>
+                        </VBox>
+                        <VBox prefWidth="420" style="-fx-background-color: #1e2d4a; -fx-border-color: #334155; -fx-border-radius: 12; -fx-background-radius: 12; -fx-padding: 12;" VBox.vgrow="ALWAYS">
+                            <Label text="Répartition par plateforme (%)" style="-fx-text-fill: white; -fx-font-size: 15; -fx-font-weight: bold;"/>
+                            <PieChart fx:id="plateformePieChart" labelsVisible="false" legendVisible="true" prefHeight="290"/>
+                        </VBox>
+                    </HBox>
+
+                    <VBox style="-fx-background-color: #1e2d4a; -fx-border-color: #334155; -fx-border-radius: 12; -fx-background-radius: 12; -fx-padding: 12;">
+                        <Label text="Top jeux par tournois (volume)" style="-fx-text-fill: white; -fx-font-size: 15; -fx-font-weight: bold;"/>
+                        <BarChart fx:id="topTournoisChart" prefHeight="260" legendVisible="false">
+                            <xAxis><CategoryAxis/></xAxis>
+                            <yAxis><NumberAxis/></yAxis>
+                        </BarChart>
+                    </VBox>
+
+                    <VBox style="-fx-background-color: #1e2d4a; -fx-border-color: #334155; -fx-border-radius: 12; -fx-background-radius: 12; -fx-padding: 12;">
+                        <Label text="Top jeux par nb tournois liés" style="-fx-text-fill: white; -fx-font-size: 15; -fx-font-weight: bold;"/>
+                        <TableView fx:id="topGamesTable" prefHeight="220">
+                            <columns>
+                                <TableColumn fx:id="jeuCol" text="Jeu"/>
+                                <TableColumn fx:id="tournoisCol" text="Nb tournois"/>
+                            </columns>
+                        </TableView>
+                    </VBox>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </VBox>
+</AnchorPane>
+

@@ -15,7 +15,8 @@ CREATE TABLE IF NOT EXISTS jeu (
     genre VARCHAR(100),
     plateforme VARCHAR(100),
     description TEXT,
-    statut VARCHAR(50)
+    statut VARCHAR(50),
+    lien_officiel VARCHAR(500)
 );
 
 -- Table tournoi

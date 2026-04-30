@@ -21,19 +21,19 @@
             <TextField fx:id="nomField" promptText="Ex: League of Legends"
                        style="-fx-background-color: #1e293b; -fx-text-fill: white; -fx-pref-height: 36px;"/>
 
-            <Label text="Genre" style="-fx-text-fill: #94a3b8;"/>
+            <Label text="Genre *" style="-fx-text-fill: #94a3b8;"/>
             <TextField fx:id="genreField" promptText="MOBA, FPS, RTS..."
                        style="-fx-background-color: #1e293b; -fx-text-fill: white; -fx-pref-height: 36px;"/>
 
-            <Label text="Plateforme" style="-fx-text-fill: #94a3b8;"/>
+            <Label text="Plateforme *" style="-fx-text-fill: #94a3b8;"/>
             <TextField fx:id="plateformeField" promptText="PC, PlayStation, Xbox..."
                        style="-fx-background-color: #1e293b; -fx-text-fill: white; -fx-pref-height: 36px;"/>
 
-            <Label text="Statut" style="-fx-text-fill: #94a3b8;"/>
+            <Label text="Statut *" style="-fx-text-fill: #94a3b8;"/>
             <ComboBox fx:id="statutCombo" prefWidth="200" editable="true"
                       style="-fx-background-color: #1e293b;"/>
 
-            <Label text="Description" style="-fx-text-fill: #94a3b8;"/>
+            <Label text="Description *" style="-fx-text-fill: #94a3b8;"/>
             <TextArea fx:id="descriptionArea" prefRowCount="4" wrapText="true"
                       style="-fx-background-color: #1e293b; -fx-control-inner-background: #1e293b; -fx-text-fill: white;"/>
 

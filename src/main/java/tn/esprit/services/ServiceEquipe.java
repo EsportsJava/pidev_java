@@ -90,4 +90,18 @@ public class ServiceEquipe implements IService<Equipe> {
 
         return equipes;
     }
+
+    /**
+     * Règle simplifiée: l'utilisateur est considéré "dans une équipe" s'il est owner d'une équipe.
+     * (A étendre plus tard avec une table de membres si besoin.)
+     */
+    public boolean isUserInAnyEquipe(int userId) throws SQLException {
+        String sql = "SELECT 1 FROM equipe WHERE owner_id=? LIMIT 1";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        }
+    }
 }

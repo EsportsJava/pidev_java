@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.*?>
 
 <VBox xmlns="http://javafx.com/javafx"
@@ -9,5 +10,11 @@
       style="-fx-background-color: #0d1b3e;">
 
     <fx:include source="/Navbar.fxml"/>
+    <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-padding: 18 28 0 28;">
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="📊 KPIs Jeux" onAction="#openKpiPage"
+                style="-fx-background-color: #1d4ed8; -fx-text-fill: white; -fx-font-size: 13px;
+                       -fx-pref-height: 40px; -fx-pref-width: 170px; -fx-cursor: hand; -fx-background-radius: 8;"/>
+    </HBox>
     <fx:include source="/jeuxPanel.fxml" fx:id="jeuxPanel" VBox.vgrow="ALWAYS"/>
 </VBox>

@@ -56,15 +56,35 @@ public class AjouterJeuController implements Initializable {
 
     @FXML
     private void handleSubmit() {
-        if (nomField.getText() == null || nomField.getText().trim().isEmpty()) {
+        if (isBlank(nomField.getText())) {
             messageLabel.setStyle("-fx-text-fill: #f87171;");
             messageLabel.setText("Le nom est obligatoire.");
+            return;
+        }
+        if (isBlank(genreField.getText())) {
+            messageLabel.setStyle("-fx-text-fill: #f87171;");
+            messageLabel.setText("Le genre est obligatoire.");
+            return;
+        }
+        if (isBlank(plateformeField.getText())) {
+            messageLabel.setStyle("-fx-text-fill: #f87171;");
+            messageLabel.setText("La plateforme est obligatoire.");
+            return;
+        }
+        if (isBlank(descriptionArea.getText())) {
+            messageLabel.setStyle("-fx-text-fill: #f87171;");
+            messageLabel.setText("La description est obligatoire.");
             return;
         }
 
         String statut = statutCombo.getEditor().getText();
         if (statut == null || statut.trim().isEmpty()) {
-            statut = "Actif";
+            statut = statutCombo.getValue();
+        }
+        if (statut == null || statut.trim().isEmpty()) {
+            messageLabel.setStyle("-fx-text-fill: #f87171;");
+            messageLabel.setText("Le statut est obligatoire.");
+            return;
         }
 
         try {
@@ -93,6 +113,10 @@ public class AjouterJeuController implements Initializable {
             messageLabel.setStyle("-fx-text-fill: #f87171;");
             messageLabel.setText("Erreur SQL : " + e.getMessage());
         }
+    }
+
+    private static boolean isBlank(String s) {
+        return s == null || s.trim().isEmpty();
     }
 
     private static String nullToEmpty(String s) {

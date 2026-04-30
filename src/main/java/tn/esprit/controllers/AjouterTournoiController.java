@@ -127,18 +127,25 @@ public class AjouterTournoiController implements Initializable {
         return Date.from(ld.atStartOfDay(ZoneId.systemDefault()).toInstant());
     }
 
+    private static boolean isBlank(String s) {
+        return s == null || s.trim().isEmpty();
+    }
+
+    private void showValidationError(String message) {
+        messageLabel.setStyle("-fx-text-fill: #f87171;");
+        messageLabel.setText(message);
+    }
+
     @FXML
     private void handleSubmit() {
-        if (nomField.getText() == null || nomField.getText().trim().isEmpty()) {
-            messageLabel.setStyle("-fx-text-fill: #f87171;");
-            messageLabel.setText("Le nom est obligatoire.");
+        if (isBlank(nomField.getText())) {
+            showValidationError("Le nom est obligatoire.");
             return;
         }
 
         Jeu selected = jeuCombo.getSelectionModel().getSelectedItem();
         if (selected == null) {
-            messageLabel.setStyle("-fx-text-fill: #f87171;");
-            messageLabel.setText("Choisissez un jeu.");
+            showValidationError("Choisissez un jeu.");
             return;
         }
 
@@ -146,41 +153,79 @@ public class AjouterTournoiController implements Initializable {
         LocalDate ldFin = dateFinPicker.getValue();
         LocalDate ldLimite = dateLimitePicker.getValue();
         if (ldDebut == null || ldFin == null || ldLimite == null) {
-            messageLabel.setStyle("-fx-text-fill: #f87171;");
-            messageLabel.setText("Renseignez les trois dates.");
+            showValidationError("Renseignez les trois dates.");
+            return;
+        }
+        if (ldFin.isBefore(ldDebut)) {
+            showValidationError("La date de fin doit être après ou égale à la date de début.");
+            return;
+        }
+        if (ldLimite.isAfter(ldDebut)) {
+            showValidationError("La limite d'inscription doit être avant ou égale à la date de début.");
+            return;
+        }
+        if (ldLimite.isAfter(ldFin)) {
+            showValidationError("La limite d'inscription ne peut pas dépasser la date de fin.");
             return;
         }
 
-        String maxStr = maxParticipantsField.getText().trim();
+        String maxStr = maxParticipantsField.getText() != null ? maxParticipantsField.getText().trim() : "";
+        if (maxStr.isEmpty()) {
+            showValidationError("Indiquez le nombre maximum de participants.");
+            return;
+        }
         int maxParticipants;
         try {
-            maxParticipants = maxStr.isEmpty() ? 0 : Integer.parseInt(maxStr);
+            maxParticipants = Integer.parseInt(maxStr);
         } catch (NumberFormatException e) {
-            messageLabel.setStyle("-fx-text-fill: #f87171;");
-            messageLabel.setText("Max participants : nombre entier invalide.");
+            showValidationError("Max participants : nombre entier invalide.");
+            return;
+        }
+        if (maxParticipants <= 0) {
+            showValidationError("Max participants doit être supérieur à 0.");
             return;
         }
 
-        String cagStr = cagnotteField.getText().trim().replace(',', '.');
-        String fraisStr = fraisField.getText().trim().replace(',', '.');
+        String cagStr = cagnotteField.getText() != null ? cagnotteField.getText().trim().replace(',', '.') : "";
+        String fraisStr = fraisField.getText() != null ? fraisField.getText().trim().replace(',', '.') : "";
+        if (cagStr.isEmpty() || fraisStr.isEmpty()) {
+            showValidationError("Renseignez la cagnotte et les frais (0 autorisé).");
+            return;
+        }
         double cagnotte;
         double frais;
         try {
-            cagnotte = cagStr.isEmpty() ? 0 : Double.parseDouble(cagStr);
-            frais = fraisStr.isEmpty() ? 0 : Double.parseDouble(fraisStr);
+            cagnotte = Double.parseDouble(cagStr);
+            frais = Double.parseDouble(fraisStr);
         } catch (NumberFormatException e) {
-            messageLabel.setStyle("-fx-text-fill: #f87171;");
-            messageLabel.setText("Cagnotte / frais : nombre invalide.");
+            showValidationError("Cagnotte / frais : nombre invalide.");
+            return;
+        }
+        if (cagnotte < 0 || frais < 0) {
+            showValidationError("Cagnotte et frais doivent être positifs ou nuls.");
             return;
         }
 
         String statut = statutCombo.getEditor().getText();
         if (statut == null || statut.trim().isEmpty()) {
-            statut = statutCombo.getValue() != null ? statutCombo.getValue() : "Planifié";
+            statut = statutCombo.getValue();
+        }
+        if (statut == null || statut.trim().isEmpty()) {
+            showValidationError("Le statut est obligatoire.");
+            return;
         }
 
-        String type = typeField.getText() != null ? typeField.getText().trim() : "";
-        String description = descriptionArea.getText() != null ? descriptionArea.getText().trim() : "";
+        if (isBlank(typeField.getText())) {
+            showValidationError("Le type de tournoi est obligatoire.");
+            return;
+        }
+        if (isBlank(descriptionArea.getText())) {
+            showValidationError("La description est obligatoire.");
+            return;
+        }
+
+        String type = typeField.getText().trim();
+        String description = descriptionArea.getText().trim();
 
         try {
             if (tournoiToEdit == null) {

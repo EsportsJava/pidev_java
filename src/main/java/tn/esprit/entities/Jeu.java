@@ -7,6 +7,7 @@ public class Jeu {
     private String plateforme;
     private String description;
     private String statut;
+    private String lienOfficiel;
 
     public Jeu() {
     }
@@ -18,6 +19,7 @@ public class Jeu {
         this.plateforme = plateforme;
         this.description = description;
         this.statut = statut;
+        this.lienOfficiel = "";
     }
 
     public Jeu(String nom, String genre, String plateforme, String description, String statut) {
@@ -26,6 +28,26 @@ public class Jeu {
         this.plateforme = plateforme;
         this.description = description;
         this.statut = statut;
+        this.lienOfficiel = "";
+    }
+
+    public Jeu(int id, String nom, String genre, String plateforme, String description, String statut, String lienOfficiel) {
+        this.id = id;
+        this.nom = nom;
+        this.genre = genre;
+        this.plateforme = plateforme;
+        this.description = description;
+        this.statut = statut;
+        this.lienOfficiel = lienOfficiel;
+    }
+
+    public Jeu(String nom, String genre, String plateforme, String description, String statut, String lienOfficiel) {
+        this.nom = nom;
+        this.genre = genre;
+        this.plateforme = plateforme;
+        this.description = description;
+        this.statut = statut;
+        this.lienOfficiel = lienOfficiel;
     }
 
     public int getId() {
@@ -76,6 +98,14 @@ public class Jeu {
         this.statut = statut;
     }
 
+    public String getLienOfficiel() {
+        return lienOfficiel;
+    }
+
+    public void setLienOfficiel(String lienOfficiel) {
+        this.lienOfficiel = lienOfficiel;
+    }
+
     @Override
     public String toString() {
         return "Jeu{" +
@@ -85,6 +115,7 @@ public class Jeu {
                 ", plateforme='" + plateforme + '\'' +
                 ", description='" + description + '\'' +
                 ", statut='" + statut + '\'' +
+                ", lienOfficiel='" + lienOfficiel + '\'' +
                 '}';
     }
 }

@@ -38,11 +38,11 @@
 
             <HBox spacing="16">
                 <VBox spacing="6" HBox.hgrow="ALWAYS">
-                    <Label text="Statut" style="-fx-text-fill: #94a3b8;"/>
+                    <Label text="Statut *" style="-fx-text-fill: #94a3b8;"/>
                     <ComboBox fx:id="statutCombo" editable="true" prefWidth="200"/>
                 </VBox>
                 <VBox spacing="6" HBox.hgrow="ALWAYS">
-                    <Label text="Type" style="-fx-text-fill: #94a3b8;"/>
+                    <Label text="Type *" style="-fx-text-fill: #94a3b8;"/>
                     <TextField fx:id="typeField" promptText="5v5, Battle Royale..."
                                style="-fx-background-color: #1e293b; -fx-text-fill: white; -fx-pref-height: 34px;"/>
                 </VBox>
@@ -50,12 +50,12 @@
 
             <HBox spacing="16">
                 <VBox spacing="6" HBox.hgrow="ALWAYS">
-                    <Label text="Max participants" style="-fx-text-fill: #94a3b8;"/>
+                    <Label text="Max participants *" style="-fx-text-fill: #94a3b8;"/>
                     <TextField fx:id="maxParticipantsField" promptText="32"
                                style="-fx-background-color: #1e293b; -fx-text-fill: white; -fx-pref-height: 34px;"/>
                 </VBox>
                 <VBox spacing="6" HBox.hgrow="ALWAYS">
-                    <Label text="Cagnotte" style="-fx-text-fill: #94a3b8;"/>
+                    <Label text="Cagnotte *" style="-fx-text-fill: #94a3b8;"/>
                     <TextField fx:id="cagnotteField" promptText="0"
                                style="-fx-background-color: #1e293b; -fx-text-fill: white; -fx-pref-height: 34px;"/>
                 </VBox>
@@ -67,13 +67,13 @@
                     <DatePicker fx:id="dateLimitePicker" prefWidth="200"/>
                 </VBox>
                 <VBox spacing="6" HBox.hgrow="ALWAYS">
-                    <Label text="Frais d'inscription" style="-fx-text-fill: #94a3b8;"/>
+                    <Label text="Frais d'inscription *" style="-fx-text-fill: #94a3b8;"/>
                     <TextField fx:id="fraisField" promptText="0"
                                style="-fx-background-color: #1e293b; -fx-text-fill: white; -fx-pref-height: 34px;"/>
                 </VBox>
             </HBox>
 
-            <Label text="Description" style="-fx-text-fill: #94a3b8;"/>
+            <Label text="Description *" style="-fx-text-fill: #94a3b8;"/>
             <TextArea fx:id="descriptionArea" prefRowCount="3" wrapText="true"
                       style="-fx-background-color: #1e293b; -fx-control-inner-background: #1e293b; -fx-text-fill: white;"/>
 
