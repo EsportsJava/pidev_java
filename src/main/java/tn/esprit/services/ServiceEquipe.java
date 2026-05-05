@@ -98,7 +98,7 @@ public class ServiceEquipe implements IService<Equipe> {
                         rs.getInt("id"),
                         rs.getString("nom"),
                         rs.getInt("max_members"),
-                    rs.getString("logo")
+                        rs.getString("logo")
                 );
                 equipes.add(equipe);
             }
@@ -536,6 +536,36 @@ public class ServiceEquipe implements IService<Equipe> {
         return equipes;
     }
 
+    public Set<Integer> getOwnedEquipeIdsForCurrentUser() throws SQLException {
+        int ownerId = getCurrentUserIdOrThrow();
+        Set<Integer> ids = new HashSet<>();
+        String sql = "SELECT id FROM equipe WHERE owner_id = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, ownerId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    ids.add(rs.getInt("id"));
+                }
+            }
+        }
+        return ids;
+    }
+
+    public Set<Integer> getRequestedEquipeIdsForCurrentUser() throws SQLException {
+        int userId = getCurrentUserIdOrThrow();
+        Set<Integer> ids = new HashSet<>();
+        String sql = "SELECT equipe_id FROM join_request WHERE user_id = ? AND LOWER(status) = 'pending'";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    ids.add(rs.getInt("equipe_id"));
+                }
+            }
+        }
+        return ids;
+    }
+
     public List<Equipe> getJoinedEquipes(int userId) throws SQLException {
         List<Equipe> equipes = new ArrayList<>();
         String sql = "SELECT e.* FROM equipe e "
@@ -735,11 +765,11 @@ public class ServiceEquipe implements IService<Equipe> {
         }
 
         result.sort(
-            Comparator.comparingDouble(EquipeStanding::getPpm).reversed()
-                .thenComparing(Comparator.comparingInt(EquipeStanding::getDiff).reversed())
-                .thenComparing(Comparator.comparingInt(EquipeStanding::getBp).reversed())
-                .thenComparing(Comparator.comparingInt(EquipeStanding::getV).reversed())
-                .thenComparing(e -> e.getEquipeNom() == null ? "" : e.getEquipeNom())
+                Comparator.comparingDouble(EquipeStanding::getPpm).reversed()
+                        .thenComparing(Comparator.comparingInt(EquipeStanding::getDiff).reversed())
+                        .thenComparing(Comparator.comparingInt(EquipeStanding::getBp).reversed())
+                        .thenComparing(Comparator.comparingInt(EquipeStanding::getV).reversed())
+                        .thenComparing(e -> e.getEquipeNom() == null ? "" : e.getEquipeNom())
         );
 
         int rank = 1;
@@ -975,19 +1005,7 @@ public class ServiceEquipe implements IService<Equipe> {
             ps.executeUpdate();
         }
 
-        // Send email in background thread
-        try {
-            String playerEmail = getUserEmail(userId);
-            String equipeName = getEquipeNom(equipeId);
-            String ownerName = getUserNom(ownerId);
-            if (playerEmail != null && !playerEmail.isBlank()) {
-                new Thread(() -> {
-                    new EmailService().sendTeamInvitationEmail(playerEmail, equipeName, ownerName);
-                }).start();
-            }
-        } catch (Exception ignored) {
-            // Email is best-effort, don't fail the invitation
-        }
+        // Invitation stored in database. Email notification is not sent from this service.
     }
 
     public boolean hasInvitedUser(int equipeId, int userId) throws SQLException {
@@ -1016,13 +1034,13 @@ public class ServiceEquipe implements IService<Equipe> {
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     invitations.add(new TeamInvitation(
-                        rs.getInt("id"),
-                        rs.getInt("equipe_id"),
-                        rs.getInt("user_id"),
-                        rs.getString("equipe_nom"),
-                        rs.getString("owner_nom"),
-                        rs.getString("status"),
-                        rs.getTimestamp("created_at")
+                            rs.getInt("id"),
+                            rs.getInt("equipe_id"),
+                            rs.getInt("user_id"),
+                            rs.getString("equipe_nom"),
+                            rs.getString("owner_nom"),
+                            rs.getString("status"),
+                            rs.getTimestamp("created_at")
                     ));
                 }
             }

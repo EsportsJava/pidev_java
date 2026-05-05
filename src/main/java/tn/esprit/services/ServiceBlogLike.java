@@ -1,7 +1,11 @@
 package tn.esprit.services;
 
 import tn.esprit.utils.MyDatabase;
-import java.sql.*;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class ServiceBlogLike {
 
@@ -34,11 +38,13 @@ public class ServiceBlogLike {
     }
 
     public int getLikeCount(int blogId) {
-        String sql = "SELECT like_count FROM blog WHERE id=?";
+        String sql = "SELECT COUNT(*) AS like_count FROM blog_like WHERE blog_id=?";
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
             ps.setInt(1, blogId);
             ResultSet rs = ps.executeQuery();
-            if (rs.next()) return rs.getInt("like_count");
+            if (rs.next()) {
+                return rs.getInt("like_count");
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -46,48 +52,24 @@ public class ServiceBlogLike {
     }
 
     private void addLike(int blogId, int userId) {
-        try {
-            cnx.setAutoCommit(false);
-            try (PreparedStatement ps = cnx.prepareStatement(
-                    "INSERT INTO blog_like (blog_id, user_id) VALUES (?,?)")) {
-                ps.setInt(1, blogId);
-                ps.setInt(2, userId);
-                ps.executeUpdate();
-            }
-            try (PreparedStatement ps = cnx.prepareStatement(
-                    "UPDATE blog SET like_count = like_count + 1 WHERE id=?")) {
-                ps.setInt(1, blogId);
-                ps.executeUpdate();
-            }
-            cnx.commit();
+        try (PreparedStatement ps = cnx.prepareStatement(
+                "INSERT INTO blog_like (blog_id, user_id) VALUES (?,?)")) {
+            ps.setInt(1, blogId);
+            ps.setInt(2, userId);
+            ps.executeUpdate();
         } catch (SQLException e) {
-            try { cnx.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
             e.printStackTrace();
-        } finally {
-            try { cnx.setAutoCommit(true); } catch (SQLException e) { e.printStackTrace(); }
         }
     }
 
     private void removeLike(int blogId, int userId) {
-        try {
-            cnx.setAutoCommit(false);
-            try (PreparedStatement ps = cnx.prepareStatement(
-                    "DELETE FROM blog_like WHERE blog_id=? AND user_id=?")) {
-                ps.setInt(1, blogId);
-                ps.setInt(2, userId);
-                ps.executeUpdate();
-            }
-            try (PreparedStatement ps = cnx.prepareStatement(
-                    "UPDATE blog SET like_count = GREATEST(like_count - 1, 0) WHERE id=?")) {
-                ps.setInt(1, blogId);
-                ps.executeUpdate();
-            }
-            cnx.commit();
+        try (PreparedStatement ps = cnx.prepareStatement(
+                "DELETE FROM blog_like WHERE blog_id=? AND user_id=?")) {
+            ps.setInt(1, blogId);
+            ps.setInt(2, userId);
+            ps.executeUpdate();
         } catch (SQLException e) {
-            try { cnx.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
             e.printStackTrace();
-        } finally {
-            try { cnx.setAutoCommit(true); } catch (SQLException e) { e.printStackTrace(); }
         }
     }
 }
