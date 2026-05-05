@@ -8,15 +8,21 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
-import javafx.scene.shape.Circle;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import tn.esprit.entities.Blog;
 import tn.esprit.services.ServiceBlog;
+import tn.esprit.services.ServiceBlogLike;
+import tn.esprit.services.ServiceBlogRating;
+import tn.esprit.services.ServiceComment;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,16 +30,19 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
-import tn.esprit.services.ServiceBlogLike;
-import tn.esprit.services.ServiceBlogRating;
+
 public class AfficherBlogsController implements Initializable {
 
-    @FXML private FlowPane  blogsContainer;
+    @FXML private FlowPane blogsContainer;
     @FXML private TextField searchField;
-    private final ServiceBlogLike   serviceLike   = new ServiceBlogLike();
+
+    private final ServiceBlogLike serviceLike = new ServiceBlogLike();
     private final ServiceBlogRating serviceRating = new ServiceBlogRating();
+    private final ServiceComment serviceComment = new ServiceComment();
+    private final ServiceBlog serviceBlog = new ServiceBlog();
+
     private static final String HTDOCS_PATH = "C:/xampp/htdocs/blog_images/";
-    private final ServiceBlog serviceBlog   = new ServiceBlog();
+
     private List<Blog> allBlogs;
 
     @Override
@@ -54,13 +63,10 @@ public class AfficherBlogsController implements Initializable {
 
         for (int i = 0; i < blogs.size(); i++) {
             blogsContainer.getChildren().add(
-                    i == 0 ? createFeaturedCard(blogs.get(i))
-                            : createArticleCard(blogs.get(i))
+                    i == 0 ? createFeaturedCard(blogs.get(i)) : createArticleCard(blogs.get(i))
             );
         }
     }
-
-    // ── Card featured (1er article, pleine largeur) ──────────────────────
 
     private HBox createFeaturedCard(Blog blog) {
         HBox card = new HBox();
@@ -74,19 +80,16 @@ public class AfficherBlogsController implements Initializable {
                         "-fx-effect: null;"
         );
 
-        // Image gauche
         StackPane imgPane = buildImagePane(blog, 340, 240);
 
-        // Contenu droite
         VBox body = new VBox(10);
         body.setPadding(new Insets(28));
         body.setAlignment(Pos.CENTER_LEFT);
         HBox.setHgrow(body, Priority.ALWAYS);
 
         Label featuredBadge = buildBadge("A la une", "#FEF3C7", "#92400E");
-        Label tag            = buildBadge(
-                blog.getCategory() != null
-                        && blog.getCategory().length() > 20
+        Label tag = buildBadge(
+                blog.getCategory() != null && blog.getCategory().length() > 20
                         ? "Blog" : (blog.getCategory() != null ? blog.getCategory() : "Blog"),
                 "#EDE9FE", "#5B21B6");
 
@@ -95,7 +98,9 @@ public class AfficherBlogsController implements Initializable {
         title.setWrapText(true);
 
         String descText = blog.getCategory() != null ? blog.getCategory() : "";
-        if (descText.length() > 140) descText = descText.substring(0, 140) + "...";
+        if (descText.length() > 140) {
+            descText = descText.substring(0, 140) + "...";
+        }
         Label desc = new Label(descText);
         desc.setStyle("-fx-font-size: 13px; -fx-text-fill: #64748b; -fx-line-spacing: 3;");
         desc.setWrapText(true);
@@ -108,14 +113,11 @@ public class AfficherBlogsController implements Initializable {
         body.getChildren().addAll(featuredBadge, tag, title, desc, spacer, footer);
         card.getChildren().addAll(imgPane, body);
 
-        // Navigation vers les détails
         card.setCursor(javafx.scene.Cursor.HAND);
         card.setOnMouseClicked(e -> openBlogDetail(blog));
 
         return card;
     }
-
-    // ── Card article standard ────────────────────────────────────────────
 
     private VBox createArticleCard(Blog blog) {
         VBox card = new VBox();
@@ -128,10 +130,8 @@ public class AfficherBlogsController implements Initializable {
                         "-fx-background-radius: 12;"
         );
 
-        // Image
         StackPane imgPane = buildImagePane(blog, 260, 160);
 
-        // Body
         VBox body = new VBox(8);
         body.setPadding(new Insets(14));
         VBox.setVgrow(body, Priority.ALWAYS);
@@ -143,7 +143,9 @@ public class AfficherBlogsController implements Initializable {
         title.setWrapText(true);
 
         String descText = blog.getCategory() != null ? blog.getCategory() : "";
-        if (descText.length() > 80) descText = descText.substring(0, 80) + "...";
+        if (descText.length() > 80) {
+            descText = descText.substring(0, 80) + "...";
+        }
         Label desc = new Label(descText);
         desc.setStyle("-fx-font-size: 12px; -fx-text-fill: #64748b; -fx-line-spacing: 2;");
         desc.setWrapText(true);
@@ -153,7 +155,6 @@ public class AfficherBlogsController implements Initializable {
 
         body.getChildren().addAll(tag, title, desc, spacer);
 
-        // Séparateur + footer
         HBox footer = buildFooter(blog);
         footer.setStyle(
                 "-fx-border-color: #e2e8f0;" +
@@ -163,14 +164,11 @@ public class AfficherBlogsController implements Initializable {
 
         card.getChildren().addAll(imgPane, body, footer);
 
-        // Navigation vers les détails
         card.setCursor(javafx.scene.Cursor.HAND);
         card.setOnMouseClicked(e -> openBlogDetail(blog));
 
         return card;
     }
-
-    // ── Helpers ──────────────────────────────────────────────────────────
 
     private StackPane buildImagePane(Blog blog, double w, double h) {
         StackPane pane = new StackPane();
@@ -187,7 +185,6 @@ public class AfficherBlogsController implements Initializable {
             iv.setPreserveRatio(false);
             pane.getChildren().add(iv);
         } else {
-            // Placeholder icone image
             Label icon = new Label("🖼");
             icon.setStyle("-fx-font-size: 32px; -fx-opacity: 0.25;");
             pane.getChildren().add(icon);
@@ -228,20 +225,17 @@ public class AfficherBlogsController implements Initializable {
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        // Commentaires
-        Label comments = new Label("💬 " + blog.getCommentCount());
+        int commentCount = serviceComment.getCountByBlogId(blog.getId());
+        Label comments = new Label("💬 " + commentCount);
         comments.setStyle("-fx-font-size: 11px; -fx-text-fill: #94a3b8;");
 
-        // ✅ Likes depuis la DB
         int likeCount = serviceLike.getLikeCount(blog.getId());
         Label likes = new Label("❤️ " + likeCount);
         likes.setStyle("-fx-font-size: 11px; -fx-text-fill: #94a3b8;");
 
-        // ✅ Rating depuis la DB
         double avg = serviceRating.getAverageRating(blog.getId());
         int ratingCount = serviceRating.getRatingCount(blog.getId());
-        Label rating = new Label(ratingCount > 0
-                ? String.format("⭐ %.1f", avg) : "⭐ -");
+        Label rating = new Label(ratingCount > 0 ? String.format("⭐ %.1f", avg) : "⭐ -");
         rating.setStyle("-fx-font-size: 11px; -fx-text-fill: #94a3b8;");
 
         HBox footer = new HBox(8, avatar, date, spacer, likes, rating, comments);
@@ -258,8 +252,7 @@ public class AfficherBlogsController implements Initializable {
         } else {
             List<Blog> filtered = allBlogs.stream()
                     .filter(b -> b.getTitle().toLowerCase().contains(query)
-                            || (b.getCategory() != null
-                            && b.getCategory().toLowerCase().contains(query)))
+                            || (b.getCategory() != null && b.getCategory().toLowerCase().contains(query)))
                     .collect(Collectors.toList());
             displayBlogs(filtered);
         }

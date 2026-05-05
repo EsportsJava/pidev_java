@@ -6,7 +6,7 @@ import org.json.JSONObject;
 
 public class TranslationService {
 
-    private static final String API_KEY = "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";
+    private static final String API_KEY = "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";
     private static final String URL     = "https://api.groq.com/openai/v1/chat/completions";
 
     private final OkHttpClient client = new OkHttpClient.Builder()
