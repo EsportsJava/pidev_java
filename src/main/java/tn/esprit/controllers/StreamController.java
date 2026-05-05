@@ -7,6 +7,7 @@ import javafx.scene.media.MediaView;
 import tn.esprit.entities.Video;
 import tn.esprit.entities.User;
 import tn.esprit.services.VideoService;
+import tn.esprit.services.ServiceStreamReaction;
 import tn.esprit.utils.SessionManager;
 import javafx.fxml.FXML;
 import javafx.scene.web.WebView;
@@ -25,6 +26,16 @@ public class StreamController {
     private GridPane videoContainer;
     @FXML
     private MediaView mediaView;
+
+    // ====== REACTIONS (AJOUT) ======
+    @FXML
+    private HBox reactionBox;
+    @FXML
+    private Label totalLabel;
+    private final ServiceStreamReaction reactionService = new ServiceStreamReaction();
+    // TODO: si tu as plusieurs streams en DB, remplace 1 par l'id du stream actif
+    private final int streamIdForReactions = 1;
+
     private File selectedFile;
     @FXML
     private TextField titleField;
@@ -46,9 +57,55 @@ public class StreamController {
     public void initialize() {
         loadStream();
         loadVideos();
+        setupReactions();
         System.out.println("mediaView = " + mediaView);
         System.out.println("webView = " + webView);
 
+    }
+
+    private String currentUsername() {
+        User u = SessionManager.getCurrentUser();
+        if (u == null) {
+            return "Invité";
+        }
+        try {
+            if (u.getNom() != null && !u.getNom().isBlank()) {
+                return u.getNom().trim();
+            }
+        } catch (Exception ignored) {
+        }
+        return (u.getEmail() != null && !u.getEmail().isBlank()) ? u.getEmail() : "Invité";
+    }
+
+    private void setupReactions() {
+        if (reactionBox == null || totalLabel == null) {
+            return;
+        }
+
+        reactionBox.getChildren().clear();
+        for (String emoji : ServiceStreamReaction.REACTIONS) {
+            Button b = new Button(emoji);
+            b.setStyle("-fx-font-size:18px; -fx-background-color:#2d2d2d; -fx-text-fill:white;");
+            b.setOnAction(e -> {
+                boolean ok = reactionService.addEmojiReaction(emoji, currentUsername(), streamIdForReactions);
+                if (!ok) {
+                    totalLabel.setText("Réactions : échec enregistrement (voir console)");
+                    return;
+                }
+                refreshReactionTotal();
+            });
+            reactionBox.getChildren().add(b);
+        }
+
+        refreshReactionTotal();
+    }
+
+    private void refreshReactionTotal() {
+        if (totalLabel == null) {
+            return;
+        }
+        int total = reactionService.getTotalReactions(streamIdForReactions);
+        totalLabel.setText("Reactions: " + total);
     }
 
     private void loadStream() {

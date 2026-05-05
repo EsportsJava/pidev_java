@@ -19,6 +19,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import tn.esprit.entities.Equipe;
+import tn.esprit.services.PandaScoreService;
 import tn.esprit.services.ServiceEquipe;
 
 import java.io.IOException;
@@ -47,9 +48,19 @@ public class EquipeDashboardController implements Initializable {
     @FXML
     private Label totalEquipesLabel;
     @FXML
+    private Label totalMembersCapLabel;
+    @FXML
+    private Label avgMembersLabel;
+    @FXML
     private TextField searchField;
     @FXML
     private ComboBox<String> sortCombo;
+    @FXML
+    private TextField apiCountField;
+    @FXML
+    private Button generateApiBtn;
+    @FXML
+    private Label apiStatusLabel;
 
     private final ServiceEquipe serviceEquipe = new ServiceEquipe();
     private final List<Equipe> allEquipes = new ArrayList<>();
@@ -81,20 +92,138 @@ public class EquipeDashboardController implements Initializable {
         maxMembersCol.setCellValueFactory(new PropertyValueFactory<>("maxMembers"));
         logoCol.setCellValueFactory(new PropertyValueFactory<>("logo"));
 
+        // Style table programmatically
+        equipeTable.setStyle("-fx-background-color: #111b3e; -fx-background-radius: 10;"
+            + "-fx-border-color: rgba(124,58,237,0.15); -fx-border-radius: 10;");
+        equipeTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+        // Row factory for dark themed rows with hover
+        equipeTable.setRowFactory(tv -> {
+            javafx.scene.control.TableRow<Equipe> row = new javafx.scene.control.TableRow<>() {
+                @Override
+                protected void updateItem(Equipe item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null) {
+                        setStyle("-fx-background-color: #111b3e;");
+                    } else {
+                        setStyle(getIndex() % 2 == 0
+                            ? "-fx-background-color: #111b3e;"
+                            : "-fx-background-color: #0f1835;");
+                    }
+                }
+            };
+            row.setOnMouseEntered(e -> {
+                if (!row.isEmpty()) row.setStyle("-fx-background-color: rgba(124,58,237,0.12);");
+            });
+            row.setOnMouseExited(e -> {
+                if (!row.isEmpty()) {
+                    row.setStyle(row.getIndex() % 2 == 0
+                        ? "-fx-background-color: #111b3e;"
+                        : "-fx-background-color: #0f1835;");
+                }
+            });
+            return row;
+        });
+
+        // Styled name column
+        nomCol.setCellFactory(col -> new TableCell<>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    Label lbl = new Label(item);
+                    lbl.setStyle("-fx-text-fill: #f1f5f9; -fx-font-size: 13px; -fx-font-weight: 700;");
+                    setGraphic(lbl);
+                    setText(null);
+                }
+                setStyle("-fx-background-color: transparent;");
+            }
+        });
+
+        // Styled maxMembers column
+        maxMembersCol.setCellFactory(col -> new TableCell<>() {
+            @Override
+            protected void updateItem(Integer item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setGraphic(null);
+                    setText(null);
+                } else {
+                    Label badge = new Label(String.valueOf(item));
+                    badge.setStyle("-fx-background-color: rgba(124,58,237,0.18); -fx-text-fill: #c4b5fd;"
+                        + "-fx-padding: 4 14; -fx-background-radius: 8; -fx-font-size: 12px; -fx-font-weight: 700;");
+                    setGraphic(badge);
+                    setText(null);
+                }
+                setStyle("-fx-background-color: transparent;");
+            }
+        });
+
+        // Styled logo column (truncated with tooltip)
+        logoCol.setCellFactory(col -> new TableCell<>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null || item.isBlank()) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    String display = item.length() > 35 ? "..." + item.substring(item.length() - 32) : item;
+                    Label lbl = new Label(display);
+                    lbl.setStyle("-fx-text-fill: #64748b; -fx-font-size: 11px;");
+                    lbl.setMaxWidth(250);
+                    setGraphic(lbl);
+                    setText(null);
+                    setTooltip(new javafx.scene.control.Tooltip(item));
+                }
+                setStyle("-fx-background-color: transparent;");
+            }
+        });
+
+        // Actions column — theme-matched buttons
         actionsCol.setCellFactory(col -> new TableCell<>() {
-            private final Button editBtn = new Button("✏️");
+            private final Button editBtn = new Button("✏");
             private final Button deleteBtn = new Button("🗑");
-            private final HBox box = new HBox(6, editBtn, deleteBtn);
+            private final HBox box = new HBox(8, editBtn, deleteBtn);
+
+            private final String editDefault = "-fx-background-color: linear-gradient(to right, #7c3aed, #6d28d9);"
+                + "-fx-text-fill: #e9d5ff; -fx-font-size: 14px;"
+                + "-fx-background-radius: 10; -fx-padding: 5 14;"
+                + "-fx-cursor: hand; -fx-min-height: 30; -fx-min-width: 38;"
+                + "-fx-effect: dropshadow(gaussian, rgba(124,58,237,0.35), 6, 0, 0, 2);";
+            private final String editHover = "-fx-background-color: linear-gradient(to right, #8b5cf6, #7c3aed);"
+                + "-fx-text-fill: white; -fx-font-size: 14px;"
+                + "-fx-background-radius: 10; -fx-padding: 5 14;"
+                + "-fx-cursor: hand; -fx-min-height: 30; -fx-min-width: 38;"
+                + "-fx-effect: dropshadow(gaussian, rgba(139,92,246,0.55), 10, 0, 0, 3);";
+            private final String deleteDefault = "-fx-background-color: linear-gradient(to right, #be185d, #9f1239);"
+                + "-fx-text-fill: #fecdd3; -fx-font-size: 14px;"
+                + "-fx-background-radius: 10; -fx-padding: 5 14;"
+                + "-fx-cursor: hand; -fx-min-height: 30; -fx-min-width: 38;"
+                + "-fx-effect: dropshadow(gaussian, rgba(190,24,93,0.35), 6, 0, 0, 2);";
+            private final String deleteHover = "-fx-background-color: linear-gradient(to right, #e11d48, #be185d);"
+                + "-fx-text-fill: white; -fx-font-size: 14px;"
+                + "-fx-background-radius: 10; -fx-padding: 5 14;"
+                + "-fx-cursor: hand; -fx-min-height: 30; -fx-min-width: 38;"
+                + "-fx-effect: dropshadow(gaussian, rgba(225,29,72,0.55), 10, 0, 0, 3);";
 
             {
-            editBtn.setStyle("-fx-background-color: #6e5cff; -fx-text-fill: white; -fx-cursor: hand;");
-                deleteBtn.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-cursor: hand;");
+                box.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+                editBtn.setStyle(editDefault);
+                deleteBtn.setStyle(deleteDefault);
+
+                editBtn.setOnMouseEntered(e -> editBtn.setStyle(editHover));
+                editBtn.setOnMouseExited(e -> editBtn.setStyle(editDefault));
+                deleteBtn.setOnMouseEntered(e -> deleteBtn.setStyle(deleteHover));
+                deleteBtn.setOnMouseExited(e -> deleteBtn.setStyle(deleteDefault));
 
                 editBtn.setOnAction(e -> {
                     Equipe equipe = getTableView().getItems().get(getIndex());
                     openEditWindow(equipe);
                 });
-
                 deleteBtn.setOnAction(e -> {
                     Equipe equipe = getTableView().getItems().get(getIndex());
                     confirmDelete(equipe);
@@ -105,6 +234,8 @@ public class EquipeDashboardController implements Initializable {
             protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
                 setGraphic(empty ? null : box);
+                setText(null);
+                setStyle("-fx-background-color: transparent;");
             }
         });
     }
@@ -115,7 +246,7 @@ public class EquipeDashboardController implements Initializable {
             allEquipes.clear();
             allEquipes.addAll(list);
             applyFilterAndSort();
-            totalEquipesLabel.setText(String.valueOf(list.size()));
+            computeStats();
             messageLabel.setText("");
         } catch (SQLException e) {
             messageLabel.setStyle("-fx-text-fill: #e74c3c;");
@@ -165,6 +296,18 @@ public class EquipeDashboardController implements Initializable {
 
     private String safeLower(String value) {
         return value == null ? "" : value.toLowerCase(Locale.ROOT);
+    }
+
+    private void computeStats() {
+        int total = allEquipes.size();
+        totalEquipesLabel.setText(String.valueOf(total));
+
+        int totalCap = 0;
+        for (Equipe eq : allEquipes) {
+            totalCap += eq.getMaxMembers();
+        }
+        totalMembersCapLabel.setText(String.valueOf(totalCap));
+        avgMembersLabel.setText(total > 0 ? String.valueOf(totalCap / total) : "0");
     }
 
     @FXML
@@ -218,5 +361,53 @@ public class EquipeDashboardController implements Initializable {
                 }
             }
         });
+    }
+
+    @FXML
+    private void handleGenerateFromApi() {
+        String countText = apiCountField.getText();
+        if (countText == null || countText.trim().isEmpty()) {
+            apiStatusLabel.setStyle("-fx-text-fill: #f59e0b; -fx-font-size: 12px; -fx-font-weight: 700;");
+            apiStatusLabel.setText("Entrez un nombre.");
+            return;
+        }
+
+        int count;
+        try {
+            count = Integer.parseInt(countText.trim());
+            if (count < 1 || count > 30) {
+                apiStatusLabel.setStyle("-fx-text-fill: #f59e0b; -fx-font-size: 12px; -fx-font-weight: 700;");
+                apiStatusLabel.setText("Entre 1 et 30.");
+                return;
+            }
+        } catch (NumberFormatException e) {
+            apiStatusLabel.setStyle("-fx-text-fill: #e74c3c; -fx-font-size: 12px; -fx-font-weight: 700;");
+            apiStatusLabel.setText("Nombre invalide.");
+            return;
+        }
+
+        generateApiBtn.setDisable(true);
+        apiStatusLabel.setStyle("-fx-text-fill: #fcd34d; -fx-font-size: 12px; -fx-font-weight: 700;");
+        apiStatusLabel.setText("⏳ Appel API en cours...");
+
+        new Thread(() -> {
+            try {
+                PandaScoreService apiService = new PandaScoreService();
+                int created = apiService.generateTeamsFromApi(count);
+                javafx.application.Platform.runLater(() -> {
+                    apiStatusLabel.setStyle("-fx-text-fill: #10b981; -fx-font-size: 12px; -fx-font-weight: 700;");
+                    apiStatusLabel.setText("✅ " + created + " équipe(s) générée(s) !");
+                    generateApiBtn.setDisable(false);
+                    apiCountField.clear();
+                    loadEquipes();
+                });
+            } catch (Exception ex) {
+                javafx.application.Platform.runLater(() -> {
+                    apiStatusLabel.setStyle("-fx-text-fill: #e74c3c; -fx-font-size: 12px; -fx-font-weight: 700;");
+                    apiStatusLabel.setText("❌ Erreur : " + ex.getMessage());
+                    generateApiBtn.setDisable(false);
+                });
+            }
+        }).start();
     }
 }

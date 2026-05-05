@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.esprit.controllers.equipe.ClassementGlobalController"
+            prefHeight="620.0" prefWidth="1080.0"
+            style="-fx-background-color: #0f172a;">
+
+    <VBox spacing="20"
+          AnchorPane.topAnchor="24" AnchorPane.leftAnchor="24"
+          AnchorPane.rightAnchor="24" AnchorPane.bottomAnchor="24">
+
+        <!-- ── Header Row ── -->
+        <HBox alignment="CENTER_LEFT" spacing="16">
+
+            <!-- Icon Badge -->
+            <VBox alignment="CENTER" minWidth="48" minHeight="48" maxWidth="48" maxHeight="48"
+                  style="-fx-background-color: #7c3aed; -fx-background-radius: 12;">
+                <Label text="🏆" style="-fx-font-size: 22px;" />
+            </VBox>
+
+            <!-- Title + Subtitle -->
+            <VBox spacing="3">
+                <Label text="Classement Global"
+                       style="-fx-text-fill: #f8fafc; -fx-font-size: 24px; -fx-font-weight: 800;" />
+                <Label text="Classement des équipes basé sur les matchs terminés et le PPM."
+                       wrapText="true"
+                       style="-fx-text-fill: #94a3b8; -fx-font-size: 13px;" />
+            </VBox>
+
+            <Region HBox.hgrow="ALWAYS" />
+
+            <!-- Stat badge -->
+            <VBox alignment="CENTER" prefWidth="130" prefHeight="64"
+                  style="-fx-background-color: #1e293b; -fx-background-radius: 10;">
+                <Label fx:id="totalEquipesLabel" text="—"
+                       style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #0ea5e9;" />
+                <Label text="ÉQUIPES"
+                       style="-fx-text-fill: #94a3b8; -fx-font-size: 11px;" />
+            </VBox>
+
+        </HBox>
+
+        <!-- ── Divider ── -->
+        <Region prefHeight="1"
+                style="-fx-background-color: rgba(148,163,184,0.12);" />
+
+        <!-- ── Table ── -->
+        <TableView fx:id="rankingTable" VBox.vgrow="ALWAYS"
+                   style="-fx-background-color: #1e293b;">
+            <columns>
+                <TableColumn fx:id="rankCol"   text="#"      prefWidth="52"  />
+                <TableColumn fx:id="equipeCol"  text="ÉQUIPE" prefWidth="200" />
+                <TableColumn fx:id="mjCol"      text="MJ"     prefWidth="58"  />
+                <TableColumn fx:id="vCol"       text="V"      prefWidth="58"  />
+                <TableColumn fx:id="nCol"       text="N"      prefWidth="58"  />
+                <TableColumn fx:id="pCol"       text="P"      prefWidth="58"  />
+                <TableColumn fx:id="bpCol"      text="BP"     prefWidth="68"  />
+                <TableColumn fx:id="bcCol"      text="BC"     prefWidth="68"  />
+                <TableColumn fx:id="diffCol"    text="DIFF"   prefWidth="70"  />
+                <TableColumn fx:id="pointsCol"  text="PTS"    prefWidth="70"  />
+                <TableColumn fx:id="ppmCol"     text="PPM"    prefWidth="80"  />
+                <TableColumn fx:id="badgeCol"   text="BADGE"  prefWidth="160" />
+            </columns>
+        </TableView>
+
+        <!-- ── Status bar ── -->
+        <HBox alignment="CENTER_LEFT" spacing="8">
+            <Label fx:id="messageLabel" text=""
+                   style="-fx-text-fill: #64748b; -fx-font-size: 12px;" />
+        </HBox>
+
+    </VBox>
+</AnchorPane>

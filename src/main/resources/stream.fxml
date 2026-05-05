@@ -6,7 +6,6 @@
 <?import javafx.scene.media.MediaView?>
 <?import javafx.scene.control.ScrollPane?>
 
-
 <ScrollPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="tn.esprit.controllers.StreamController"
@@ -16,8 +15,7 @@
 
     <content>
 
-        <BorderPane
-                    stylesheets="@style.css"
+        <BorderPane stylesheets="@style.css"
                     style="-fx-background-color:#0f0f0f;">
 
             <!-- NAVBAR -->
@@ -29,10 +27,11 @@
             <center>
                 <VBox spacing="15" style="-fx-padding:20;">
 
-                    <!-- STREAM -->
+                    <!-- STREAM TITLE -->
                     <Label text="🎥 Live Stream"
                            style="-fx-text-fill:white; -fx-font-size:18px; -fx-font-weight:bold;"/>
 
+                    <!-- VIDEO STREAM -->
                     <StackPane prefHeight="380"
                                style="-fx-background-color:black; -fx-background-radius:10;"
                                styleClass="stream-box">
@@ -52,20 +51,30 @@
                                 style="-fx-background-color:#3498db; -fx-text-fill:white;"/>
                     </HBox>
 
+                    <!-- UPLOAD BUTTON (ADMIN) -->
                     <HBox alignment="TOP_RIGHT" visible="false" managed="false">
                         <Button text="💾 Enregistrer vidéo"
                                 onAction="#uploadVideo"
                                 styleClass="btn-save"/>
                     </HBox>
 
-                    <!-- LIST TITLE -->
+                    <!-- REACTIONS SECTION ⭐ FIXED -->
+                    <HBox fx:id="reactionBox"
+                          spacing="10"
+                          style="-fx-padding:10; -fx-alignment:center;"/>
+
+                    <Label fx:id="totalLabel"
+                           text="Reactions: 0"
+                           style="-fx-text-fill:white; -fx-font-size:14px;"/>
+
+                    <!-- VIDEO LIST TITLE -->
                     <Label text="📂 Available Videos"
                            style="-fx-text-fill:white; -fx-font-size:16px; -fx-font-weight:bold;"/>
 
-                    <!-- VIDEO LIST -->
-                    <GridPane fx:id="videoContainer" hgap="15" vgap="15"/>
-
-
+                    <!-- VIDEO GRID -->
+                    <GridPane fx:id="videoContainer"
+                              hgap="15"
+                              vgap="15"/>
 
                 </VBox>
             </center>

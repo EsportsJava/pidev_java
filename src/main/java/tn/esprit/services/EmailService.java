@@ -13,8 +13,8 @@ import java.util.Properties;
 
 public class EmailService {
 
-    private static final String FROM_EMAIL = "saadamaryem776@gmail.com";
-    private static final String PASSWORD = "dtwl bzpv zzmx mcjm";
+    private static final String FROM_EMAIL = "rajhiaziz2@gmail.com"; // ← ton email
+    private static final String PASSWORD = "utgi jjoa ohux mymp";     // ← mot de passe app Gmail
 
     public void sendLowStockAlert(String productName, int stock, String toEmail) {
         try {
@@ -44,48 +44,53 @@ public class EmailService {
         }
     }
 
-    public void sendPasswordResetCode(String toEmail, String userName, String code) throws MessagingException {
-        String safeName = (userName == null || userName.isBlank()) ? "utilisateur" : userName;
-        String body = """
-                <html>
-                <body style="font-family: Arial; background-color: #0f172a; color: white; padding: 20px;">
-                    <div style="background-color: #1e293b; padding: 24px; border-radius: 10px;">
-                        <h2 style="color: #c4b5fd;">Reinitialisation du mot de passe</h2>
-                        <p>Bonjour <strong>%s</strong>,</p>
-                        <p>Utilisez ce code pour reinitialiser votre mot de passe :</p>
-                        <div style="background-color: #0f172a; padding: 18px; border-radius: 8px; text-align: center;">
-                            <span style="font-size: 28px; font-weight: bold; letter-spacing: 4px; color: #facc15;">%s</span>
-                        </div>
-                        <p style="margin-top: 16px;">Ce code expire dans 15 minutes et ne peut etre utilise qu'une seule fois.</p>
-                    </div>
-                </body>
-                </html>
-                """.formatted(safeName, code);
-
-        sendHtmlEmail(toEmail, "Code de reinitialisation du mot de passe", body);
-    }
-
-    private void sendHtmlEmail(String toEmail, String subject, String body) throws MessagingException {
-        Message message = new MimeMessage(createSession());
-        message.setFrom(new InternetAddress(FROM_EMAIL));
-        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
-        message.setSubject(subject);
-        message.setContent(body, "text/html; charset=utf-8");
-        Transport.send(message);
-    }
-
-    private Session createSession() {
+    public void sendTeamInvitationEmail(String toEmail, String equipeName, String ownerName) {
         Properties props = new Properties();
         props.put("mail.smtp.host", "smtp.gmail.com");
         props.put("mail.smtp.port", "587");
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
 
-        return Session.getInstance(props, new Authenticator() {
+        Session session = Session.getInstance(props, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication(FROM_EMAIL, PASSWORD);
             }
         });
+
+        try {
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(FROM_EMAIL));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
+            message.setSubject("🎮 Invitation à rejoindre l'équipe " + equipeName);
+
+            String body = """
+                    <html>
+                    <body style="font-family: Arial; background-color: #0f172a; color: white; padding: 20px;">
+                        <div style="background-color: #1e293b; padding: 24px; border-radius: 14px; border: 1px solid rgba(124,58,237,0.3);">
+                            <h2 style="color: #a78bfa;">🎮 Invitation d'équipe</h2>
+                            <p>Bonjour,</p>
+                            <p>Vous avez été invité(e) par <strong style="color: #7c3aed;">%s</strong> à rejoindre l'équipe <strong style="color: #7c3aed;">%s</strong>.</p>
+                            <div style="background-color: #0f172a; padding: 16px; border-radius: 10px; margin: 16px 0;">
+                                <p>👑 Invité par : <strong>%s</strong></p>
+                                <p>🏆 Équipe : <strong>%s</strong></p>
+                            </div>
+                            <p>Connectez-vous à la plateforme pour <strong>accepter</strong> ou <strong>refuser</strong> cette invitation.</p>
+                            <p style="color: #64748b; font-size: 12px; margin-top: 20px;">
+                                ESPORTS COMMUNITY — Gaming Platform
+                            </p>
+                        </div>
+                    </body>
+                    </html>
+                    """.formatted(ownerName, equipeName, ownerName, equipeName);
+
+            message.setContent(body, "text/html; charset=utf-8");
+            Transport.send(message);
+
+            System.out.println("✅ Email invitation envoyé à : " + toEmail);
+
+        } catch (MessagingException e) {
+            System.out.println("❌ Erreur email invitation : " + e.getMessage());
+        }
     }
 }

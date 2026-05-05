@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.esprit.controllers.equipe.DemandeAdhesionController"
+            prefHeight="240.0" prefWidth="420.0"
+            style="-fx-background-color: #0f172a;">
+
+    <VBox spacing="10"
+          AnchorPane.topAnchor="20" AnchorPane.leftAnchor="20"
+          AnchorPane.rightAnchor="20" AnchorPane.bottomAnchor="20">
+
+        <Label text="Demander Adhesion Equipe"
+               style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+
+        <Label text="ID equipe" style="-fx-text-fill: #94a3b8;"/>
+        <TextField fx:id="equipeIdField" promptText="Ex: 12"
+                   style="-fx-background-color: #1e293b; -fx-text-fill: white; -fx-pref-height: 36;"/>
+
+        <Label fx:id="messageLabel" text="" style="-fx-font-size: 13px;"/>
+
+        <HBox spacing="10" alignment="CENTER_RIGHT">
+            <Button text="Fermer" onAction="#handleClose"
+                    style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-pref-width: 110; -fx-pref-height: 36;"/>
+            <Button text="Envoyer" onAction="#handleSubmit"
+                    style="-fx-background-color: #22c55e; -fx-text-fill: white; -fx-pref-width: 110; -fx-pref-height: 36;"/>
+        </HBox>
+    </VBox>
+</AnchorPane>
