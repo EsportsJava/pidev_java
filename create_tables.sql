@@ -98,3 +98,36 @@ CREATE TABLE IF NOT EXISTS video (
 INSERT INTO stream (url, is_active)
 SELECT 'http://192.168.100.81:8080/hls/match1.m3u8', 1
     WHERE NOT EXISTS (SELECT 1 FROM stream LIMIT 1);
+
+CREATE TABLE IF NOT EXISTS blog_like (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    blog_id INT NOT NULL,
+    user_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY uq_blog_like (blog_id, user_id),
+    INDEX idx_blog_like_blog (blog_id),
+    INDEX idx_blog_like_user (user_id),
+    CONSTRAINT fk_blog_like_blog FOREIGN KEY (blog_id) REFERENCES blog(id) ON DELETE CASCADE,
+    CONSTRAINT fk_blog_like_user FOREIGN KEY (user_id) REFERENCES `user`(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+
+
+CREATE TABLE IF NOT EXISTS blog_rating (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    blog_id INT NOT NULL,
+    user_id INT NOT NULL,
+    rating INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY uq_blog_rating (blog_id, user_id),
+    INDEX idx_blog_rating_blog (blog_id),
+    INDEX idx_blog_rating_user (user_id),
+    CONSTRAINT fk_blog_rating_blog FOREIGN KEY (blog_id) REFERENCES blog(id) ON DELETE CASCADE,
+    CONSTRAINT fk_blog_rating_user FOREIGN KEY (user_id) REFERENCES `user`(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+ALTER TABLE comment ADD COLUMN IF NOT EXISTS user_country VARCHAR(100) NULL;
+ALTER TABLE comment ADD COLUMN IF NOT EXISTS user_country_code VARCHAR(10) NULL;
+ALTER TABLE comment ADD COLUMN IF NOT EXISTS user_flag VARCHAR(16) NULL;
