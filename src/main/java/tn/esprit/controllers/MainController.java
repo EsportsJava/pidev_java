@@ -80,10 +80,7 @@ public class MainController implements Initializable {
         }
     }
 
-    @FXML
-    public void showStream() {
-        loadPage("/stream.fxml");
-    }
+
 
     @FXML
     public void showOrders() {
@@ -102,4 +99,26 @@ public class MainController implements Initializable {
             e.printStackTrace();
         }
     }
+
+    // ================= VIDEO =================
+
+    @FXML
+    public void showAdminVideos() {
+        loadPage("/admin-video-view.fxml");
+    }
+
+    @FXML
+    public void showUserVideos() {
+        loadPage("/user-video-view.fxml");
+    }
+
+
+
+    @FXML
+    public void showAdminStream() {
+        loadPage("/AdminStream.fxml");
+    }
+
 }
+
+

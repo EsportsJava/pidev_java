@@ -101,24 +101,7 @@ public class NavbarController {
         stage.setTitle(title);
         stage.show();
     }
-    @FXML
-    private void goToLive(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/stream.fxml"));
-            Parent root = loader.load();
 
-            Stage stage = (Stage) ((javafx.scene.Node) event.getSource())
-                    .getScene()
-                    .getWindow();
-
-            stage.setScene(new Scene(root, 1280, 720));
-            stage.setTitle("Live Stream");
-            stage.show();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
     @FXML
     private void goToCart(ActionEvent event) {
         try {
@@ -128,4 +111,24 @@ public class NavbarController {
             System.out.println("Erreur: " + e.getMessage());
         }
     }
+    // ================= USER VIDEO =================
+
+    @FXML
+    private void showUserVideos(ActionEvent event) {
+        try {
+            loadScene(event, "/user-video-view.fxml", "Videos User");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    private void goToLive(ActionEvent event) {
+        try {
+            loadScene(event, "/UserStream.fxml", "Live Stream");
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Unable to open live stream.");
+        }
+    }
+
 }

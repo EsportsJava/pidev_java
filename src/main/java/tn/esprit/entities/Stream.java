@@ -1,26 +1,47 @@
 package tn.esprit.entities;
 
-import java.time.LocalDateTime;
-
 public class Stream {
 
     private int id;
     private String url;
-    private boolean isActive;
-    private LocalDateTime createdAt;
+    private boolean active;
 
-    public Stream() {
-        this.createdAt = LocalDateTime.now();
+    // ✅ constructeur vide (OBLIGATOIRE)
+    public Stream() {}
+
+    // ✅ constructeur complet (OBLIGATOIRE pour ton service)
+    public Stream(int id, String url, boolean active) {
+        this.id = id;
+        this.url = url;
+        this.active = active;
     }
 
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public Stream(String url) {
+        this.url = url;
+        this.active = false;
+    }
 
-    public String getUrl() { return url; }
-    public void setUrl(String url) { this.url = url; }
+    public int getId() {
+        return id;
+    }
 
-    public boolean isActive() { return isActive; }
-    public void setActive(boolean active) { isActive = active; }
+    public void setId(int id) {
+        this.id = id;
+    }
 
-    public LocalDateTime getCreatedAt() { return createdAt; }
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
 }

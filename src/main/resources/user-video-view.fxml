@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.media.MediaView?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.esprit.controllers.Stream.UserVideoController"
+            style="-fx-background-color:#0f172a;">
+
+    <!-- 🔝 NAVBAR -->
+    <top>
+        <fx:include source="/Navbar.fxml"/>
+    </top>
+
+    <!-- 🎥 VIDEO PLAYER -->
+    <center>
+        <VBox spacing="10" style="-fx-padding:15;">
+
+            <Label fx:id="currentVideoLabel"
+                   text="Select a video"
+                   style="-fx-text-fill:white; -fx-font-size:16px;"/>
+
+            <MediaView fx:id="mediaView"
+                       fitHeight="300"
+                       preserveRatio="true"/>
+
+            <!-- ❤️ REACTIONS -->
+            <HBox spacing="10">
+
+                <Button text="❤️" onAction="#like"/>
+                <Button text="😂" onAction="#haha"/>
+                <Button text="😮" onAction="#wow"/>
+                <Button text="😡" onAction="#angry"/>
+
+                <Label fx:id="reactionLabel"
+                       text="0 reactions"
+                       style="-fx-text-fill:white;"/>
+            </HBox>
+
+            <!-- 💬 ADD COMMENT -->
+            <HBox spacing="10">
+
+                <TextField fx:id="commentField"
+                           promptText="Write a comment..."
+                           style="-fx-padding:8;"/>
+
+                <Button text="Send Comment"
+                        onAction="#addComment"
+                        style="-fx-background-color:#22c55e;
+                               -fx-text-fill:white;"/>
+            </HBox>
+
+            <!-- 💬 COMMENTS -->
+            <Label text="Comments"
+                   style="-fx-text-fill:white; -fx-font-size:14px;"/>
+
+            <ListView fx:id="commentList"
+                      prefHeight="200"/>
+        </VBox>
+    </center>
+
+    <!-- 🎬 VIDEO LIST -->
+    <left>
+        <ScrollPane fitToWidth="true" prefWidth="300">
+            <FlowPane fx:id="videoContainer"
+                      hgap="20"
+                      vgap="20"
+                      style="-fx-padding:20;"/>
+        </ScrollPane>
+    </left>
+
+</BorderPane>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.web.WebView?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.esprit.controllers.Stream.UserStreamController"
+            style="-fx-background-color:#0f172a;">
+
+    <!-- TOP NAV -->
+    <top>
+        <fx:include source="Navbar.fxml"/>
+    </top>
+
+    <!-- CENTER STREAM -->
+    <center>
+        <VBox spacing="10" style="-fx-padding:15;">
+
+            <Label text="🔴 LIVE STREAM"
+                   style="-fx-text-fill:white; -fx-font-size:20px; -fx-font-weight:bold;"/>
+
+            <WebView fx:id="webView"
+                     prefHeight="400"
+                     style="-fx-background-color:black; -fx-background-radius:12;"/>
+
+            <Label fx:id="statusLabel"
+                   style="-fx-text-fill:#94a3b8;"/>
+
+        </VBox>
+    </center>
+
+    <!-- RIGHT CHAT (IDENTIQUE ADMIN STYLE) -->
+    <right>
+        <VBox spacing="10"
+              prefWidth="340"
+              style="-fx-background-color:#111827; -fx-padding:10;">
+
+            <Label text="💬 Live Chat"
+                   style="-fx-text-fill:white; -fx-font-size:16px; -fx-font-weight:bold;"/>
+
+            <ListView fx:id="commentList"
+                      prefHeight="500"
+                      style="-fx-background-color:#1f2937;"/>
+
+            <HBox spacing="8"
+                  style="-fx-padding:8; -fx-background-color:#1f2937; -fx-background-radius:20;">
+
+                <TextField fx:id="commentField"
+                           promptText="Write a message..."
+                           style="-fx-background-color:transparent; -fx-text-fill:white; -fx-prompt-text-fill:#94a3b8;"
+                           HBox.hgrow="ALWAYS"/>
+
+                <Button text="➤"
+                        onAction="#sendComment"
+                        style="-fx-background-color:#3b82f6; -fx-text-fill:white;"/>
+            </HBox>
+
+            <HBox spacing="10" alignment="CENTER">
+                <Button text="👍" onAction="#sendLike"/>
+                <Button text="❤️" onAction="#sendLove"/>
+                <Button text="😂" onAction="#sendHaha"/>
+                <Button text="😮" onAction="#sendWow"/>
+            </HBox>
+
+        </VBox>
+    </right>
+
+</BorderPane>

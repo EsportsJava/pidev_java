@@ -3,48 +3,28 @@ package tn.esprit.services;
 import tn.esprit.entities.Stream;
 import tn.esprit.utils.MyDatabase;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.*;
 
 public class ServiceStream {
 
-    Connection conn = MyDatabase.getInstance().getConnection();
-
-    public List<Stream> getAllStreams() {
-        List<Stream> list = new ArrayList<>();
-
-        try {
-            ResultSet rs = conn.createStatement().executeQuery("SELECT * FROM stream");
-
-            while (rs.next()) {
-                Stream s = new Stream();
-                s.setId(rs.getInt("id"));
-                s.setUrl(rs.getString("url"));
-                s.setActive(rs.getBoolean("is_active"));
-                list.add(s);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return list;
+    private Connection cnx() {
+        return MyDatabase.getInstance().getConnection();
     }
 
+    // ================= GET ACTIVE STREAM =================
     public Stream getActiveStream() {
-        try {
-            ResultSet rs = conn.createStatement()
-                    .executeQuery("SELECT * FROM stream WHERE is_active=1 LIMIT 1");
+
+        String sql = "SELECT * FROM stream WHERE is_active=1 LIMIT 1";
+
+        try (PreparedStatement ps = cnx().prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
 
             if (rs.next()) {
-                Stream s = new Stream();
-                s.setId(rs.getInt("id"));
-                s.setUrl(rs.getString("url"));
-                s.setActive(true);
-                return s;
+                return new Stream(
+                        rs.getInt("id"),
+                        rs.getString("url"),
+                        rs.getBoolean("is_active")
+                );
             }
 
         } catch (Exception e) {
@@ -54,16 +34,17 @@ public class ServiceStream {
         return null;
     }
 
-    public void activate(int id) {
-        try {
-            conn.createStatement().executeUpdate("UPDATE stream SET is_active=0");
+    // ================= FORCE DEFAULT STREAM =================
+    public void ensureStreamExists() {
 
-            PreparedStatement ps = conn.prepareStatement(
-                    "UPDATE stream SET is_active=1 WHERE id=?"
-            );
-            ps.setInt(1, id);
-            ps.executeUpdate();
+        String sql = """
+            INSERT INTO stream (url, is_active)
+            SELECT 'http://100.89.37.94:8080/hls/match1.m3u8', 1
+            WHERE NOT EXISTS (SELECT 1 FROM stream LIMIT 1)
+        """;
 
+        try (Statement st = cnx().createStatement()) {
+            st.executeUpdate(sql);
         } catch (Exception e) {
             e.printStackTrace();
         }
