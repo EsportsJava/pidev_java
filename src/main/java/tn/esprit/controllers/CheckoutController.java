@@ -127,8 +127,8 @@ public class CheckoutController implements Initializable {
         try {
             SessionCreateParams.Builder paramsBuilder = SessionCreateParams.builder()
                     .setMode(SessionCreateParams.Mode.PAYMENT)
-                    .setSuccessUrl("http://localhost/success?order=" + savedOrder.getId())
-                    .setCancelUrl("http://localhost/cancel");
+                    .setSuccessUrl("http://localhost/success.php?order=" + savedOrder.getId())
+                    .setCancelUrl("http://localhost/cancel.php");
 
             for (CartItem item : cartItems) {
                 Product p = productService.getProductById(item.getProductId());
