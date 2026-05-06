@@ -13,7 +13,7 @@ public final class ApiKeys {
     private ApiKeys() {
     }
 
-    public static final String RIOT_API_KEY = "RGAPI-931e77a4-7278-45ac-a5c5-747afb68bdfc";
+    public static final String RIOT_API_KEY = "RGAPI-7792b873-33b6-4dac-8169-03c3a8ec1dfb";
 
     public static final String STEAM_API_KEY = "662F67CC46A8120DEB0EF079FF4A4776";
 

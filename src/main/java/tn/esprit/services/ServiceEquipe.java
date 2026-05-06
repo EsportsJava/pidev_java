@@ -116,6 +116,11 @@ public class ServiceEquipe implements IService<Equipe> {
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, userId);
             try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        }
+    }
+
     public int createJoinRequest(int equipeId) throws SQLException {
         int joueurId = getCurrentUserIdOrThrow();
 
