@@ -70,6 +70,11 @@
                     </VBox>
                 </HBox>
 
+                <!-- CLASSEMENT GLOBAL EQUIPE -->
+                <VBox style="-fx-padding: 20 24 24 24; -fx-background-color: #05070f;">
+                    <fx:include source="equipe/classementGlobal.fxml" />
+                </VBox>
+
             </VBox>
         </content>
     </ScrollPane>

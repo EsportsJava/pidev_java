@@ -14,7 +14,7 @@ import java.util.Properties;
 public class EmailService {
 
     private static final String FROM_EMAIL = "saadamaryem776@gmail.com";
-    private static final String PASSWORD = "dtwl bzpv zzmx mcjm";
+    private static final String PASSWORD = "lowt tvkf sjwb enwr";
 
     public void sendLowStockAlert(String productName, int stock, String toEmail) {
         try {

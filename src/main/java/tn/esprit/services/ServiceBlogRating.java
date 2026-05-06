@@ -1,6 +1,7 @@
 package tn.esprit.services;
 
 import tn.esprit.utils.MyDatabase;
+import tn.esprit.utils.BlogSchemaInitializer;
 import java.sql.*;
 
 public class ServiceBlogRating {
@@ -9,6 +10,7 @@ public class ServiceBlogRating {
 
     public ServiceBlogRating() {
         cnx = MyDatabase.getInstance().getConnection();
+        BlogSchemaInitializer.ensureInitialized(cnx);
     }
 
     public void rateOrUpdate(int blogId, int userId, int rating) {

@@ -55,7 +55,7 @@ public class BlogDetailController {
     @FXML private Label     ratingLabel;
 
     private static final String HTDOCS_PATH = "C:/xampp/htdocs/blog_images/";
-
+    private final GeoLocationService geoService = new GeoLocationService();
     private final ServiceComment         serviceComment  = new ServiceComment();
     private final ServiceBlogLike        serviceLike     = new ServiceBlogLike();
     private final ServiceBlogRating      serviceRating   = new ServiceBlogRating();
@@ -187,7 +187,7 @@ public class BlogDetailController {
     // ── Comments ─────────────────────────────────────────────────────────
 
     private void loadComments() {
-        commentsContainer.getChildren().clear();
+        commentsContainer.getChildren().clear();  // Vide les anciens commentaires
         List<Comment> comments = serviceComment.getByBlogId(currentBlog.getId());
         commentHeaderLabel.setText("Commentaires (" + comments.size() + ")");
         for (Comment c : comments) {
@@ -200,7 +200,6 @@ public class BlogDetailController {
         card.setStyle("-fx-background-color: #0f172a; -fx-background-radius: 10;" +
                 "-fx-padding: 15; -fx-border-color: #1e293b; -fx-border-radius: 10;");
 
-        // Header
         HBox header = new HBox(10);
         header.setAlignment(Pos.CENTER_LEFT);
 
@@ -210,52 +209,51 @@ public class BlogDetailController {
         avatar.setStyle("-fx-background-color: #334155; -fx-text-fill: white;" +
                 "-fx-background-radius: 20; -fx-font-weight: bold;");
 
-        VBox userMeta = new VBox(2);
+        VBox userInfo = new VBox(4);
+
         Label name = new Label(comment.getUserName());
         name.setStyle("-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;");
+
+        // Afficher le pays s'il existe
+        Label countryLabel = new Label();
+        if (comment.getUserCountry() != null && !comment.getUserCountry().isEmpty()
+                && !comment.getUserCountry().equals("null")) {
+            String flag = comment.getUserFlag() != null ? comment.getUserFlag() : "📍";
+            countryLabel.setText(flag + " " + comment.getUserCountry());
+            countryLabel.setStyle("-fx-text-fill: #94a3b8; -fx-font-size: 11px;");
+        } else {
+            countryLabel.setText("📍 Localisation inconnue");
+            countryLabel.setStyle("-fx-text-fill: #64748b; -fx-font-size: 11px; -fx-font-style: italic;");
+        }
+
         Label date = new Label(comment.getCreatedAt().toString().substring(0, 16));
         date.setStyle("-fx-text-fill: #64748b; -fx-font-size: 11px;");
-        userMeta.getChildren().addAll(name, date);
+
+        userInfo.getChildren().addAll(name, countryLabel, date);
 
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
-        header.getChildren().addAll(avatar, userMeta, spacer);
 
         User currentUser = SessionManager.getCurrentUser();
         if (currentUser != null && (currentUser.getId() == comment.getUserId()
                 || "admin@gmail.com".equals(currentUser.getEmail()))) {
-            Button editBtn   = new Button("✏️");
+            Button editBtn = new Button("✏️");
             Button deleteBtn = new Button("🗑️");
-            editBtn.setStyle("-fx-background-color: transparent; -fx-cursor: hand;");
+            editBtn.setStyle("-fx-background-color: transparent; -fx-cursor: hand; -fx-text-fill: #3b82f6;");
             deleteBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: #ef4444; -fx-cursor: hand;");
-            editBtn.setOnAction(e   -> handleEditComment(comment, card));
+            editBtn.setOnAction(e -> handleEditComment(comment, card));
             deleteBtn.setOnAction(e -> handleDeleteComment(comment));
-            header.getChildren().addAll(editBtn, deleteBtn);
+            header.getChildren().addAll(avatar, userInfo, spacer, editBtn, deleteBtn);
+        } else {
+            header.getChildren().addAll(avatar, userInfo, spacer);
         }
 
-        // Content
         Label content = new Label(comment.getContent());
         content.setWrapText(true);
         content.setStyle("-fx-text-fill: #cbd5e1; -fx-font-size: 14px;");
         content.setPadding(new Insets(5, 0, 0, 0));
 
-        // ── MÉTIER 2 : Réactions ──────────────────────────────────────
-        HBox reactionsBar = new HBox(6);
-        reactionsBar.setAlignment(Pos.CENTER_LEFT);
-        refreshReactionBar(reactionsBar, comment);
-
-        // ── MÉTIER 4 : Signalement ────────────────────────────────────
-        Button reportBtn = new Button("🚩 Signaler");
-        reportBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: #64748b;" +
-                "-fx-font-size: 11px; -fx-cursor: hand;");
-        reportBtn.setOnAction(e -> handleReport("comment", comment.getId()));
-
-        Region bottomSpacer = new Region();
-        HBox.setHgrow(bottomSpacer, Priority.ALWAYS);
-        HBox bottomBar = new HBox(10, reactionsBar, bottomSpacer, reportBtn);
-        bottomBar.setAlignment(Pos.CENTER_LEFT);
-
-        card.getChildren().addAll(header, content, bottomBar);
+        card.getChildren().addAll(header, content);
         return card;
     }
 
@@ -320,14 +318,63 @@ public class BlogDetailController {
     @FXML
     private void handleAddComment() {
         User currentUser = SessionManager.getCurrentUser();
-        if (currentUser == null) { showAlert("Erreur", "Connectez-vous pour commenter."); return; }
-        String text = newCommentArea.getText().trim();
-        if (text.isEmpty()) { showAlert("Erreur", "Le commentaire ne peut pas être vide."); return; }
-        serviceComment.ajouter(new Comment(currentBlog.getId(), currentUser.getId(), text));
-        newCommentArea.clear();
-        loadComments();
-    }
+        if (currentUser == null) {
+            showAlert("Erreur", "Connectez-vous pour commenter.");
+            return;
+        }
 
+        String text = newCommentArea.getText().trim();
+        if (text.isEmpty()) {
+            showAlert("Erreur", "Le commentaire ne peut pas être vide.");
+            return;
+        }
+
+        // Désactiver le bouton
+        Button publishButton = (Button) newCommentArea.getScene().lookup(".button");
+        if (publishButton != null) publishButton.setDisable(true);
+
+        new Thread(() -> {
+            // Récupérer la localisation
+            GeoLocationService.Location location = geoService.getLocation("api");
+
+            System.out.println("📍 LOCALISATION DETECTEE:");
+            System.out.println("   Pays: " + location.country);
+            System.out.println("   Code: " + location.countryCode);
+            System.out.println("   Drapeau: " + location.flag);
+
+            javafx.application.Platform.runLater(() -> {
+                if (publishButton != null) publishButton.setDisable(false);
+
+                // Créer le commentaire avec la localisation
+                Comment comment = new Comment(currentBlog.getId(), currentUser.getId(), text);
+                comment.setUserCountry(location.country);
+                comment.setUserCountryCode(location.countryCode);
+                comment.setUserFlag(location.flag);
+
+                System.out.println("📝 ENVOI A LA BASE:");
+                System.out.println("   Pays: " + comment.getUserCountry());
+                System.out.println("   Drapeau: " + comment.getUserFlag());
+
+                serviceComment.ajouter(comment);
+                newCommentArea.clear();
+                loadComments();
+            });
+        }).start();
+    }
+    private void showTemporaryMessage(String message) {
+        Label tempMessage = new Label(message);
+        tempMessage.setStyle("-fx-text-fill: #4ade80; -fx-font-size: 12px; -fx-padding: 5 10; " +
+                "-fx-background-color: #1e293b; -fx-background-radius: 8;");
+        commentsContainer.getChildren().add(0, tempMessage);
+
+        // Faire disparaître le message après 3 secondes
+        new Thread(() -> {
+            try { Thread.sleep(3000); } catch (InterruptedException e) {}
+            javafx.application.Platform.runLater(() -> {
+                commentsContainer.getChildren().remove(tempMessage);
+            });
+        }).start();
+    }
     private void handleEditComment(Comment comment, VBox card) {
         TextArea editArea = new TextArea(comment.getContent());
         editArea.setPrefHeight(80);

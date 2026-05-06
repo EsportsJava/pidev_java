@@ -14,59 +14,113 @@
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="tn.esprit.controllers.matchgame.MatchGameDashboardController"
-            prefHeight="600.0" prefWidth="900.0"
-            style="-fx-background-color: #0f172a;">
+            prefHeight="700.0" prefWidth="1000.0"
+            stylesheets="@/equipe/equipeDashboard.css"
+            style="-fx-background-color: linear-gradient(to bottom right, #0a0f1e, #111936);">
 
-    <VBox spacing="20"
-          AnchorPane.topAnchor="20" AnchorPane.leftAnchor="20"
-          AnchorPane.rightAnchor="20" AnchorPane.bottomAnchor="20">
+    <VBox spacing="18"
+          AnchorPane.topAnchor="24" AnchorPane.leftAnchor="28"
+          AnchorPane.rightAnchor="28" AnchorPane.bottomAnchor="16">
 
-        <HBox alignment="CENTER_LEFT">
-            <Label text="Match Games Management"
-                   style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+        <HBox alignment="CENTER_LEFT" spacing="14">
+            <VBox alignment="CENTER" minWidth="46" minHeight="46" maxWidth="46" maxHeight="46"
+                  style="-fx-background-color: linear-gradient(to bottom right, #7c3aed, #6d28d9);
+                         -fx-background-radius: 13;">
+                <Label text="🎮" style="-fx-font-size: 20px;"/>
+            </VBox>
+            <VBox spacing="1">
+                <Label text="Match Games Management"
+                       style="-fx-font-size: 24px; -fx-font-weight: 800; -fx-text-fill: #f8fafc;"/>
+                <Label text="Gestion complète de vos matchs esport"
+                       style="-fx-font-size: 12px; -fx-text-fill: #64748b;"/>
+            </VBox>
             <Region HBox.hgrow="ALWAYS"/>
+            <Button text="Generate RR Tournoi" onAction="#handleGenerateRoundRobin"
+                    style="-fx-background-color: linear-gradient(to right, #0ea5e9, #2563eb);
+                           -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: 700;
+                           -fx-background-radius: 10; -fx-pref-height: 40; -fx-pref-width: 170;
+                           -fx-cursor: hand;"/>
+            <Button text="Seed Test Matches" onAction="#handleSeedTestMatches"
+                    style="-fx-background-color: linear-gradient(to right, #14b8a6, #06b6d4);
+                           -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: 700;
+                           -fx-background-radius: 10; -fx-pref-height: 40; -fx-pref-width: 170;
+                           -fx-cursor: hand;"/>
             <Button text="+ New Match" onAction="#handleNewMatch"
-                    style="-fx-background-color: #7c3aed; -fx-text-fill: white;
-                           -fx-font-size: 14px; -fx-pref-height: 40px;
-                           -fx-pref-width: 160px; -fx-cursor: hand;
-                           -fx-background-radius: 8;"/>
+                    style="-fx-background-color: linear-gradient(to right, #7c3aed, #8b5cf6);
+                           -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: 700;
+                           -fx-background-radius: 10; -fx-pref-height: 40; -fx-pref-width: 160;
+                           -fx-cursor: hand;
+                           -fx-effect: dropshadow(gaussian, rgba(124,58,237,0.4), 12, 0, 0, 3);"/>
         </HBox>
 
-        <HBox spacing="15">
-            <VBox alignment="CENTER" prefWidth="220" prefHeight="90"
-                  style="-fx-background-color: #1e293b; -fx-background-radius: 10;">
+        <HBox spacing="14">
+            <VBox alignment="CENTER" HBox.hgrow="ALWAYS"
+                  style="-fx-background-color: #151d3a; -fx-padding: 16 12;
+                         -fx-background-radius: 14;
+                         -fx-border-color: rgba(124,58,237,0.20); -fx-border-radius: 14; -fx-border-width: 1;
+                         -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.20), 8, 0, 0, 3);">
+                <Label text="📊" style="-fx-font-size: 16px;"/>
                 <Label fx:id="totalMatchsLabel" text="0"
-                       style="-fx-font-size: 30px; -fx-font-weight: bold; -fx-text-fill: #7c3aed;"/>
+                       style="-fx-text-fill: #a78bfa; -fx-font-size: 30px; -fx-font-weight: 800;"/>
                 <Label text="TOTAL MATCHS"
-                       style="-fx-text-fill: #94a3b8; -fx-font-size: 12px;"/>
+                       style="-fx-text-fill: #64748b; -fx-font-size: 10px; -fx-font-weight: 700;"/>
+            </VBox>
+            <VBox alignment="CENTER" HBox.hgrow="ALWAYS"
+                  style="-fx-background-color: #151d3a; -fx-padding: 16 12;
+                         -fx-background-radius: 14;
+                         -fx-border-color: rgba(14,165,233,0.20); -fx-border-radius: 14; -fx-border-width: 1;
+                         -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.20), 8, 0, 0, 3);">
+                <Label text="🏁" style="-fx-font-size: 16px;"/>
+                <Label fx:id="plannedLabel" text="0"
+                       style="-fx-text-fill: #7dd3fc; -fx-font-size: 30px; -fx-font-weight: 800;"/>
+                <Label text="PLANIFIÉ"
+                       style="-fx-text-fill: #64748b; -fx-font-size: 10px; -fx-font-weight: 700;"/>
+            </VBox>
+            <VBox alignment="CENTER" HBox.hgrow="ALWAYS"
+                  style="-fx-background-color: #151d3a; -fx-padding: 16 12;
+                         -fx-background-radius: 14;
+                         -fx-border-color: rgba(245,158,11,0.20); -fx-border-radius: 14; -fx-border-width: 1;
+                         -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.20), 8, 0, 0, 3);">
+                <Label text="🎯" style="-fx-font-size: 16px;"/>
+                <Label fx:id="completedLabel" text="0"
+                       style="-fx-text-fill: #fcd34d; -fx-font-size: 30px; -fx-font-weight: 800;"/>
+                <Label text="TERMINÉS"
+                       style="-fx-text-fill: #64748b; -fx-font-size: 10px; -fx-font-weight: 700;"/>
             </VBox>
         </HBox>
 
-        <HBox spacing="10" alignment="CENTER_LEFT">
-            <TextField fx:id="searchField" promptText="Rechercher (id, statut, equipe, tournoi...)"
-                       style="-fx-pref-width: 340; -fx-pref-height: 36;
-                              -fx-background-color: #1e293b; -fx-text-fill: white;
-                              -fx-prompt-text-fill: #94a3b8; -fx-background-radius: 8;"/>
+              <!-- ══ SEARCH / SORT ══ -->
+              <HBox spacing="10" alignment="CENTER_LEFT">
+            <TextField fx:id="searchField" promptText="🔍  Rechercher (id, statut, equipe, tournoi...)"
+                       HBox.hgrow="ALWAYS"
+                       style="-fx-pref-height: 38;
+                              -fx-background-color: #151d3a; -fx-text-fill: #e2e8f0;
+                              -fx-prompt-text-fill: #475569; -fx-background-radius: 10;
+                              -fx-padding: 0 14;
+                              -fx-border-color: rgba(124,58,237,0.15); -fx-border-radius: 10; -fx-border-width: 1;"/>
             <ComboBox fx:id="sortCombo"
-                      style="-fx-pref-width: 220; -fx-pref-height: 36;
-                             -fx-background-color: #1e293b; -fx-background-radius: 8;"/>
+                                     style="-fx-pref-width: 200; -fx-pref-height: 38;
+                             -fx-background-color: #151d3a; -fx-background-radius: 10;"/>
         </HBox>
 
+              <!-- ══ TABLE ══ -->
         <TableView fx:id="matchTable" VBox.vgrow="ALWAYS"
-                   style="-fx-background-color: #1e293b;">
+                   style="-fx-background-color: #151d3a; -fx-background-radius: 12;
+                          -fx-border-color: rgba(124,58,237,0.12); -fx-border-radius: 12; -fx-border-width: 1;
+                          -fx-table-cell-border-color: rgba(100,116,139,0.12);">
             <columns>
-                <TableColumn fx:id="dateCol" text="DATE" prefWidth="190"/>
-                <TableColumn fx:id="score1Col" text="S1" prefWidth="55"/>
-                <TableColumn fx:id="score2Col" text="S2" prefWidth="55"/>
-                <TableColumn fx:id="statutCol" text="STATUT" prefWidth="120"/>
-                <TableColumn fx:id="equipe1Col" text="EQ1" prefWidth="60"/>
-                <TableColumn fx:id="equipe2Col" text="EQ2" prefWidth="60"/>
-                <TableColumn fx:id="tournoiCol" text="TOURNOI" prefWidth="80"/>
-                <TableColumn fx:id="actionsCol" text="ACTIONS" prefWidth="120"/>
+                            <TableColumn fx:id="dateCol" text="DATE" prefWidth="160"/>
+                            <TableColumn fx:id="score1Col" text="SCORE 1" prefWidth="85"/>
+                            <TableColumn fx:id="score2Col" text="SCORE 2" prefWidth="85"/>
+                            <TableColumn fx:id="statutCol" text="STATUT" prefWidth="120"/>
+                            <TableColumn fx:id="equipe1Col" text="NAME EQUIPE 1" prefWidth="165"/>
+                            <TableColumn fx:id="equipe2Col" text="NAME EQUIPE 2" prefWidth="165"/>
+                            <TableColumn fx:id="tournoiCol" text="TOURNOI NAME" prefWidth="145"/>
+                            <TableColumn fx:id="actionsCol" text="ACTIONS" prefWidth="150"/>
             </columns>
         </TableView>
 
-        <Label fx:id="messageLabel" text="" style="-fx-font-size: 13px;"/>
+        <Label fx:id="messageLabel" text="" style="-fx-font-size: 12px; -fx-text-fill: #64748b;"/>
 
     </VBox>
 </AnchorPane>
