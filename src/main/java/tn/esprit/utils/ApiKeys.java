@@ -13,12 +13,9 @@ public final class ApiKeys {
     private ApiKeys() {
     }
 
-    /** Collez votre clé Riot ici, ou laissez vide pour utiliser RIOT_API_KEY (env / -D). */
     public static final String RIOT_API_KEY = "RGAPI-931e77a4-7278-45ac-a5c5-747afb68bdfc";
 
-    /** Collez votre clé Steam Web API ici si besoin, ou laissez vide. */
     public static final String STEAM_API_KEY = "662F67CC46A8120DEB0EF079FF4A4776";
 
-    /** Clé Henrik Valorant API (fallback Valorant), ou laissez vide pour env/-D. */
     public static final String HENRIK_API_KEY = "HDEV-395e36fe-e9e1-406c-bdef-977b819be8a4";
 }

@@ -90,6 +90,7 @@ public class TournoiCatalogController implements Initializable {
     private final ServiceJeu serviceJeu = new ServiceJeu();
     private final ServiceTournoiInscription serviceInscription = new ServiceTournoiInscription();
     private final Map<Integer, String> jeuNoms = new HashMap<>();
+    private final Map<Integer, Integer> participantsByTournoi = new HashMap<>();
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
     private final List<Tournoi> allTournois = new ArrayList<>();
 
@@ -99,6 +100,7 @@ public class TournoiCatalogController implements Initializable {
         cardsContainer.setMaxWidth(Double.MAX_VALUE);
         loadJeuNames();
         loadAllTournois();
+        loadParticipantsCounts();
         updateHeaderStats();
         showTournois(allTournois);
         setActiveFilterButton(allFilterBtn);
@@ -123,6 +125,19 @@ public class TournoiCatalogController implements Initializable {
         } catch (SQLException e) {
             messageLabel.setStyle("-fx-text-fill: #f87171;");
             messageLabel.setText("Erreur lors du chargement des tournois : " + e.getMessage());
+        }
+    }
+
+    private void loadParticipantsCounts() {
+        participantsByTournoi.clear();
+        try {
+            serviceInscription.ensureTable();
+            for (Tournoi t : allTournois) {
+                participantsByTournoi.put(t.getId(), serviceInscription.countByTournoi(t.getId()));
+            }
+        } catch (SQLException e) {
+            messageLabel.setStyle("-fx-text-fill: #fbbf24;");
+            messageLabel.setText("Compteur participants indisponible : " + e.getMessage());
         }
     }
 
@@ -215,12 +230,10 @@ public class TournoiCatalogController implements Initializable {
         return box;
     }
 
-    /**
-     * Pas de compteur d'inscrits en base : affichage 0 / max (place libre indicative).
-     */
-    private static String participantsRatio(Tournoi t) {
+    private String participantsRatio(Tournoi t) {
+        int used = participantsByTournoi.getOrDefault(t.getId(), 0);
         int max = Math.max(0, t.getMaxParticipants());
-        return "0/" + max;
+        return used + "/" + max;
     }
 
     private static String formatCagnotteCard(double amount) {
@@ -299,7 +312,10 @@ public class TournoiCatalogController implements Initializable {
         if (s.contains("annul") || s.contains("termin") || s.contains("ferm")) {
             return false;
         }
-        return s.contains("planif") || s.contains("cours") || s.contains("ouvert");
+        int used = participantsByTournoi.getOrDefault(t.getId(), 0);
+        int max = Math.max(0, t.getMaxParticipants());
+        boolean hasSlots = max <= 0 || used < max;
+        return hasSlots && (s.contains("planif") || s.contains("cours") || s.contains("ouvert"));
     }
 
     private void showTournoiDetails(Tournoi tournoi) {
@@ -347,7 +363,7 @@ public class TournoiCatalogController implements Initializable {
                 ouverts++;
             }
             cagnotte += t.getCagnotte();
-            participants += t.getMaxParticipants();
+            participants += participantsByTournoi.getOrDefault(t.getId(), 0);
         }
 
         totalTournoisLabel.setText(String.valueOf(total));
