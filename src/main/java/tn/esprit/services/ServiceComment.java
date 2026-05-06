@@ -1,6 +1,7 @@
 package tn.esprit.services;
 
 import tn.esprit.entities.Comment;
+import tn.esprit.utils.BlogSchemaInitializer;
 import tn.esprit.utils.MyDatabase;
 
 import java.sql.Connection;
@@ -17,6 +18,7 @@ public class ServiceComment {
 
     public ServiceComment() {
         cnx = MyDatabase.getInstance().getConnection();
+        BlogSchemaInitializer.ensureInitialized(cnx);
     }
 
     public void ajouter(Comment comment) {

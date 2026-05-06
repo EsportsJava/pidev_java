@@ -1,6 +1,7 @@
 package tn.esprit.services;
 
 import tn.esprit.utils.MyDatabase;
+import tn.esprit.utils.BlogSchemaInitializer;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,6 +14,7 @@ public class ServiceBlogLike {
 
     public ServiceBlogLike() {
         cnx = MyDatabase.getInstance().getConnection();
+        BlogSchemaInitializer.ensureInitialized(cnx);
     }
 
     public boolean toggleLike(int blogId, int userId) {
