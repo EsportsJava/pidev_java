@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="tn.esprit.controllers.StatistiquesController"
+      prefHeight="700.0" prefWidth="1000.0"
+      spacing="20"
+      style="-fx-background-color: #0f172a; -fx-padding: 30;">
+
+    <!-- HEADER -->
+    <Label text="📊 Statistiques des Produits"
+           style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+
+    <!-- STATS CARDS -->
+    <HBox spacing="15">
+        <VBox alignment="CENTER" prefWidth="180" prefHeight="90"
+              style="-fx-background-color: #1e293b; -fx-background-radius: 10;">
+            <Label fx:id="totalProduitsLabel" text="0"
+                   style="-fx-font-size: 30px; -fx-font-weight: bold; -fx-text-fill: #7c3aed;"/>
+            <Label text="TOTAL PRODUITS"
+                   style="-fx-text-fill: #94a3b8; -fx-font-size: 11px;"/>
+        </VBox>
+        <VBox alignment="CENTER" prefWidth="180" prefHeight="90"
+              style="-fx-background-color: #1e293b; -fx-background-radius: 10;">
+            <Label fx:id="totalCategoriesLabel" text="0"
+                   style="-fx-font-size: 30px; -fx-font-weight: bold; -fx-text-fill: #7c3aed;"/>
+            <Label text="TOTAL CATEGORIES"
+                   style="-fx-text-fill: #94a3b8; -fx-font-size: 11px;"/>
+        </VBox>
+        <VBox alignment="CENTER" prefWidth="180" prefHeight="90"
+              style="-fx-background-color: #1e293b; -fx-background-radius: 10;">
+            <Label fx:id="prixMoyenLabel" text="0"
+                   style="-fx-font-size: 30px; -fx-font-weight: bold; -fx-text-fill: #7c3aed;"/>
+            <Label text="PRIX MOYEN (TND)"
+                   style="-fx-text-fill: #94a3b8; -fx-font-size: 11px;"/>
+        </VBox>
+        <VBox alignment="CENTER" prefWidth="180" prefHeight="90"
+              style="-fx-background-color: #1e293b; -fx-background-radius: 10;">
+            <Label fx:id="stockTotalLabel" text="0"
+                   style="-fx-font-size: 30px; -fx-font-weight: bold; -fx-text-fill: #7c3aed;"/>
+            <Label text="STOCK TOTAL"
+                   style="-fx-text-fill: #94a3b8; -fx-font-size: 11px;"/>
+        </VBox>
+    </HBox>
+
+    <!-- GRAPHIQUES -->
+    <HBox spacing="20" VBox.vgrow="ALWAYS">
+
+        <!-- Graphique Barres -->
+        <VBox HBox.hgrow="ALWAYS" spacing="5">
+            <Label text="Produits par Catégorie"
+                   style="-fx-text-fill: #94a3b8; -fx-font-size: 13px;"/>
+            <BarChart fx:id="barChart" VBox.vgrow="ALWAYS"
+                      style="-fx-background-color: #1e293b; -fx-background-radius: 10;">
+                <xAxis><CategoryAxis label="Catégorie"/></xAxis>
+                <yAxis><NumberAxis label="Nombre"/></yAxis>
+            </BarChart>
+        </VBox>
+
+        <!-- Graphique Camembert -->
+        <VBox HBox.hgrow="ALWAYS" spacing="5">
+            <Label text="Répartition par Catégorie"
+                   style="-fx-text-fill: #94a3b8; -fx-font-size: 13px;"/>
+            <PieChart fx:id="pieChart" VBox.vgrow="ALWAYS"
+                      style="-fx-background-color: #1e293b; -fx-background-radius: 10;"/>
+        </VBox>
+
+    </HBox>
+
+    <!-- Graphique Ligne -->
+    <VBox spacing="5">
+        <Label text="Prix des Produits"
+               style="-fx-text-fill: #94a3b8; -fx-font-size: 13px;"/>
+        <LineChart fx:id="lineChart" prefHeight="200"
+                   style="-fx-background-color: #1e293b; -fx-background-radius: 10;">
+            <xAxis><CategoryAxis label="Produit"/></xAxis>
+            <yAxis><NumberAxis label="Prix (TND)"/></yAxis>
+        </LineChart>
+    </VBox>
+
+</VBox>

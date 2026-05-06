@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="tn.esprit.controllers.CheckoutController"
+      style="-fx-background-color: #f8f9fa;" spacing="0">
+
+    <fx:include source="/Navbar.fxml"/>
+
+    <HBox spacing="40" style="-fx-padding: 40;">
+
+        <!-- LEFT - Form -->
+        <VBox spacing="20" HBox.hgrow="ALWAYS"
+              style="-fx-background-color: white; -fx-background-radius: 12;
+                     -fx-padding: 30; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0, 0, 3);">
+
+            <Label text="Shipping Information"
+                   style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+
+            <HBox spacing="15">
+                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                    <Label text="First Name *" style="-fx-font-size: 13px; -fx-text-fill: #333;"/>
+                    <TextField fx:id="firstNameField" promptText="John"
+                               style="-fx-pref-height: 42px; -fx-background-radius: 8;
+                                      -fx-border-color: #ddd; -fx-border-radius: 8; -fx-padding: 0 12;"/>
+                </VBox>
+                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                    <Label text="Last Name *" style="-fx-font-size: 13px; -fx-text-fill: #333;"/>
+                    <TextField fx:id="lastNameField" promptText="Doe"
+                               style="-fx-pref-height: 42px; -fx-background-radius: 8;
+                                      -fx-border-color: #ddd; -fx-border-radius: 8; -fx-padding: 0 12;"/>
+                </VBox>
+            </HBox>
+
+            <VBox spacing="5">
+                <Label text="Email *" style="-fx-font-size: 13px; -fx-text-fill: #333;"/>
+                <TextField fx:id="emailField" promptText="email@example.com"
+                           style="-fx-pref-height: 42px; -fx-background-radius: 8;
+                                  -fx-border-color: #ddd; -fx-border-radius: 8; -fx-padding: 0 12;"/>
+            </VBox>
+
+            <VBox spacing="5">
+                <Label text="Street Address *" style="-fx-font-size: 13px; -fx-text-fill: #333;"/>
+                <TextField fx:id="addressField" promptText="123 Gaming St."
+                           style="-fx-pref-height: 42px; -fx-background-radius: 8;
+                                  -fx-border-color: #ddd; -fx-border-radius: 8; -fx-padding: 0 12;"/>
+            </VBox>
+
+            <HBox spacing="15">
+                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                    <Label text="City *" style="-fx-font-size: 13px; -fx-text-fill: #333;"/>
+                    <TextField fx:id="cityField"
+                               style="-fx-pref-height: 42px; -fx-background-radius: 8;
+                                      -fx-border-color: #ddd; -fx-border-radius: 8; -fx-padding: 0 12;"/>
+                </VBox>
+                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                    <Label text="Postal Code *" style="-fx-font-size: 13px; -fx-text-fill: #333;"/>
+                    <TextField fx:id="postalCodeField"
+                               style="-fx-pref-height: 42px; -fx-background-radius: 8;
+                                      -fx-border-color: #ddd; -fx-border-radius: 8; -fx-padding: 0 12;"/>
+                </VBox>
+            </HBox>
+
+            <VBox spacing="5">
+                <Label text="Phone *" style="-fx-font-size: 13px; -fx-text-fill: #333;"/>
+                <TextField fx:id="phoneField" promptText="+216 ** *** ***"
+                           style="-fx-pref-height: 42px; -fx-background-radius: 8;
+                                  -fx-border-color: #ddd; -fx-border-radius: 8; -fx-padding: 0 12;"/>
+            </VBox>
+
+            <Label fx:id="errorLabel" style="-fx-text-fill: red; -fx-font-size: 13px;"/>
+        </VBox>
+
+        <!-- RIGHT - Order Summary -->
+        <VBox spacing="15" prefWidth="320"
+              style="-fx-background-color: white; -fx-background-radius: 12;
+                     -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0, 0, 3);">
+
+            <VBox fx:id="orderSummaryBox" spacing="10"/>
+
+            <Separator/>
+
+            <HBox>
+                <Label text="Subtotal" style="-fx-text-fill: #888;"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="subtotalLabel" text="0.00 TND" style="-fx-text-fill: #333;"/>
+            </HBox>
+
+            <HBox>
+                <Label text="Shipping" style="-fx-text-fill: #888;"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label text="Free" style="-fx-text-fill: #27ae60; -fx-font-weight: bold;"/>
+            </HBox>
+
+            <Separator/>
+
+            <HBox>
+                <Label text="Total" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="totalLabel"
+                       style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1a56db;"/>
+            </HBox>
+
+            <Label text="Payment Method" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+
+            <HBox spacing="10" alignment="CENTER_LEFT"
+                  style="-fx-border-color: #1a56db; -fx-border-radius: 8;
+                         -fx-background-color: #eff6ff; -fx-background-radius: 8; -fx-padding: 12;">
+                <Label text="💳" style="-fx-font-size: 18px;"/>
+                <Label text="Credit / Debit Card" style="-fx-text-fill: #1a56db; -fx-font-weight: bold;"/>
+            </HBox>
+
+            <Button fx:id="placeOrderBtn" text="PLACE ORDER" onAction="#handlePlaceOrder"
+                    maxWidth="Infinity"
+                    style="-fx-background-color: black; -fx-text-fill: white;
+                           -fx-font-size: 15px; -fx-font-weight: bold;
+                           -fx-pref-height: 50px; -fx-background-radius: 8; -fx-cursor: hand;"/>
+
+            <Label text="🔒 Secured by Stripe"
+                   style="-fx-text-fill: #888; -fx-font-size: 12px;" HBox.hgrow="ALWAYS"/>
+        </VBox>
+    </HBox>
+</VBox>

@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.shape.*?>
+
+<AnchorPane prefHeight="720.0" prefWidth="1280.0"
+            style="-fx-background-color: linear-gradient(to right, #c0305a, #5b4cdf, #2b4bbd);"
+            xmlns="http://javafx.com/javafx/17.0.12"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="tn.esprit.controllers.TwoFactorSetupController">
+
+    <StackPane AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
+               AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"
+               alignment="CENTER">
+
+        <VBox alignment="TOP_CENTER" spacing="18.0"
+              maxWidth="600.0" minWidth="500.0"
+              style="-fx-background-color: white;
+                     -fx-background-radius: 22;
+                     -fx-padding: 36 52 36 52;
+                     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 50, 0.15, 0, 10);">
+
+            <!-- Title -->
+            <Label text="🔐  Setup Two-Factor Authentication"
+                   wrapText="true"
+                   style="-fx-font-size: 22px;
+                          -fx-font-weight: 800;
+                          -fx-text-fill: #111;
+                          -fx-alignment: center;"/>
+
+            <!-- Subtitle -->
+            <Label text="Scan the QR code with Google Authenticator or Authy"
+                   wrapText="true"
+                   style="-fx-font-size: 13px;
+                          -fx-text-fill: #888;
+                          -fx-alignment: center;"/>
+
+            <Separator style="-fx-opacity: 0.3;"/>
+
+            <!-- QR Code + Steps Row -->
+            <HBox spacing="28" alignment="CENTER">
+
+                <!-- QR Code Box -->
+                <VBox alignment="CENTER" spacing="8"
+                      style="-fx-background-color: #f9f9f9;
+                             -fx-border-color: #e0e0e0;
+                             -fx-border-width: 1.5;
+                             -fx-border-radius: 12;
+                             -fx-background-radius: 12;
+                             -fx-padding: 16;">
+                    <ImageView fx:id="qrCodeImageView"
+                               fitWidth="160.0" fitHeight="160.0"
+                               preserveRatio="true"/>
+                    <Label text="Scan with your app"
+                           style="-fx-font-size: 11px; -fx-text-fill: #aaa;"/>
+                </VBox>
+
+                <!-- Steps -->
+                <VBox spacing="14" HBox.hgrow="ALWAYS">
+
+                    <!-- Step 1 -->
+                    <HBox spacing="12" alignment="CENTER_LEFT">
+                        <StackPane minWidth="30" minHeight="30">
+                            <Circle radius="15"
+                                    style="-fx-fill: linear-gradient(to right, #6b52f5, #c84bdb);"/>
+                            <Label text="1"
+                                   style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 13px;"/>
+                        </StackPane>
+                        <VBox spacing="2">
+                            <Label text="Download an authenticator app"
+                                   style="-fx-font-size: 13px; -fx-font-weight: 700; -fx-text-fill: #222;"/>
+                            <Label text="Google Authenticator or Authy"
+                                   style="-fx-font-size: 11px; -fx-text-fill: #888;"/>
+                        </VBox>
+                    </HBox>
+
+                    <!-- Step 2 -->
+                    <HBox spacing="12" alignment="CENTER_LEFT">
+                        <StackPane minWidth="30" minHeight="30">
+                            <Circle radius="15"
+                                    style="-fx-fill: linear-gradient(to right, #6b52f5, #c84bdb);"/>
+                            <Label text="2"
+                                   style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 13px;"/>
+                        </StackPane>
+                        <VBox spacing="2">
+                            <Label text="Scan the QR code"
+                                   style="-fx-font-size: 13px; -fx-font-weight: 700; -fx-text-fill: #222;"/>
+                            <Label text="Or enter the key manually below"
+                                   style="-fx-font-size: 11px; -fx-text-fill: #888;"/>
+                        </VBox>
+                    </HBox>
+
+                    <!-- Step 3 -->
+                    <HBox spacing="12" alignment="CENTER_LEFT">
+                        <StackPane minWidth="30" minHeight="30">
+                            <Circle radius="15"
+                                    style="-fx-fill: linear-gradient(to right, #6b52f5, #c84bdb);"/>
+                            <Label text="3"
+                                   style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 13px;"/>
+                        </StackPane>
+                        <VBox spacing="2">
+                            <Label text="Enter the 6-digit code"
+                                   style="-fx-font-size: 13px; -fx-font-weight: 700; -fx-text-fill: #222;"/>
+                            <Label text="Type the code shown in the app below"
+                                   style="-fx-font-size: 11px; -fx-text-fill: #888;"/>
+                        </VBox>
+                    </HBox>
+                </VBox>
+            </HBox>
+
+            <!-- ✅ Secret Key Field — THIS WAS MISSING -->
+            <VBox spacing="6">
+                <Label text="Or enter this secret key manually:"
+                       style="-fx-font-size: 12px; -fx-text-fill: #888;"/>
+                <HBox spacing="8" alignment="CENTER_LEFT">
+                    <TextField fx:id="secretKeyField"
+                               editable="false"
+                               HBox.hgrow="ALWAYS"
+                               style="-fx-background-color: #f4f4f8;
+                                      -fx-border-color: #ddd;
+                                      -fx-border-radius: 8;
+                                      -fx-background-radius: 8;
+                                      -fx-font-size: 12px;
+                                      -fx-text-fill: #444;
+                                      -fx-padding: 10 12;"/>
+                    <Button text="Copy"
+                            onAction="#handleCopySecret"
+                            style="-fx-background-color: #f0eeff;
+                                   -fx-text-fill: #6b52f5;
+                                   -fx-font-size: 12px;
+                                   -fx-font-weight: 700;
+                                   -fx-background-radius: 8;
+                                   -fx-border-color: #d0caff;
+                                   -fx-border-radius: 8;
+                                   -fx-padding: 10 16;
+                                   -fx-cursor: hand;"/>
+                </HBox>
+            </VBox>
+
+            <Separator style="-fx-opacity: 0.3;"/>
+
+            <!-- Verification Code -->
+            <VBox spacing="8">
+                <Label text="Enter verification code"
+                       style="-fx-font-size: 14px; -fx-text-fill: #333; -fx-font-weight: 700;"/>
+                <TextField fx:id="verificationCodeField"
+                           promptText="Enter 6-digit code from your app"
+                           maxWidth="1.7976931348623157E308"
+                           style="-fx-background-color: #f9f9fb;
+                                  -fx-border-color: #ddd;
+                                  -fx-border-radius: 10;
+                                  -fx-background-radius: 10;
+                                  -fx-font-size: 22px;
+                                  -fx-text-fill: #333;
+                                  -fx-padding: 12 16;
+                                  -fx-alignment: center;"/>
+            </VBox>
+
+            <!-- Status Label -->
+            <Label fx:id="statusLabel" text=""
+                   wrapText="true"
+                   style="-fx-font-size: 13px; -fx-text-fill: red; -fx-alignment: center;"/>
+
+            <!-- Verify Button -->
+            <Button text="Verify &amp; Enable 2FA"
+                    maxWidth="1.7976931348623157E308"
+                    onAction="#handleVerify"
+                    style="-fx-background-color: linear-gradient(to right, #6b52f5, #c84bdb);
+                           -fx-text-fill: white;
+                           -fx-font-size: 16px;
+                           -fx-font-weight: 800;
+                           -fx-background-radius: 12;
+                           -fx-padding: 15 0;
+                           -fx-cursor: hand;
+                           -fx-effect: dropshadow(gaussian, rgba(107,82,245,0.4), 20, 0.2, 0, 8);"/>
+
+            <!-- Back Link -->
+            <Hyperlink text="← Back to Profile"
+                       onAction="#handleBack"
+                       style="-fx-text-fill: #5b4cdf;
+                              -fx-font-size: 13px;
+                              -fx-border-color: transparent;
+                              -fx-padding: 0;"/>
+        </VBox>
+    </StackPane>
+</AnchorPane>

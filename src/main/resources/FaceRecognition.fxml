@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+
+<AnchorPane prefHeight="720.0" prefWidth="1280.0"
+            style="-fx-background-color: linear-gradient(to right, #c0305a, #5b4cdf, #2b4bbd);"
+            xmlns="http://javafx.com/javafx/17.0.12"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="tn.esprit.controllers.FaceRecognitionController">
+
+    <StackPane AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
+               AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"
+               alignment="CENTER">
+
+        <!-- White Card -->
+        <VBox alignment="CENTER" spacing="20.0"
+              maxWidth="560.0" minWidth="480.0"
+              style="-fx-background-color: white;
+                     -fx-background-radius: 18;
+                     -fx-padding: 44 48 36 48;
+                     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.22), 40, 0.15, 0, 8);">
+
+            <!-- Title -->
+            <Label fx:id="titleLabel"
+                   text="Face Recognition Setup"
+                   style="-fx-font-size: 26px; -fx-font-weight: 800; -fx-text-fill: #111;"/>
+
+            <!-- Camera Feed -->
+            <StackPane prefWidth="360.0" prefHeight="260.0"
+                       style="-fx-background-color: black; -fx-background-radius: 10;">
+                <ImageView fx:id="cameraView"
+                           fitWidth="360.0" fitHeight="260.0"
+                           preserveRatio="true"
+                           style="-fx-background-radius: 10;"/>
+            </StackPane>
+
+            <!-- Status Label -->
+            <Label fx:id="statusLabel"
+                   text="Error accessing camera: Requested device not found"
+                   wrapText="true"
+                   style="-fx-font-size: 13px; -fx-text-fill: #888; -fx-alignment: center;"/>
+
+            <!-- Capture Face Button -->
+            <Button fx:id="captureFaceButton"
+                    text="Capture Face"
+                    maxWidth="1.7976931348623157E308"
+                    onAction="#handleCaptureFace"
+                    style="-fx-background-color: linear-gradient(to right, #6b52f5, #c84bdb);
+                           -fx-text-fill: white;
+                           -fx-font-size: 16px;
+                           -fx-font-weight: 700;
+                           -fx-background-radius: 10;
+                           -fx-padding: 14 0;
+                           -fx-cursor: hand;
+                           -fx-effect: dropshadow(gaussian, rgba(107,82,245,0.35), 16, 0.2, 0, 6);"/>
+
+            <!-- Disable Face Recognition Button (visible only when face is enrolled) -->
+            <Button fx:id="disableFaceButton"
+                    text="Disable Face Recognition"
+                    maxWidth="1.7976931348623157E308"
+                    onAction="#handleDisableFaceRecognition"
+                    visible="false" managed="false"
+                    style="-fx-background-color: #e8314a;
+                           -fx-text-fill: white;
+                           -fx-font-size: 16px;
+                           -fx-font-weight: 700;
+                           -fx-background-radius: 10;
+                           -fx-padding: 14 0;
+                           -fx-cursor: hand;
+                           -fx-effect: dropshadow(gaussian, rgba(232,49,74,0.35), 16, 0.2, 0, 6);"/>
+
+            <!-- Back to Profile Link -->
+            <Hyperlink fx:id="backLink"
+                       text="Back to Profile"
+                       onAction="#handleBackToProfile"
+                       style="-fx-text-fill: #5b4cdf;
+                              -fx-font-size: 13px;
+                              -fx-border-color: transparent;
+                              -fx-padding: 0;"/>
+
+        </VBox>
+    </StackPane>
+</AnchorPane>

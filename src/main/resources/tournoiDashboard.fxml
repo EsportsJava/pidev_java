@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="tn.esprit.controllers.TournoiDashboardController"
+      prefHeight="720.0" prefWidth="1280.0"
+      style="-fx-background-color: #0d1b3e;">
+
+    <fx:include source="/Navbar.fxml"/>
+
+    <VBox spacing="18" VBox.vgrow="ALWAYS" style="-fx-padding: 28 40 32 40;">
+        <HBox alignment="CENTER_LEFT" spacing="16">
+            <VBox spacing="4">
+                <Label text="COMPÉTITION"
+                       style="-fx-text-fill: #7c3aed; -fx-font-size: 12px; -fx-font-weight: bold; -fx-letter-spacing: 2px;"/>
+                <Label text="Tournois"
+                       style="-fx-text-fill: white; -fx-font-size: 28px; -fx-font-weight: bold;"/>
+            </VBox>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="+ Nouveau tournoi" onAction="#handleNewTournoi"
+                    style="-fx-background-color: #7c3aed; -fx-text-fill: white; -fx-font-size: 14px;
+                           -fx-pref-height: 42px; -fx-pref-width: 180px; -fx-cursor: hand; -fx-background-radius: 8;"/>
+        </HBox>
+
+        <HBox spacing="14">
+            <VBox alignment="CENTER" prefWidth="200" prefHeight="88"
+                  style="-fx-background-color: #1e2d4a; -fx-background-radius: 10;">
+                <Label fx:id="totalTournoisLabel" text="0"
+                       style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #a78bfa;"/>
+                <Label text="TOURNOIS"
+                       style="-fx-text-fill: #94a3b8; -fx-font-size: 11px;"/>
+            </VBox>
+        </HBox>
+
+        <TableView fx:id="tournoisTable" VBox.vgrow="ALWAYS"
+                   style="-fx-background-color: #1e2d4a;">
+            <columns>
+                <TableColumn fx:id="nomCol" text="Nom" prefWidth="160"/>
+                <TableColumn fx:id="jeuCol" text="Jeu" prefWidth="130"/>
+                <TableColumn fx:id="debutCol" text="Début" prefWidth="95"/>
+                <TableColumn fx:id="finCol" text="Fin" prefWidth="95"/>
+                <TableColumn fx:id="statutCol" text="Statut" prefWidth="90"/>
+                <TableColumn fx:id="actionsCol" text="Actions" prefWidth="150"/>
+            </columns>
+        </TableView>
+
+        <Label fx:id="messageLabel" text="" style="-fx-font-size: 13px;"/>
+    </VBox>
+</VBox>

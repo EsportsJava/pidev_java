@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="tn.esprit.controllers.JeuxCatalogController"
+      prefHeight="720.0" prefWidth="1280.0"
+      style="-fx-background-color: #0d1b3e;">
+
+    <fx:include source="/Navbar.fxml"/>
+    <fx:include source="/jeuxPanel.fxml" fx:id="jeuxPanel" VBox.vgrow="ALWAYS"/>
+</VBox>

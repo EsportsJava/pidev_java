@@ -1,0 +1,143 @@
+/* ═══════════════════════════════════════════════
+   Classement Global – Dark Table Theme
+   Matches project palette: #0f172a / #1e293b
+   ═══════════════════════════════════════════════ */
+
+/* ── Table root ── */
+.classement-table {
+    -fx-background-color: #1e293b;
+    -fx-background-radius: 0;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+}
+
+.classement-table .virtual-flow,
+.classement-table .clipped-container,
+.classement-table .virtual-flow .clipped-container {
+    -fx-background-color: #1e293b;
+}
+
+/* ── Column header bar ── */
+.classement-table .column-header-background {
+    -fx-background-color: #0f172a;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+
+.classement-table .column-header-background .filler {
+    -fx-background-color: #0f172a;
+}
+
+.classement-table .column-header {
+    -fx-background-color: #0f172a;
+    -fx-border-color: transparent transparent rgba(148,163,184,0.18) transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-pref-height: 40;
+}
+
+.classement-table .column-header .label {
+    -fx-text-fill: #94a3b8;
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+    -fx-alignment: CENTER;
+    -fx-padding: 0 8 0 8;
+}
+
+/* ── Rows ── */
+.classement-table .table-row-cell {
+    -fx-background-color: #1e293b;
+    -fx-border-color: transparent transparent rgba(148,163,184,0.06) transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-table-cell-border-color: transparent;
+}
+
+.classement-table .table-row-cell:odd {
+    -fx-background-color: #1a2640;
+}
+
+.classement-table .table-row-cell:selected {
+    -fx-background-color: rgba(124,58,237,0.22);
+}
+
+.classement-table .table-row-cell:hover {
+    -fx-background-color: rgba(14,165,233,0.10);
+}
+
+.classement-table .table-row-cell:selected:hover {
+    -fx-background-color: rgba(124,58,237,0.30);
+}
+
+/* ── Cells ── */
+.classement-table .table-cell {
+    -fx-text-fill: #e2e8f0;
+    -fx-font-size: 13px;
+    -fx-alignment: CENTER;
+    -fx-padding: 0 8 0 8;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-table-cell-border-color: transparent;
+}
+
+/* Empty row cells (no data) */
+.classement-table .table-row-cell:empty {
+    -fx-background-color: #1e293b;
+    -fx-border-color: transparent;
+}
+
+.classement-table .table-row-cell:empty .table-cell {
+    -fx-border-color: transparent;
+}
+
+/* ── Placeholder ── */
+.classement-table .placeholder .label {
+    -fx-text-fill: #94a3b8;
+    -fx-font-size: 13px;
+}
+
+/* ── Scrollbars ── */
+.classement-table .scroll-bar {
+    -fx-background-color: #0f172a;
+}
+
+.classement-table .scroll-bar .track {
+    -fx-background-color: #0f172a;
+    -fx-border-color: transparent;
+    -fx-background-radius: 0;
+}
+
+.classement-table .scroll-bar .thumb {
+    -fx-background-color: #334155;
+    -fx-background-radius: 4;
+    -fx-background-insets: 2;
+}
+
+.classement-table .scroll-bar .thumb:hover {
+    -fx-background-color: #475569;
+}
+
+.classement-table .scroll-bar .increment-button,
+.classement-table .scroll-bar .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.classement-table .scroll-bar .increment-arrow,
+.classement-table .scroll-bar .decrement-arrow {
+    -fx-shape: "";
+    -fx-padding: 0;
+}
+
+/* ── Corner (bottom-right where scrollbars meet) ── */
+.classement-table .corner {
+    -fx-background-color: #0f172a;
+}
+
+/* ── Column resize line ── */
+.classement-table .column-resize-line {
+    -fx-background-color: #7c3aed;
+}
+
+/* ── Column drag header ── */
+.classement-table .column-drag-header {
+    -fx-background-color: rgba(124,58,237,0.3);
+}

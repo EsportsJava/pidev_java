@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.esprit.controllers.matchgame.AjouterMatchGameController"
+            prefHeight="520.0" prefWidth="460.0"
+            style="-fx-background-color: #0f172a;">
+
+    <VBox spacing="10"
+          AnchorPane.topAnchor="24" AnchorPane.leftAnchor="34"
+          AnchorPane.rightAnchor="34" AnchorPane.bottomAnchor="24">
+
+        <Label fx:id="titleLabel" text="Ajouter match"
+               style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+
+        <Label text="Date match" style="-fx-text-fill: #94a3b8;"/>
+        <DatePicker fx:id="dateMatchPicker"
+                    style="-fx-background-color: #1e293b; -fx-text-fill: white; -fx-pref-height: 36px;"/>
+
+        <Label text="Score equipe 1" style="-fx-text-fill: #94a3b8;"/>
+        <TextField fx:id="score1Field" promptText="Ex: 2"
+                   style="-fx-background-color: #1e293b; -fx-text-fill: white; -fx-pref-height: 36px;"/>
+
+        <Label text="Score equipe 2" style="-fx-text-fill: #94a3b8;"/>
+        <TextField fx:id="score2Field" promptText="Ex: 1"
+                   style="-fx-background-color: #1e293b; -fx-text-fill: white; -fx-pref-height: 36px;"/>
+
+        <Label text="Statut" style="-fx-text-fill: #94a3b8;"/>
+        <ComboBox fx:id="statutCombo"
+                  style="-fx-background-color: #1e293b; -fx-text-fill: white; -fx-pref-height: 36px;"/>
+
+       <Label text="Equipe 1" style="-fx-text-fill: #94a3b8;"/>
+       <ComboBox fx:id="equipe1Combo"
+                style="-fx-background-color: #1e293b; -fx-text-fill: white; -fx-pref-height: 36px;"/>
+
+       <Label text="Equipe 2" style="-fx-text-fill: #94a3b8;"/>
+       <ComboBox fx:id="equipe2Combo"
+                style="-fx-background-color: #1e293b; -fx-text-fill: white; -fx-pref-height: 36px;"/>
+
+       <Label text="Tournoi" style="-fx-text-fill: #94a3b8;"/>
+       <ComboBox fx:id="tournoiCombo"
+                style="-fx-background-color: #1e293b; -fx-text-fill: white; -fx-pref-height: 36px;"/>
+
+        <Label fx:id="messageLabel" text="" style="-fx-font-size: 13px;"/>
+
+        <HBox spacing="10" alignment="CENTER_RIGHT">
+            <Button text="Annuler" onAction="#handleCancel"
+                    style="-fx-background-color: #e74c3c; -fx-text-fill: white;
+                           -fx-pref-width: 110px; -fx-pref-height: 36px; -fx-cursor: hand;"/>
+            <Button fx:id="submitBtn" text="Ajouter" onAction="#handleSubmit"
+                    style="-fx-background-color: #7c3aed; -fx-text-fill: white;
+                           -fx-pref-width: 110px; -fx-pref-height: 36px; -fx-cursor: hand;"/>
+        </HBox>
+
+    </VBox>
+</AnchorPane>

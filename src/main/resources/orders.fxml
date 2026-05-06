@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="tn.esprit.controllers.OrdersDashboardController"
+      spacing="20"
+      style="-fx-background-color: #0f172a; -fx-padding: 30;">
+
+    <!-- HEADER -->
+    <HBox alignment="CENTER_LEFT" spacing="20">
+        <Label text="🛒 Orders Management"
+               style="-fx-text-fill: white; -fx-font-size: 24px; -fx-font-weight: bold;"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <TextField fx:id="searchField" promptText="🔍 Search orders..."
+                   prefWidth="250" prefHeight="38"
+                   style="-fx-background-color: #1e293b; -fx-text-fill: white;
+                          -fx-prompt-text-fill: #64748b; -fx-background-radius: 8;
+                          -fx-padding: 0 12;"/>
+    </HBox>
+
+    <!-- STATS -->
+    <HBox spacing="15">
+        <VBox alignment="CENTER" prefWidth="200" prefHeight="80" spacing="5"
+              style="-fx-background-color: #1e293b; -fx-background-radius: 10; -fx-padding: 15;">
+            <Label fx:id="totalOrdersLabel" text="0"
+                   style="-fx-text-fill: white; -fx-font-size: 28px; -fx-font-weight: bold;"/>
+            <Label text="Total Orders" style="-fx-text-fill: #64748b; -fx-font-size: 12px;"/>
+        </VBox>
+        <VBox alignment="CENTER" prefWidth="200" prefHeight="80" spacing="5"
+              style="-fx-background-color: #1e293b; -fx-background-radius: 10; -fx-padding: 15;">
+            <Label fx:id="paidOrdersLabel" text="0"
+                   style="-fx-text-fill: #27ae60; -fx-font-size: 28px; -fx-font-weight: bold;"/>
+            <Label text="Paid" style="-fx-text-fill: #64748b; -fx-font-size: 12px;"/>
+        </VBox>
+        <VBox alignment="CENTER" prefWidth="200" prefHeight="80" spacing="5"
+              style="-fx-background-color: #1e293b; -fx-background-radius: 10; -fx-padding: 15;">
+            <Label fx:id="pendingOrdersLabel" text="0"
+                   style="-fx-text-fill: #f59e0b; -fx-font-size: 28px; -fx-font-weight: bold;"/>
+            <Label text="Pending" style="-fx-text-fill: #64748b; -fx-font-size: 12px;"/>
+        </VBox>
+        <VBox alignment="CENTER" prefWidth="200" prefHeight="80" spacing="5"
+              style="-fx-background-color: #1e293b; -fx-background-radius: 10; -fx-padding: 15;">
+            <Label fx:id="revenueLabel" text="0.00 TND"
+                   style="-fx-text-fill: #7c3aed; -fx-font-size: 22px; -fx-font-weight: bold;"/>
+            <Label text="Total Revenue" style="-fx-text-fill: #64748b; -fx-font-size: 12px;"/>
+        </VBox>
+    </HBox>
+
+    <!-- TABLE -->
+    <TableView fx:id="ordersTable" VBox.vgrow="ALWAYS"
+               style="-fx-background-color: #1e293b; -fx-background-radius: 10;">
+        <columns>
+            <TableColumn fx:id="colId" text="ID" prefWidth="50"/>
+            <TableColumn fx:id="colOrderNumber" text="Order Number" prefWidth="150"/>
+            <TableColumn fx:id="colName" text="Customer" prefWidth="150"/>
+            <TableColumn fx:id="colEmail" text="Email" prefWidth="180"/>
+            <TableColumn fx:id="colTotal" text="Total" prefWidth="100"/>
+            <TableColumn fx:id="colStatus" text="Status" prefWidth="100"/>
+            <TableColumn fx:id="colCity" text="City" prefWidth="100"/>
+            <TableColumn fx:id="colPhone" text="Phone" prefWidth="120"/>
+            <TableColumn fx:id="colDate" text="Date" prefWidth="150"/>
+
+        </columns>
+    </TableView>
+
+</VBox>

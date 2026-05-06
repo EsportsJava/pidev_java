@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="tn.esprit.controllers.TournoiCatalogController"
+      prefHeight="720.0" prefWidth="1280.0"
+      style="-fx-background-color: #0d1b3e;">
+
+    <fx:include source="/Navbar.fxml"/>
+
+    <VBox spacing="14" VBox.vgrow="ALWAYS" style="-fx-padding: 18 28 20 28;">
+        <HBox spacing="10">
+            <VBox prefWidth="150" style="-fx-background-color: #1e2d4a; -fx-background-radius: 8; -fx-padding: 10 12 10 12;">
+                <Label text="Total tournois" style="-fx-text-fill: #94a3b8; -fx-font-size: 11px;"/>
+                <Label fx:id="totalTournoisLabel" text="0" style="-fx-text-fill: #a78bfa; -fx-font-size: 24px; -fx-font-weight: bold;"/>
+            </VBox>
+            <VBox prefWidth="150" style="-fx-background-color: #1e2d4a; -fx-background-radius: 8; -fx-padding: 10 12 10 12;">
+                <Label text="Ouverts" style="-fx-text-fill: #94a3b8; -fx-font-size: 11px;"/>
+                <Label fx:id="ouvertsLabel" text="0" style="-fx-text-fill: #a78bfa; -fx-font-size: 24px; -fx-font-weight: bold;"/>
+            </VBox>
+            <VBox prefWidth="170" style="-fx-background-color: #1e2d4a; -fx-background-radius: 8; -fx-padding: 10 12 10 12;">
+                <Label text="Total cagnotte" style="-fx-text-fill: #94a3b8; -fx-font-size: 11px;"/>
+                <Label fx:id="totalCagnotteLabel" text="0 TND" style="-fx-text-fill: #a78bfa; -fx-font-size: 22px; -fx-font-weight: bold;"/>
+            </VBox>
+            <VBox prefWidth="170" style="-fx-background-color: #1e2d4a; -fx-background-radius: 8; -fx-padding: 10 12 10 12;">
+                <Label text="Max participants" style="-fx-text-fill: #94a3b8; -fx-font-size: 11px;"/>
+                <Label fx:id="totalParticipantsLabel" text="0" style="-fx-text-fill: #a78bfa; -fx-font-size: 24px; -fx-font-weight: bold;"/>
+            </VBox>
+        </HBox>
+
+        <HBox spacing="8">
+            <Button fx:id="allFilterBtn" text="Tous" onAction="#filterAll"
+                    style="-fx-background-color: #26365f; -fx-text-fill: #e2e8f0; -fx-background-radius: 8; -fx-cursor: hand;"/>
+            <Button fx:id="openFilterBtn" text="Ouvert" onAction="#filterOpen"
+                    style="-fx-background-color: #26365f; -fx-text-fill: #e2e8f0; -fx-background-radius: 8; -fx-cursor: hand;"/>
+            <Button fx:id="closedFilterBtn" text="Fermé" onAction="#filterClosed"
+                    style="-fx-background-color: #26365f; -fx-text-fill: #e2e8f0; -fx-background-radius: 8; -fx-cursor: hand;"/>
+            <Button fx:id="soloFilterBtn" text="Solo" onAction="#filterSolo"
+                    style="-fx-background-color: #26365f; -fx-text-fill: #e2e8f0; -fx-background-radius: 8; -fx-cursor: hand;"/>
+            <Button fx:id="teamFilterBtn" text="Team" onAction="#filterTeam"
+                    style="-fx-background-color: #26365f; -fx-text-fill: #e2e8f0; -fx-background-radius: 8; -fx-cursor: hand;"/>
+        </HBox>
+
+        <ScrollPane fx:id="cardsScrollPane" fitToWidth="true" VBox.vgrow="ALWAYS"
+                    style="-fx-background: transparent; -fx-background-color: transparent;">
+            <content>
+                <FlowPane fx:id="cardsContainer" alignment="TOP_CENTER" hgap="16" vgap="14" prefWrapLength="1140"
+                          style="-fx-padding: 2 0 8 0;"/>
+            </content>
+        </ScrollPane>
+
+        <Label fx:id="messageLabel" text="" style="-fx-font-size: 13px; -fx-text-fill: #f87171;"/>
+    </VBox>
+</VBox>

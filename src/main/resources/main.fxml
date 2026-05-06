@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.esprit.controllers.MainController"
+            prefHeight="700.0" prefWidth="1100.0"
+            style="-fx-background-color: #0f172a;">
+
+    <left>
+        <VBox prefWidth="220" spacing="5"
+              style="-fx-background-color: #1e293b; -fx-padding: 20;">
+
+            <Label text="🎮 Game Dashboard"
+                   style="-fx-text-fill: white; -fx-font-size: 16px;
+                          -fx-font-weight: bold; -fx-padding: 0 0 20 0;"/>
+
+            <Label text="NAVIGATION"
+                   style="-fx-text-fill: #64748b; -fx-font-size: 11px;
+                          -fx-padding: 0 0 10 0;"/>
+
+            <Button text="👤  User" onAction="#showUsers"
+                    maxWidth="Infinity"
+                    style="-fx-background-color: transparent; -fx-text-fill: #94a3b8;
+                           -fx-font-size: 14px; -fx-alignment: CENTER-LEFT;
+                           -fx-padding: 10 15; -fx-cursor: hand;
+                           -fx-background-radius: 8;"/>
+
+            <Button text="📦  Products" onAction="#showProducts"
+                    maxWidth="Infinity"
+                    style="-fx-background-color: transparent; -fx-text-fill: #94a3b8;
+                           -fx-font-size: 14px; -fx-alignment: CENTER-LEFT;
+                           -fx-padding: 10 15; -fx-cursor: hand;
+                           -fx-background-radius: 8;"/>
+            <Button text="📊  Product Statistics" onAction="#showStatistiques"
+                    maxWidth="Infinity"
+                    style="-fx-background-color: transparent; -fx-text-fill: #94a3b8;
+               -fx-font-size: 14px; -fx-alignment: CENTER-LEFT;
+               -fx-padding: 10 15; -fx-cursor: hand;
+               -fx-background-radius: 8;"/>
+            <Button text="🏷️  Categories" onAction="#showCategories"
+                    maxWidth="Infinity"
+                    style="-fx-background-color: transparent; -fx-text-fill: #94a3b8;
+                           -fx-font-size: 14px; -fx-alignment: CENTER-LEFT;
+                           -fx-padding: 10 15; -fx-cursor: hand;
+                           -fx-background-radius: 8;"/>
+
+            <Button text="🎯  Jeux" onAction="#showJeux"
+                    maxWidth="Infinity"
+                    style="-fx-background-color: transparent; -fx-text-fill: #94a3b8;
+                           -fx-font-size: 14px; -fx-alignment: CENTER-LEFT;
+                           -fx-padding: 10 15; -fx-cursor: hand;
+                           -fx-background-radius: 8;"/>
+
+            <Button text="🏆  Tournois" onAction="#showTournois"
+                    maxWidth="Infinity"
+                    style="-fx-background-color: transparent; -fx-text-fill: #94a3b8;
+                           -fx-font-size: 14px; -fx-alignment: CENTER-LEFT;
+                           -fx-padding: 10 15; -fx-cursor: hand;
+                           -fx-background-radius: 8;"/>
+
+           <Button text="👥  Equipes" onAction="#showEquipes"
+                  maxWidth="Infinity"
+                  style="-fx-background-color: transparent; -fx-text-fill: #94a3b8;
+                        -fx-font-size: 14px; -fx-alignment: CENTER-LEFT;
+                        -fx-padding: 10 15; -fx-cursor: hand;
+                        -fx-background-radius: 8;"/>
+
+           <Button text="⚔️  Matchs" onAction="#showMatchGames"
+                  maxWidth="Infinity"
+                  style="-fx-background-color: transparent; -fx-text-fill: #94a3b8;
+                        -fx-font-size: 14px; -fx-alignment: CENTER-LEFT;
+                        -fx-padding: 10 15; -fx-cursor: hand;
+                        -fx-background-radius: 8;"/>
+
+            <Button text="📝  Blogs" onAction="#showBlogs"
+                    maxWidth="Infinity"
+                    style="-fx-background-color: transparent; -fx-text-fill: #94a3b8;
+                           -fx-font-size: 14px; -fx-alignment: CENTER-LEFT;
+                           -fx-padding: 10 15; -fx-cursor: hand;
+                           -fx-background-radius: 8;"/>
+
+            <Button text="🏠  Home" onAction="#showHome"
+                    maxWidth="Infinity"
+                    style="-fx-background-color: transparent; -fx-text-fill: #94a3b8;
+                           -fx-font-size: 14px; -fx-alignment: CENTER-LEFT;
+                           -fx-padding: 10 15; -fx-cursor: hand;
+                           -fx-background-radius: 8;"/>
+
+
+            <Button text="🎬 Videos Admin" onAction="#showAdminVideos"
+                    maxWidth="Infinity"
+                    style="-fx-background-color: transparent; -fx-text-fill: #94a3b8;
+               -fx-font-size: 14px; -fx-alignment: CENTER-LEFT;
+               -fx-padding: 10 15;"/>
+
+            <Button text="📡 Stream Admin" onAction="#showAdminStream"
+                    maxWidth="Infinity"
+                    style="-fx-background-color: transparent; -fx-text-fill: #94a3b8;
+       -fx-font-size: 14px; -fx-alignment: CENTER-LEFT;
+       -fx-padding: 10 15;
+       -fx-cursor: hand;
+       -fx-background-radius: 8;"/>
+
+
+        </VBox>
+    </left>
+
+    <center>
+        <StackPane fx:id="contentArea"
+                   style="-fx-background-color: #0f172a;"/>
+    </center>
+
+</BorderPane>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+
+<AnchorPane prefHeight="720.0" prefWidth="1280.0"
+            style="-fx-background-color: linear-gradient(to right, #c0305a, #5b4cdf, #2b4bbd);"
+            xmlns="http://javafx.com/javafx/17.0.12"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="tn.esprit.controllers.TwoFactorVerifyController">
+
+    <StackPane AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
+               AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"
+               alignment="CENTER">
+
+        <VBox alignment="CENTER" spacing="22.0"
+              maxWidth="480.0"
+              style="-fx-background-color: white;
+                     -fx-background-radius: 22;
+                     -fx-padding: 52 52 44 52;
+                     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 50, 0.15, 0, 10);">
+
+            <!-- Icon -->
+            <Label text="🔐"
+                   style="-fx-font-size: 48px; -fx-alignment: center;"/>
+
+            <!-- Title -->
+            <Label text="Two-Factor Authentication"
+                   style="-fx-font-size: 22px; -fx-font-weight: 800; -fx-text-fill: #111;"/>
+
+            <!-- Subtitle -->
+            <Label text="Enter the 6-digit code from your authenticator app"
+                   wrapText="true"
+                   style="-fx-font-size: 13px; -fx-text-fill: #888; -fx-alignment: center;"/>
+
+            <Separator style="-fx-opacity: 0.3;"/>
+
+            <!-- Code Input -->
+            <VBox spacing="8">
+                <Label text="Verification Code"
+                       style="-fx-font-size: 13px; -fx-text-fill: #555; -fx-font-weight: 700;"/>
+                <TextField fx:id="codeField"
+                           promptText="Enter 6-digit code"
+                           maxWidth="1.7976931348623157E308"
+                           style="-fx-background-color: #f9f9fb;
+                                  -fx-border-color: #ddd;
+                                  -fx-border-radius: 10;
+                                  -fx-background-radius: 10;
+                                  -fx-font-size: 28px;
+                                  -fx-text-fill: #333;
+                                  -fx-padding: 12 16;
+                                  -fx-alignment: center;"/>
+            </VBox>
+
+            <!-- Status -->
+            <Label fx:id="statusLabel" text=""
+                   wrapText="true"
+                   style="-fx-font-size: 13px; -fx-text-fill: red; -fx-alignment: center;"/>
+
+            <!-- Verify Button -->
+            <Button text="Verify &amp; Login"
+                    maxWidth="1.7976931348623157E308"
+                    onAction="#handleVerify"
+                    style="-fx-background-color: linear-gradient(to right, #6b52f5, #c84bdb);
+                           -fx-text-fill: white;
+                           -fx-font-size: 16px;
+                           -fx-font-weight: 800;
+                           -fx-background-radius: 12;
+                           -fx-padding: 15 0;
+                           -fx-cursor: hand;
+                           -fx-effect: dropshadow(gaussian, rgba(107,82,245,0.4), 20, 0.2, 0, 8);"/>
+
+            <!-- Back -->
+            <Hyperlink text="← Back to Login"
+                       onAction="#handleBack"
+                       style="-fx-text-fill: #5b4cdf;
+                              -fx-font-size: 13px;
+                              -fx-border-color: transparent;"/>
+        </VBox>
+    </StackPane>
+</AnchorPane>

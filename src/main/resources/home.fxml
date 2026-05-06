@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #05070f;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.HomeController">
+
+    <ScrollPane fitToWidth="true" hbarPolicy="NEVER" style="-fx-background: #05070f; -fx-background-color: #05070f;" vbarPolicy="AS_NEEDED" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+        <content>
+            <VBox style="-fx-background-color: #05070f;">
+                <!-- NAVBAR -->
+                <fx:include source="Navbar.fxml" />
+
+                <!-- HERO SECTION -->
+                <StackPane prefHeight="638.0">
+                    <Rectangle arcHeight="0" arcWidth="0" height="638" strokeWidth="0" width="1280">
+                        <fill>
+                            <javafx.scene.paint.LinearGradient endX="1.0" endY="0.55" startX="0.0" startY="0.1">
+                                <stops>
+                                    <javafx.scene.paint.Stop color="#f24684" offset="0.0" />
+                                    <javafx.scene.paint.Stop color="#3b1022" offset="0.44" />
+                                    <javafx.scene.paint.Stop color="#08111c" offset="0.72" />
+                                    <javafx.scene.paint.Stop color="#04264d" offset="1.0" />
+                                </stops>
+                            </javafx.scene.paint.LinearGradient>
+                        </fill>
+                    </Rectangle>
+                    <HBox alignment="CENTER_LEFT" maxWidth="1200.0" prefWidth="1200.0" spacing="34.0">
+                        <padding><Insets bottom="40.0" left="86.0" right="32.0" top="18.0" /></padding>
+                        <VBox alignment="CENTER_LEFT" prefWidth="430.0" spacing="28.0">
+                            <Label style="-fx-text-fill: white;" text="Best Highlights Of&#10;The Latest" wrapText="true">
+                                <font><Font name="Georgia Bold" size="60.0" /></font>
+                            </Label>
+                            <Label style="-fx-text-fill: rgba(255,255,255,0.88); -fx-font-size: 18px; -fx-line-spacing: 6px;" text="Catch the newest tournaments, gaming news, and community moments in one place. Follow the scene, discover events, and jump into the action." wrapText="true" />
+                            <HBox spacing="16.0">
+                                <Button onAction="#goToRegister" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 1.2; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; -fx-padding: 16 36; -fx-cursor: hand;" text="Register">
+                           <font>
+                              <Font size="44.0" />
+                           </font></Button>
+                            </HBox>
+                            <Label fx:id="messageLabel" style="-fx-text-fill: #ffd4df; -fx-font-size: 13px;" text="" />
+                        </VBox>
+                        <Region HBox.hgrow="ALWAYS" />
+                        <ImageView fitHeight="500.0" fitWidth="690.0" pickOnBounds="true" preserveRatio="true">
+                            <image><Image url="@../../../../Downloads/Red_Neon_Dynamic_Gaming_YouTube_Thumbnail-removebg-preview.png" /></image>
+                        </ImageView>
+                    </HBox>
+                </StackPane>
+
+                <!-- ABOUT SECTION -->
+                <HBox alignment="CENTER_LEFT" prefHeight="560.0" spacing="36" style="-fx-background-color: #000000;">
+                    <padding><Insets bottom="60" left="40" right="50" top="50" /></padding>
+                    <StackPane prefHeight="460" prefWidth="470">
+                        <Rectangle arcHeight="28" arcWidth="28" height="430" style="-fx-fill: rgba(32,32,32,0.35); -fx-stroke: rgba(255,255,255,0.07);" width="430" />
+                        <ImageView fitHeight="430" fitWidth="430" preserveRatio="true">
+                            <image><Image url="@images/game.png" /></image>
+                        </ImageView>
+                    </StackPane>
+                    <VBox prefWidth="390" spacing="22">
+                        <Label style="-fx-text-fill: white;" text="Find out&#10;about us">
+                            <font><Font name="Georgia Bold" size="52" /></font>
+                        </Label>
+                        <Label style="-fx-text-fill: rgba(255,255,255,0.9); -fx-font-size: 18px;" text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." wrapText="true" />
+                        <Button style="-fx-background-color: linear-gradient(to right, #5564ff, #6d52f4); -fx-text-fill: #f2d061; -fx-font-size: 18px; -fx-font-weight: bold; -fx-background-radius: 6; -fx-padding: 14 36; -fx-cursor: hand;" text="ABOUT US" />
+                    </VBox>
+                </HBox>
+
+                <!-- CLASSEMENT GLOBAL EQUIPE -->
+                <VBox style="-fx-padding: 20 24 24 24; -fx-background-color: #05070f;">
+                    <fx:include source="equipe/classementGlobal.fxml" />
+                </VBox>
+
+            </VBox>
+        </content>
+    </ScrollPane>
+</AnchorPane>

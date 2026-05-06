@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="600.0" prefWidth="900.0" style="-fx-background-color: #0f172a;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.CategoriesController">
+
+    <VBox spacing="20" AnchorPane.bottomAnchor="20" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20" AnchorPane.topAnchor="20">
+
+        <HBox alignment="CENTER_LEFT">
+            <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white;" text="Categories Management" />
+            <Region HBox.hgrow="ALWAYS" />
+            <Button onAction="#handleNewCategory" style="-fx-background-color: #7c3aed; -fx-text-fill: white;                            -fx-font-size: 14px; -fx-pref-height: 40px;                            -fx-pref-width: 160px; -fx-cursor: hand;                            -fx-background-radius: 8;" text="+ New Category" />
+        </HBox>
+
+
+        <HBox spacing="15">
+            <VBox alignment="CENTER" prefHeight="90" prefWidth="200" style="-fx-background-color: #1e293b; -fx-background-radius: 10;">
+                <Label fx:id="totalCatLabel" style="-fx-font-size: 30px; -fx-font-weight: bold; -fx-text-fill: #7c3aed;" text="0" />
+                <Label style="-fx-text-fill: #94a3b8; -fx-font-size: 12px;" text="TOTAL CATEGORIES" />
+            </VBox>
+            <VBox alignment="CENTER" prefHeight="90" prefWidth="200" style="-fx-background-color: #1e293b; -fx-background-radius: 10;">
+                <Label fx:id="withProductsLabel" style="-fx-font-size: 30px; -fx-font-weight: bold; -fx-text-fill: #7c3aed;" text="0" />
+                <Label style="-fx-text-fill: #94a3b8; -fx-font-size: 12px;" text="WITH PRODUCTS" />
+            </VBox>
+            <VBox alignment="CENTER" prefHeight="90" prefWidth="200" style="-fx-background-color: #1e293b; -fx-background-radius: 10;">
+                <Label fx:id="emptyCatLabel" style="-fx-font-size: 30px; -fx-font-weight: bold; -fx-text-fill: #7c3aed;" text="0" />
+                <Label style="-fx-text-fill: #94a3b8; -fx-font-size: 12px;" text="EMPTY CATEGORIES" />
+            </VBox>
+        </HBox>
+
+
+        <TableView fx:id="categoriesTable" style="-fx-background-color: #1e293b;" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="nameCol" prefWidth="400" text="NAME" />
+                <TableColumn fx:id="actionsCol" prefWidth="200" text="ACTIONS" />
+            </columns>
+        </TableView>
+
+        <Label fx:id="messageLabel" style="-fx-font-size: 13px;" text="" />
+
+    </VBox>
+</AnchorPane>

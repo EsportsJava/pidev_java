@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="tn.esprit.controllers.AfficherProduitsController"
+      prefHeight="780.0" prefWidth="1280.0"
+      style="-fx-background-color: #0d1b3e;">
+
+
+    <fx:include source="/Navbar.fxml"/>
+
+
+    <VBox spacing="5" style="-fx-padding: 30 40 20 40;
+                              -fx-background-color: linear-gradient(to right, #0d1b3e, #1a1040);">
+        <Label text="HARDWARE DEPOT"
+               style="-fx-text-fill: #7c3aed; -fx-font-size: 13px;
+                      -fx-font-weight: bold; -fx-letter-spacing: 3px;"/>
+        <Label text="GAMING GEAR"
+               style="-fx-text-fill: white; -fx-font-size: 32px;
+                      -fx-font-weight: bold;"/>
+
+
+        <HBox spacing="0" alignment="CENTER_LEFT" style="-fx-padding: 15 0 0 0;">
+            <TextField fx:id="searchField" promptText="Search gear..."
+                       prefWidth="450" prefHeight="46"
+                       style="-fx-background-color: #1e2d4a; -fx-text-fill: white;
+                              -fx-prompt-text-fill: #64748b; -fx-font-size: 14px;
+                              -fx-background-radius: 8 0 0 8; -fx-padding: 0 15;"/>
+            <Button text="🔍" onAction="#handleSearch"
+                    style="-fx-background-color: #f1f5f9; -fx-font-size: 16px;
+                           -fx-pref-height: 46px; -fx-pref-width: 50px;
+                           -fx-cursor: hand; -fx-background-radius: 0 8 8 0;"/>
+            <!-- DEVISE SELECTOR -->
+            <HBox spacing="10" alignment="CENTER_LEFT"
+                  style="-fx-padding: 0 0 10 0;">
+                <Label text="💱 Devise :"
+                       style="-fx-text-fill: #94a3b8; -fx-font-size: 13px;"/>
+                <ComboBox fx:id="currencyCombo"
+                          style="-fx-background-color: #1e293b; -fx-pref-height: 35px;"/>
+                <Label fx:id="rateLabel" text=""
+                       style="-fx-text-fill: #7c3aed; -fx-font-size: 12px;"/>
+            </HBox>
+        </HBox>
+    </VBox>
+
+
+    <HBox spacing="0" VBox.vgrow="ALWAYS">
+
+
+        <VBox spacing="12" prefWidth="260" minWidth="260"
+              style="-fx-background-color: #0f2342; -fx-padding: 25 20;
+                     -fx-border-color: rgba(124,58,237,0.2);
+                     -fx-border-width: 0 1 0 0;">
+
+            <Label text="CATEGORIES"
+                   style="-fx-text-fill: white; -fx-font-size: 15px;
+                          -fx-font-weight: bold; -fx-letter-spacing: 2px;
+                          -fx-padding: 0 0 10 0;"/>
+
+
+            <Button text="⚡  Tous les produits" onAction="#showAll"
+                    maxWidth="Infinity"
+                    style="-fx-background-color: #7c3aed; -fx-text-fill: white;
+                           -fx-pref-height: 42px; -fx-cursor: hand;
+                           -fx-background-radius: 10; -fx-font-size: 13px;
+                           -fx-font-weight: bold; -fx-alignment: CENTER-LEFT;
+                           -fx-padding: 0 15;"/>
+
+            <Separator style="-fx-background-color: rgba(255,255,255,0.1);
+                              -fx-padding: 5 0;"/>
+
+
+            <VBox fx:id="categoriesBox" spacing="8"/>
+
+        </VBox>
+
+
+        <VBox VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS"
+              style="-fx-background-color: #0d1b3e;">
+
+
+            <HBox alignment="CENTER_LEFT"
+                  style="-fx-padding: 15 25; -fx-background-color: #0f1f3d;">
+                <Label fx:id="countLabel" text="Tous les produits"
+                       style="-fx-text-fill: #94a3b8; -fx-font-size: 13px;"/>
+            </HBox>
+
+            <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
+                        style="-fx-background-color: transparent;
+                               -fx-background: transparent;">
+                <FlowPane fx:id="productsContainer" hgap="25" vgap="25"
+                          style="-fx-background-color: transparent;
+                                 -fx-padding: 25;"/>
+            </ScrollPane>
+            <!-- PAGINATION -->
+            <HBox alignment="CENTER" spacing="10"
+                  style="-fx-padding: 15 0; -fx-background-color: #0d1b3e;">
+                <Button text="◀ Précédent" onAction="#handlePrevious"
+                        fx:id="prevBtn"
+                        style="-fx-background-color: #1e293b; -fx-text-fill: white;
+                   -fx-pref-height: 35px; -fx-cursor: hand;
+                   -fx-background-radius: 8;"/>
+                <Label fx:id="pageLabel" text="Page 1 / 1"
+                       style="-fx-text-fill: white; -fx-font-size: 13px;
+                  -fx-padding: 0 15;"/>
+                <Button text="Suivant ▶" onAction="#handleNext"
+                        fx:id="nextBtn"
+                        style="-fx-background-color: #1e293b; -fx-text-fill: white;
+                   -fx-pref-height: 35px; -fx-cursor: hand;
+                   -fx-background-radius: 8;"/>
+            </HBox>
+        </VBox>
+    </HBox>
+</VBox>

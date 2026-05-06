@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.esprit.controllers.AjouterJeuController"
+            prefHeight="420.0" prefWidth="440.0"
+            style="-fx-background-color: #0f172a;">
+
+    <ScrollPane fitToWidth="true" hbarPolicy="NEVER"
+                AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0"
+                AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0"
+                style="-fx-background: #0f172a; -fx-background-color: #0f172a;">
+        <VBox spacing="12" style="-fx-padding: 28 36 28 36;">
+            <Label fx:id="titleLabel" text="Nouveau jeu"
+                   style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+
+            <Label text="Nom *" style="-fx-text-fill: #94a3b8;"/>
+            <TextField fx:id="nomField" promptText="Ex: League of Legends"
+                       style="-fx-background-color: #1e293b; -fx-text-fill: white; -fx-pref-height: 36px;"/>
+
+            <Label text="Genre" style="-fx-text-fill: #94a3b8;"/>
+            <TextField fx:id="genreField" promptText="MOBA, FPS, RTS..."
+                       style="-fx-background-color: #1e293b; -fx-text-fill: white; -fx-pref-height: 36px;"/>
+
+            <Label text="Plateforme" style="-fx-text-fill: #94a3b8;"/>
+            <TextField fx:id="plateformeField" promptText="PC, PlayStation, Xbox..."
+                       style="-fx-background-color: #1e293b; -fx-text-fill: white; -fx-pref-height: 36px;"/>
+
+            <Label text="Statut" style="-fx-text-fill: #94a3b8;"/>
+            <ComboBox fx:id="statutCombo" prefWidth="200" editable="true"
+                      style="-fx-background-color: #1e293b;"/>
+
+            <Label text="Description" style="-fx-text-fill: #94a3b8;"/>
+            <TextArea fx:id="descriptionArea" prefRowCount="4" wrapText="true"
+                      style="-fx-background-color: #1e293b; -fx-control-inner-background: #1e293b; -fx-text-fill: white;"/>
+
+            <Label fx:id="messageLabel" text="" style="-fx-font-size: 13px;"/>
+
+            <HBox spacing="10" alignment="CENTER_RIGHT">
+                <Button text="Annuler" onAction="#handleCancel"
+                        style="-fx-background-color: #64748b; -fx-text-fill: white;
+                               -fx-pref-width: 100px; -fx-pref-height: 36px; -fx-cursor: hand;"/>
+                <Button fx:id="submitBtn" text="Enregistrer" onAction="#handleSubmit"
+                        style="-fx-background-color: #7c3aed; -fx-text-fill: white;
+                               -fx-pref-width: 120px; -fx-pref-height: 36px; -fx-cursor: hand;"/>
+            </HBox>
+        </VBox>
+    </ScrollPane>
+</AnchorPane>

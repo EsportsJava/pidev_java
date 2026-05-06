@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.esprit.controllers.AjouterTournoiController"
+            prefHeight="640.0" prefWidth="480.0"
+            style="-fx-background-color: #0f172a;">
+
+    <ScrollPane fitToWidth="true" hbarPolicy="NEVER"
+                AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0"
+                AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0"
+                style="-fx-background: #0f172a; -fx-background-color: #0f172a;">
+        <VBox spacing="10" style="-fx-padding: 24 32 24 32;">
+            <Label fx:id="titleLabel" text="Nouveau tournoi"
+                   style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+
+            <Label text="Nom *" style="-fx-text-fill: #94a3b8;"/>
+            <TextField fx:id="nomField" promptText="Nom du tournoi"
+                       style="-fx-background-color: #1e293b; -fx-text-fill: white; -fx-pref-height: 34px;"/>
+
+            <Label text="Jeu *" style="-fx-text-fill: #94a3b8;"/>
+            <ComboBox fx:id="jeuCombo" prefWidth="400"
+                      style="-fx-background-color: #1e293b;"/>
+
+            <HBox spacing="16">
+                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                    <Label text="Date début *" style="-fx-text-fill: #94a3b8;"/>
+                    <DatePicker fx:id="dateDebutPicker" prefWidth="200"/>
+                </VBox>
+                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                    <Label text="Date fin *" style="-fx-text-fill: #94a3b8;"/>
+                    <DatePicker fx:id="dateFinPicker" prefWidth="200"/>
+                </VBox>
+            </HBox>
+
+            <HBox spacing="16">
+                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                    <Label text="Statut" style="-fx-text-fill: #94a3b8;"/>
+                    <ComboBox fx:id="statutCombo" editable="true" prefWidth="200"/>
+                </VBox>
+                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                    <Label text="Type" style="-fx-text-fill: #94a3b8;"/>
+                    <TextField fx:id="typeField" promptText="5v5, Battle Royale..."
+                               style="-fx-background-color: #1e293b; -fx-text-fill: white; -fx-pref-height: 34px;"/>
+                </VBox>
+            </HBox>
+
+            <HBox spacing="16">
+                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                    <Label text="Max participants" style="-fx-text-fill: #94a3b8;"/>
+                    <TextField fx:id="maxParticipantsField" promptText="32"
+                               style="-fx-background-color: #1e293b; -fx-text-fill: white; -fx-pref-height: 34px;"/>
+                </VBox>
+                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                    <Label text="Cagnotte" style="-fx-text-fill: #94a3b8;"/>
+                    <TextField fx:id="cagnotteField" promptText="0"
+                               style="-fx-background-color: #1e293b; -fx-text-fill: white; -fx-pref-height: 34px;"/>
+                </VBox>
+            </HBox>
+
+            <HBox spacing="16">
+                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                    <Label text="Limite inscription *" style="-fx-text-fill: #94a3b8;"/>
+                    <DatePicker fx:id="dateLimitePicker" prefWidth="200"/>
+                </VBox>
+                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                    <Label text="Frais d'inscription" style="-fx-text-fill: #94a3b8;"/>
+                    <TextField fx:id="fraisField" promptText="0"
+                               style="-fx-background-color: #1e293b; -fx-text-fill: white; -fx-pref-height: 34px;"/>
+                </VBox>
+            </HBox>
+
+            <Label text="Description" style="-fx-text-fill: #94a3b8;"/>
+            <TextArea fx:id="descriptionArea" prefRowCount="3" wrapText="true"
+                      style="-fx-background-color: #1e293b; -fx-control-inner-background: #1e293b; -fx-text-fill: white;"/>
+
+            <Label fx:id="messageLabel" text="" style="-fx-font-size: 13px;"/>
+
+            <HBox spacing="10" alignment="CENTER_RIGHT">
+                <Button text="Annuler" onAction="#handleCancel"
+                        style="-fx-background-color: #64748b; -fx-text-fill: white;
+                               -fx-pref-width: 100px; -fx-pref-height: 36px; -fx-cursor: hand;"/>
+                <Button fx:id="submitBtn" text="Enregistrer" onAction="#handleSubmit"
+                        style="-fx-background-color: #7c3aed; -fx-text-fill: white;
+                               -fx-pref-width: 120px; -fx-pref-height: 36px; -fx-cursor: hand;"/>
+            </HBox>
+        </VBox>
+    </ScrollPane>
+</AnchorPane>

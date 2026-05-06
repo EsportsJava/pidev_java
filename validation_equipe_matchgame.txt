@@ -1,0 +1,210 @@
+FICHE DE VALIDATION - MODULES EQUIPE ET MATCHGAME
+Date: 2026-04-16
+Projet: pidev_java_aziz
+
+==================================================
+1) CE QUE TU DOIS EXPLIQUER EN 30-60 SECONDES
+==================================================
+J ai implemente deux modules JavaFX + JDBC:
+- Equipe: CRUD complet (ajout, affichage, modification, suppression)
+- MatchGame: CRUD complet avec relations (equipe1, equipe2, tournoi)
+
+Architecture utilisee:
+- Entity: modele de donnees (Equipe, MatchGame)
+- Service: acces base de donnees via JDBC (ServiceEquipe, ServiceMatchGame)
+- Controller: logique UI JavaFX + validations (Ajouter/Dashboard)
+- FXML: vues graphiques (formulaires + tableaux)
+
+Pattern principal:
+UI (FXML + Controller) -> Service (SQL) -> MySQL
+
+==================================================
+2) FICHIERS CLES A CONNAITRE
+==================================================
+Entites:
+- src/main/java/tn/esprit/entities/Equipe.java
+- src/main/java/tn/esprit/entities/MatchGame.java
+
+Services:
+- src/main/java/tn/esprit/services/ServiceEquipe.java
+- src/main/java/tn/esprit/services/ServiceMatchGame.java
+
+Controllers Equipe:
+- src/main/java/tn/esprit/controllers/AjouterEquipeController.java
+- src/main/java/tn/esprit/controllers/EquipeDashboardController.java
+- src/main/java/tn/esprit/controllers/AfficherEquipeController.java
+
+Controllers MatchGame:
+- src/main/java/tn/esprit/controllers/AjouterMatchGameController.java
+- src/main/java/tn/esprit/controllers/MatchGameDashboardController.java
+
+FXML:
+- src/main/resources/equipe/ajouterEquipe.fxml
+- src/main/resources/equipe/equipeDashboard.fxml
+- src/main/resources/equipe/afficherEquipe.fxml
+- src/main/resources/ajouterMatchGame.fxml
+- src/main/resources/matchGameDashboard.fxml
+
+Tests:
+- src/test/java/EquipeTest.java
+- src/test/java/MatchGameTest.java
+
+==================================================
+3) MODULE EQUIPE - POINTS IMPORTANTS
+==================================================
+Champs Equipe:
+- id (int)
+- nom (String)
+- maxMembers (int)
+- logo (String)
+
+Operations SQL (ServiceEquipe):
+- ajouter: INSERT INTO equipe(nom, max_members, logo, owner_id)
+- modifier: UPDATE equipe SET nom=?, max_members=?, logo=? WHERE id=?
+- supprimer: DELETE FROM equipe WHERE id=?
+- getAll: SELECT * FROM equipe
+
+Point technique important:
+- owner_id est resolve dynamiquement:
+  1) SessionManager.getCurrentUser()
+  2) sinon fallback sur le premier user en base
+
+Validations UI Equipe (AjouterEquipeController):
+- nom obligatoire
+- nom min 3 caracteres
+- nom max 60 caracteres
+- maxMembers entier obligatoire
+- maxMembers > 0
+- maxMembers <= 100
+- logo obligatoire
+- extension logo autorisee: .png .jpg .jpeg .gif .webp
+
+==================================================
+4) MODULE MATCHGAME - POINTS IMPORTANTS
+==================================================
+Champs MatchGame:
+- id (int)
+- dateMatch (Timestamp)
+- scoreTeam1 (Integer nullable)
+- scoreTeam2 (Integer nullable)
+- statut (String)
+- equipe1Id (int)
+- equipe2Id (int)
+- tournoiId (int)
+
+Operations SQL (ServiceMatchGame):
+- ajouter: INSERT INTO match_game(...)
+- modifier: UPDATE match_game SET ... WHERE id=?
+- supprimer: DELETE FROM match_game WHERE id=?
+- getAll: SELECT * FROM match_game
+
+Validations UI MatchGame (AjouterMatchGameController):
+- date obligatoire (DatePicker -> Timestamp atStartOfDay)
+- equipe1 obligatoire (ComboBox)
+- equipe2 obligatoire (ComboBox)
+- tournoi obligatoire (ComboBox)
+- statut obligatoire (ComboBox)
+- equipe1 != equipe2
+- score entier si renseigne
+- score >= 0
+- score <= 99
+- soit les 2 scores sont remplis, soit aucun
+- si statut = "Termine" alors score1 et score2 obligatoires
+- si statut = "Planifie" alors date non passee
+
+Statuts proposes:
+- Planifie
+- En cours
+- Termine
+- Annule
+
+==================================================
+5) POURQUOI COMBOBOX AU LIEU DES IDS EN SAISIE
+==================================================
+- Plus ergonomique pour l utilisateur
+- Evite les erreurs de saisie manuelle des IDs
+- On affiche le nom, puis on enregistre l ID associe
+- Plus coherent avec les relations entre tables
+
+==================================================
+6) DASHBOARDS (ADMIN)
+==================================================
+EquipeDashboardController:
+- charge toutes les equipes dans un TableView
+- actions par ligne: modifier / supprimer
+- bouton ajouter qui ouvre un formulaire modal
+
+MatchGameDashboardController:
+- charge tous les matchs dans un TableView
+- actions par ligne: modifier / supprimer
+- bouton ajouter qui ouvre un formulaire modal
+
+==================================================
+7) TESTS JUNIT - CE QUE TU PEUX DIRE
+==================================================
+EquipeTest:
+- testAjouterEquipe
+- testAfficherEquipes
+- testModifierEquipe
+- testSupprimerEquipe
+- cleanUp final pour ne pas polluer la base
+
+MatchGameTest:
+- cree prerequis (Jeu, Tournoi, 2 equipes)
+- testAjouterMatchGame
+- testAfficherMatchGames
+- testModifierMatchGame
+- testSupprimerMatchGame
+- cleanUp final (match, tournoi, equipes, jeu)
+
+Ce que montrent les tests:
+- les CRUD fonctionnent de bout en bout
+- les relations minimales sont respectees
+- le nettoyage limite les effets de bord
+
+==================================================
+8) QUESTIONS DE VALIDATION PROBABLES + REPONSES
+==================================================
+Q1: Pourquoi separer Entity / Service / Controller ?
+R: Separation des responsabilites, code maintenable, testable, et plus clair.
+
+Q2: Pourquoi utiliser PreparedStatement ?
+R: Evite SQL injection et gere proprement les parametres.
+
+Q3: Pourquoi Integer pour score et pas int ?
+R: Integer permet null (match non joue ou score non saisi).
+
+Q4: Comment eviter team1 == team2 ?
+R: Validation metier dans AjouterMatchGameController (equipe1 != equipe2).
+
+Q5: Comment gerer les erreurs SQL dans UI ?
+R: try/catch SQLException puis messageLabel rouge avec message explicite.
+
+Q6: Pourquoi DatePicker pour date match ?
+R: Type-safe, meilleure UX, moins d erreurs de format.
+
+Q7: Pourquoi fallback owner_id dans ServiceEquipe ?
+R: Pour eviter l echec d insertion quand la session n a pas d utilisateur courant.
+
+==================================================
+9) MINI SCRIPT ORAL (1 MINUTE)
+==================================================
+"J ai realise deux modules: Equipe et MatchGame, en JavaFX avec une architecture
+Entity-Service-Controller. Les entites modelisent les tables. Les services gerent
+les operations SQL CRUD avec PreparedStatement. Les controllers gerent la logique
+interface et les validations metier. Pour Equipe, je valide nom, maxMembers et logo.
+Pour MatchGame, je valide date, statut, scores, et surtout que equipe1 et equipe2
+sont differentes. J ai aussi ajoute des tests JUnit CRUD pour prouver le bon
+fonctionnement et faire le nettoyage apres execution."
+
+==================================================
+10) CHECKLIST AVANT DEMAIN
+==================================================
+[ ] Savoir expliquer le flux complet: clic UI -> controller -> service -> SQL
+[ ] Savoir citer 3 validations Equipe et 4 validations MatchGame
+[ ] Savoir justifier ComboBox (noms) vs saisie ID manuelle
+[ ] Savoir expliquer pourquoi score est nullable
+[ ] Savoir presenter rapidement EquipeTest et MatchGameTest
+[ ] Preparer une demo: ajouter, modifier, supprimer un enregistrement
+
+FIN

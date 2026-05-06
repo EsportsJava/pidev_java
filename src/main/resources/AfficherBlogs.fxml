@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.esprit.controllers.AfficherBlogsController"
+            prefHeight="720.0" prefWidth="1280.0"
+            style="-fx-background-color: #f8fafc;">
+
+    <VBox spacing="0"
+          AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0"
+          AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0">
+
+
+        <fx:include source="/Navbar.fxml"/>
+
+
+        <VBox spacing="24" style="-fx-padding: 32 40 32 40;">
+
+
+            <HBox alignment="CENTER_LEFT" spacing="15">
+                <VBox spacing="4">
+                    <Label text="Blog"
+                           style="-fx-font-size: 28px; -fx-font-weight: bold;
+                                  -fx-text-fill: #0f172a;"/>
+                    <Label text="Actualités, guides et conseils gaming"
+                           style="-fx-font-size: 13px; -fx-text-fill: #64748b;"/>
+                </VBox>
+                <Region HBox.hgrow="ALWAYS"/>
+                <HBox spacing="8" alignment="CENTER">
+                    <TextField fx:id="searchField"
+                               promptText="Rechercher un article..."
+                               prefWidth="260" prefHeight="36"
+                               style="-fx-background-color: white;
+                                      -fx-border-color: #e2e8f0;
+                                      -fx-border-radius: 8;
+                                      -fx-background-radius: 8;
+                                      -fx-text-fill: #0f172a;
+                                      -fx-prompt-text-fill: #94a3b8;"/>
+                    <Button text="Rechercher" onAction="#handleSearch"
+                            style="-fx-background-color: #7c3aed;
+                                   -fx-text-fill: white;
+                                   -fx-pref-height: 36px;
+                                   -fx-background-radius: 8;
+                                   -fx-cursor: hand;"/>
+                </HBox>
+            </HBox>
+
+
+            <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
+                        style="-fx-background: transparent;
+                               -fx-background-color: transparent;
+                               -fx-border-color: transparent;">
+                <FlowPane fx:id="blogsContainer"
+                          hgap="20" vgap="20"
+                          style="-fx-padding: 4;
+                                 -fx-background-color: transparent;"/>
+            </ScrollPane>
+
+        </VBox>
+    </VBox>
+</AnchorPane>

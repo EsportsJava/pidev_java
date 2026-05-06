@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.esprit.controllers.ProductDetailsController"
+            style="-fx-background-color: linear-gradient(to bottom, #0d1b3e, #090f2a);">
+
+
+    <top>
+        <fx:include source="/Navbar.fxml"/>
+    </top>
+
+
+    <center>
+        <StackPane>
+
+
+            <Pane style="-fx-background-color: radial-gradient(center 50% 50%, radius 60%, #7c3aed33, transparent);"/>
+
+            <HBox spacing="60" alignment="CENTER"
+                  style="-fx-padding: 50;">
+
+
+                <VBox alignment="CENTER"
+                      style="-fx-background-color: rgba(255,255,255,0.05);
+                             -fx-padding: 30;
+                             -fx-background-radius: 25;
+                             -fx-border-color: rgba(255,255,255,0.1);
+                             -fx-border-radius: 25;">
+
+                    <ImageView fx:id="imageView"
+                               fitWidth="320"
+                               fitHeight="320"
+                               preserveRatio="true"
+                               style="-fx-effect: dropshadow(gaussian, #7c3aed88, 30,0,0,0);"/>
+                </VBox>
+
+
+                <VBox spacing="18" alignment="TOP_LEFT" maxWidth="420">
+
+                    <Label fx:id="nameLabel"
+                           wrapText="true"
+                           style="-fx-text-fill: white;
+                                  -fx-font-size: 30px;
+                                  -fx-font-weight: bold;"/>
+
+                    <Label fx:id="priceLabel"
+                           style="-fx-text-fill: #a78bfa;
+                                  -fx-font-size: 24px;
+                                  -fx-font-weight: bold;"/>
+
+                    <Label fx:id="stockLabel"
+                           style="-fx-text-fill: #94a3b8;
+                                  -fx-font-size: 13px;"/>
+
+                    <Separator style="-fx-background-color: rgba(255,255,255,0.15);"/>
+
+                    <Label text="ABOUT THIS PRODUCT"
+                           style="-fx-text-fill: #7c3aed;
+                                  -fx-font-size: 12px;
+                                  -fx-letter-spacing: 2px;"/>
+
+                    <Label fx:id="descriptionLabel"
+                           wrapText="true"
+                           style="-fx-text-fill: #cbd5f5;
+                                  -fx-font-size: 14px;
+                                  -fx-line-spacing: 4;"/>
+
+
+                    <HBox spacing="15" style="-fx-padding: 15 0 0 0;">
+
+                        <Button text="🛒 ADD TO CART"
+                                style="-fx-background-color: linear-gradient(to right, #7c3aed, #5b21b6);
+                                       -fx-text-fill: white;
+                                       -fx-font-weight: bold;
+                                       -fx-padding: 12 25;
+                                       -fx-background-radius: 25;
+                                       -fx-cursor: hand;"/>
+
+                        <Button text="⬅"
+                                onAction="#goBack"
+                                style="-fx-background-color: rgba(255,255,255,0.08);
+                                       -fx-text-fill: white;
+                                       -fx-font-size: 16px;
+                                       -fx-padding: 12 18;
+                                       -fx-background-radius: 50%;
+                                       -fx-cursor: hand;"/>
+                    </HBox>
+
+                </VBox>
+
+            </HBox>
+
+        </StackPane>
+    </center>
+
+</BorderPane>

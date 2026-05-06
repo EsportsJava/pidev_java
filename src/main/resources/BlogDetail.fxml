@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.esprit.controllers.BlogDetailController"
+            prefHeight="720.0" prefWidth="1280.0"
+            style="-fx-background-color: #05070f;">
+
+    <VBox spacing="0" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0"
+          AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0">
+
+        <fx:include source="/Navbar.fxml"/>
+
+        <ScrollPane fitToWidth="true" style="-fx-background: transparent; -fx-background-color: transparent;">
+            <VBox spacing="30" style="-fx-padding: 40 100 40 100;">
+
+                <!-- Back Button -->
+                <Button text="← Retour aux blogs" onAction="#handleBack"
+                        style="-fx-background-color: transparent; -fx-text-fill: #94a3b8; -fx-cursor: hand; -fx-font-size: 14px;"/>
+
+                <!-- Blog Content -->
+                <VBox spacing="20" style="-fx-background-color: #0f172a; -fx-background-radius: 15; -fx-padding: 30;">
+                    <StackPane fx:id="imageContainer" prefHeight="400" style="-fx-background-color: #1e293b; -fx-background-radius: 10;">
+                        <ImageView fx:id="blogImage" fitWidth="1000" fitHeight="400" preserveRatio="false"/>
+                    </StackPane>
+
+                    <HBox alignment="CENTER_LEFT" spacing="15">
+                        <Label fx:id="categoryBadge" style="-fx-background-color: #7c3aed; -fx-text-fill: white; -fx-padding: 5 15; -fx-background-radius: 20; -fx-font-weight: bold;"/>
+                        <Label fx:id="dateLabel" style="-fx-text-fill: #64748b; -fx-font-size: 14px;"/>
+                    </HBox>
+
+                    <Label fx:id="blogTitle" wrapText="true"
+                           style="-fx-text-fill: white; -fx-font-size: 36px; -fx-font-weight: bold;"/>
+
+                    <!-- LIKES -->
+                    <HBox alignment="CENTER_LEFT" spacing="12" style="-fx-padding: 10 0 5 0;">
+                        <Button fx:id="likeButton" text="🤍 J'aime" onAction="#handleLike"
+                                style="-fx-background-color: #1e293b; -fx-text-fill: white; -fx-background-radius: 20; -fx-cursor: hand; -fx-font-size: 13px; -fx-padding: 6 16 6 16;"/>
+                        <Label fx:id="likeCountLabel" text="0"
+                               style="-fx-text-fill: #94a3b8; -fx-font-size: 14px; -fx-font-weight: bold;"/>
+                        <Label text="personnes aiment ce blog"
+                               style="-fx-text-fill: #64748b; -fx-font-size: 12px;"/>
+                    </HBox>
+
+                    <!-- RATING -->
+                    <VBox spacing="6" style="-fx-padding: 5 0 15 0;">
+                        <Label text="Noter ce blog :"
+                               style="-fx-text-fill: #94a3b8; -fx-font-size: 13px;"/>
+                        <HBox fx:id="starsContainer" spacing="6"/>
+                        <Label fx:id="ratingLabel" text="0.0/5  (0 votes)"
+                               style="-fx-text-fill: #f59e0b; -fx-font-size: 13px; -fx-font-weight: bold;"/>
+                    </VBox>
+
+                    <Label fx:id="blogContent" wrapText="true"
+                           style="-fx-text-fill: #cbd5e1; -fx-font-size: 18px; -fx-line-spacing: 5;"/>
+                </VBox>
+                <!-- TRADUCTION -->
+                <VBox spacing="8" style="-fx-padding: 10 0 10 0;">
+                    <Label text="🌍 Traduire ce blog :"
+                           style="-fx-text-fill: #94a3b8; -fx-font-size: 13px;"/>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Button text="🇬🇧 Anglais" onAction="#handleTranslateEN"
+                                style="-fx-background-color: #1e293b; -fx-text-fill: white;
+                       -fx-background-radius: 20; -fx-cursor: hand;
+                       -fx-font-size: 12px; -fx-padding: 5 15 5 15;"/>
+                        <Button text="🇸🇦 Arabe" onAction="#handleTranslateAR"
+                                style="-fx-background-color: #1e293b; -fx-text-fill: white;
+                       -fx-background-radius: 20; -fx-cursor: hand;
+                       -fx-font-size: 12px; -fx-padding: 5 15 5 15;"/>
+                        <Button text="🇪🇸 Espagnol" onAction="#handleTranslateES"
+                                style="-fx-background-color: #1e293b; -fx-text-fill: white;
+                       -fx-background-radius: 20; -fx-cursor: hand;
+                       -fx-font-size: 12px; -fx-padding: 5 15 5 15;"/>
+                        <Button text="↩️ Original" onAction="#handleRestoreOriginal"
+                                style="-fx-background-color: #334155; -fx-text-fill: white;
+                       -fx-background-radius: 20; -fx-cursor: hand;
+                       -fx-font-size: 12px; -fx-padding: 5 15 5 15;"/>
+                    </HBox>
+                    <Label fx:id="translationStatus" text=""
+                           style="-fx-text-fill: #64748b; -fx-font-size: 11px;"/>
+                </VBox>
+                <!-- Comments Section Header -->
+                <VBox spacing="10">
+                    <Label fx:id="commentHeaderLabel" text="Commentaires"
+                           style="-fx-text-fill: white; -fx-font-size: 24px; -fx-font-weight: bold;"/>
+                    <Separator style="-fx-background-color: #1e293b;"/>
+                </VBox>
+
+                <!-- Add Comment Zone -->
+                <VBox spacing="15" style="-fx-background-color: #0f172a; -fx-background-radius: 12; -fx-padding: 20;">
+                    <TextArea fx:id="newCommentArea" promptText="Ajouter un commentaire..."
+                              prefHeight="100" wrapText="true"
+                              style="-fx-control-inner-background: #1e293b; -fx-text-fill: white; -fx-prompt-text-fill: #64748b; -fx-background-radius: 8; -fx-border-color: #334155; -fx-border-radius: 8;"/>
+                    <HBox alignment="CENTER_RIGHT">
+                        <Button text="Publier le commentaire" onAction="#handleAddComment"
+                                style="-fx-background-color: #7c3aed; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 25; -fx-background-radius: 8; -fx-cursor: hand;"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Comments List -->
+                <VBox fx:id="commentsContainer" spacing="15"/>
+
+            </VBox>
+        </ScrollPane>
+    </VBox>
+</AnchorPane>

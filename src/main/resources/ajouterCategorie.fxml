@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.esprit.controllers.AjouterCategorieController"
+            prefHeight="250.0" prefWidth="400.0"
+            style="-fx-background-color: #0f172a;">
+
+    <VBox spacing="15"
+          AnchorPane.topAnchor="30" AnchorPane.leftAnchor="40"
+          AnchorPane.rightAnchor="40" AnchorPane.bottomAnchor="30">
+
+        <Label fx:id="titleLabel" text="➕ Ajouter une Catégorie"
+               style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+
+        <Label text="Nom" style="-fx-text-fill: #94a3b8;"/>
+        <TextField fx:id="nameField" promptText="Ex: keyboard"
+                   style="-fx-background-color: #1e293b; -fx-text-fill: white;
+                          -fx-pref-height: 38px;"/>
+
+        <Label fx:id="messageLabel" text="" style="-fx-font-size: 13px;"/>
+
+        <HBox spacing="10" alignment="CENTER_RIGHT">
+            <Button text="Annuler" onAction="#handleCancel"
+                    style="-fx-background-color: #e74c3c; -fx-text-fill: white;
+                           -fx-pref-width: 110px; -fx-pref-height: 38px; -fx-cursor: hand;"/>
+            <Button fx:id="submitBtn" text="✅ Ajouter" onAction="#handleSubmit"
+                    style="-fx-background-color: #7c3aed; -fx-text-fill: white;
+                           -fx-pref-width: 110px; -fx-pref-height: 38px; -fx-cursor: hand;"/>
+        </HBox>
+
+    </VBox>
+</AnchorPane>
