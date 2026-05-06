@@ -2,149 +2,179 @@ package tn.esprit.services;
 
 import tn.esprit.entities.Video;
 import tn.esprit.utils.MyDatabase;
+import tn.esprit.utils.CloudinaryConfig;
 
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.File;
+import java.util.Map;
 
 public class VideoService {
 
-    private Connection cnx = MyDatabase.getInstance().getConnection();
-    // 📌 1. Sauvegarder fichier dans dossier videos
-    public String saveFile(File file) {
-        try {
-            // 📁 dossier XAMPP
-            String folderPath = "C:\\Users\\Mouhamed Tayssir\\Videos";
+    private Connection cnx() {
+        return MyDatabase.getInstance().getConnection();
+    }
 
-            File dir = new File(folderPath);
-            if (!dir.exists()) {
-                dir.mkdirs(); // crée tous les dossiers si nécessaire
+    // ================= ADD =================
+    public boolean addVideo(Video v) {
+
+        String sql = "INSERT INTO video(title, path, public_id, thumbnail) VALUES(?,?,?,?)";
+
+        try (PreparedStatement ps = cnx().prepareStatement(sql)) {
+
+            ps.setString(1, v.getTitle());
+            ps.setString(2, v.getPath());
+            ps.setString(3, v.getPublicId());
+            ps.setString(4, v.getThumbnail());
+
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            System.err.println("Error addVideo: " + e.getMessage());
+        }
+
+        return false;
+    }
+
+    // ================= GET ALL =================
+    public List<Video> getAllVideos() {
+
+        List<Video> list = new ArrayList<>();
+
+        String sql = "SELECT * FROM video ORDER BY id DESC";
+
+        try (Statement st = cnx().createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
+
+            while (rs.next()) {
+
+                list.add(new Video(
+                        rs.getInt("id"),
+                        rs.getString("title"),
+                        rs.getString("path"),
+                        rs.getString("public_id"),
+                        rs.getString("thumbnail")
+                ));
             }
 
-            // 📌 nom du fichier
-            String fileName = System.currentTimeMillis() + "_" + file.getName();
+        } catch (SQLException e) {
+            System.err.println("Error getAllVideos: " + e.getMessage());
+        }
 
-            // 📌 chemin final
-            String fullPath = folderPath + "\\" + fileName;
+        return list;
+    }
 
-            File dest = new File(fullPath);
+    // ================= GET BY ID =================
+    public Video getVideoById(int id) {
 
-            Files.copy(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        String sql = "SELECT * FROM video WHERE id=?";
 
-            // 📌 IMPORTANT : on stocke aussi une URL web (optionnel mais recommandé)
-            return "videos/" + fileName;
+        try (PreparedStatement ps = cnx().prepareStatement(sql)) {
+
+            ps.setInt(1, id);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return new Video(
+                        rs.getInt("id"),
+                        rs.getString("title"),
+                        rs.getString("path"),
+                        rs.getString("public_id"),
+                        rs.getString("thumbnail")
+                );
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error getVideoById: " + e.getMessage());
+        }
+
+        return null;
+    }
+
+    // ================= DELETE =================
+    public boolean deleteVideo(int id) {
+
+        Video v = getVideoById(id);
+
+        if (v != null) {
+            try {
+                CloudinaryConfig.getInstance().uploader().destroy(
+                        v.getPublicId(),
+                        Map.of("resource_type", "video")
+                );
+            } catch (Exception e) {
+                System.err.println("Cloud delete error: " + e.getMessage());
+            }
+        }
+
+        String sql = "DELETE FROM video WHERE id=?";
+
+        try (PreparedStatement ps = cnx().prepareStatement(sql)) {
+
+            ps.setInt(1, id);
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            System.err.println("Error deleteVideo: " + e.getMessage());
+        }
+
+        return false;
+    }
+
+    // ================= UPDATE =================
+    public boolean updateVideo(Video v) {
+
+        String sql = "UPDATE video SET title=?, path=?, public_id=?, thumbnail=? WHERE id=?";
+
+        try (PreparedStatement ps = cnx().prepareStatement(sql)) {
+
+            ps.setString(1, v.getTitle());
+            ps.setString(2, v.getPath());
+            ps.setString(3, v.getPublicId());
+            ps.setString(4, v.getThumbnail());
+            ps.setInt(5, v.getId());
+
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            System.err.println("Error updateVideo: " + e.getMessage());
+        }
+
+        return false;
+    }
+
+    // ================= UPLOAD CLOUDINARY =================
+    public Video uploadToCloudinary(File videoFile) {
+
+        try {
+
+            Map<?, ?> result = CloudinaryConfig.getInstance()
+                    .uploader()
+                    .upload(videoFile, Map.of(
+                            "resource_type", "video",
+                            "folder", "videos"
+                    ));
+
+            String videoUrl = result.get("secure_url").toString();
+            String publicId = result.get("public_id").toString();
+
+            // 🎯 thumbnail auto (frame à 2 sec)
+            String thumbnailUrl =
+                    "https://res.cloudinary.com/dsekpiknh/video/upload/so_2,w_400,h_250,c_fill/"
+                            + publicId + ".jpg";
+
+            return new Video(
+                    videoFile.getName(),
+                    videoUrl,
+                    publicId,
+                    thumbnailUrl
+            );
 
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
-    public void addVideo(Video v) {
-        try {
-            String sql = "INSERT INTO video (title, path) VALUES (?, ?)";
-            PreparedStatement ps = cnx.prepareStatement(sql);
-            ps.setString(1, v.getTitle());
-            ps.setString(2, v.getPath());
-            ps.executeUpdate();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-
-
-    //the new get video FL
-    public List<Video> getAllVideos() {
-
-        List<Video> list = new ArrayList<>();
-
-        String sql = "SELECT * FROM video";
-        try{
-            //récupère la cnx sans mettre dans les () de try pour éviter qu'elle se ferme
-            Connection con = MyDatabase.getInstance().getConnection();
-           try( Statement st = con.createStatement();
-                ResultSet rs = st.executeQuery(sql)){
-               while (rs.next()) {
-                   list.add(new Video(
-                           rs.getInt("id"),
-                           rs.getString("title"),
-                           rs.getString("path")));
-            }
-        }  } catch (Exception e) {
-            System.out.println("❌ getVideos: " + e.getMessage());
-        }
-
-        return list;
-        }
-
-    public List<Video> getLocalVideos(String folderPath) {
-
-        List<Video> list = new ArrayList<>();
-
-        File folder = new File(folderPath);
-
-        if (!folder.exists() || !folder.isDirectory()) {
-            System.out.println("❌ Folder not found: " + folderPath);
-            return list;
-        }
-
-        File[] files = folder.listFiles((dir, name) ->
-                name.endsWith(".mp4") ||
-                        name.endsWith(".m3u8") ||
-                        name.endsWith(".webm")
-        );
-
-        if (files != null) {
-            for (File file : files) {
-
-                list.add(new Video(
-                        0,
-                        file.getName(),
-                        file.getAbsolutePath()
-                ));
-            }
-        }
-
-        return list;
-    }
-
-        public void deleteVideo(int id) {
-
-        String sql = "DELETE FROM video WHERE id = ?";
-
-        try (Connection con = MyDatabase.getInstance().getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-
-            ps.setInt(1, id);
-            ps.executeUpdate();
-
-            System.out.println("🗑 Video deleted");
-
-        } catch (Exception e) {
-            System.out.println("❌ deleteVideo: " + e.getMessage());
-        }
-    }
-    public boolean existsByPath(String path) {
-        try {
-            String sql = "SELECT COUNT(*) FROM video WHERE path=?";
-            PreparedStatement ps = cnx.prepareStatement(sql);
-            ps.setString(1, path);
-
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-                return rs.getInt(1) > 0;
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return false;
-    }
-
 }

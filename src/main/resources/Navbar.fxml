@@ -32,7 +32,14 @@
                     style="-fx-background-color: transparent; -fx-text-fill: white;
                -fx-font-size: 15px; -fx-font-weight: bold; -fx-cursor: hand;"
                     text="LIVE" />
+            <!-- 🎥 VIDEO BUTTON (AMÉLIORÉ) -->
+            <!-- 🎥 VIDEO USER (MÊME STYLE) -->
+            <Button onAction="#showUserVideos" text="Videos"
+                    style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold; -fx-cursor: hand;" />
             <Button onAction="#goToMain" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold; -fx-cursor: hand;" text="Products" />
+            <Button text="🔴 Live"
+                    onAction="#goToLive"
+                    style="-fx-background-color: red; -fx-text-fill: white;"/>
         </HBox>
     </center>
 
@@ -49,7 +56,10 @@
                     text="🔔" />
 
             <Button fx:id="profileUserButton" onAction="#goToUser" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold; -fx-cursor: hand;" text="Profile User" />
+
         </HBox>
     </right>
+
+
 
 </BorderPane>

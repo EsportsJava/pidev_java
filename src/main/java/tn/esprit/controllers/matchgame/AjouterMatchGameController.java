@@ -20,7 +20,6 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ResourceBundle;
 
 public class AjouterMatchGameController implements Initializable {
@@ -54,7 +53,9 @@ public class AjouterMatchGameController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         dateMatchPicker.setValue(LocalDate.now());
-        statutCombo.setItems(FXCollections.observableArrayList("Planifie", "En cours", "Termine", "Annule"));
+        statutCombo.setItems(FXCollections.observableArrayList(
+            "Scheduled", "Finished", "Planifie", "En cours", "Termine", "Annule"
+        ));
         statutCombo.getSelectionModel().selectFirst();
 
         try {
@@ -202,7 +203,8 @@ public class AjouterMatchGameController implements Initializable {
         }
 
         LocalDate matchDate = dateMatch.toLocalDateTime().toLocalDate();
-        if ("Planifie".equalsIgnoreCase(statut) && matchDate.isBefore(LocalDate.now())) {
+        if (("Planifie".equalsIgnoreCase(statut) || "Scheduled".equalsIgnoreCase(statut))
+            && matchDate.isBefore(LocalDate.now())) {
             throw new IllegalArgumentException("Un match planifie ne peut pas avoir une date passee.");
         }
 
@@ -210,7 +212,8 @@ public class AjouterMatchGameController implements Initializable {
             throw new IllegalArgumentException("Renseignez les deux scores ou aucun.");
         }
 
-        if ("Termine".equalsIgnoreCase(statut) && (score1 == null || score2 == null)) {
+        if (("Termine".equalsIgnoreCase(statut) || "Finished".equalsIgnoreCase(statut))
+                && (score1 == null || score2 == null)) {
             throw new IllegalArgumentException("Pour un match termine, les deux scores sont obligatoires.");
         }
     }

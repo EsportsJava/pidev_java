@@ -102,7 +102,7 @@ public class ResetPasswordService {
         String sql = """
                 SELECT prt.id, prt.user_id
                 FROM password_reset_token prt
-                INNER JOIN `user` u ON u.id = prt.user_id
+                INNER JOIN user u ON u.id = prt.user_id
                 WHERE u.email = ?
                   AND prt.token = ?
                   AND prt.used = false

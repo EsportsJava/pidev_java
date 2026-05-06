@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.web.WebView?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.esprit.controllers.Stream.AdminStreamController"
+            style="-fx-background-color: #0f172a;">
+
+    <!-- ================= TOP BAR ================= -->
+    <top>
+        <HBox spacing="15"
+              style="-fx-padding: 12; -fx-background-color: #111827; -fx-alignment: center-left;">
+
+            <Label text="🎥 ADMIN LIVE STREAM"
+                   style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+            <Label fx:id="statusLabel"
+                   text="OFFLINE"
+                   style="-fx-text-fill: red; -fx-font-size: 14px; -fx-font-weight: bold;"/>
+            <Label fx:id="likeCounterLabel"
+                   text="👍 Likes: 0"
+                   style="-fx-text-fill:#22c55e; -fx-font-size:14px; -fx-font-weight:bold;"/>
+
+        </HBox>
+    </top>
+
+    <!-- ================= CENTER STREAM ================= -->
+    <center>
+        <StackPane>
+
+            <WebView fx:id="webView"
+                     style="-fx-background-color: black;"/>
+
+            <!-- loading overlay -->
+            <Label text="Loading stream..."
+                   style="-fx-text-fill:white; -fx-font-size:16px;"
+                   visible="false"/>
+
+        </StackPane>
+    </center>
+
+    <!-- ================= RIGHT CHAT PANEL ================= -->
+    <right>
+        <VBox spacing="10"
+              prefWidth="320"
+              style="-fx-padding: 10; -fx-background-color: #111827;">
+
+            <Label text="💬 Live Chat"
+                   style="-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;"/>
+
+            <!-- Messages -->
+            <ListView fx:id="commentList"
+                      prefHeight="400"
+                      style="-fx-background-color: #1f2937;"/>
+
+            <!-- Input -->
+            <HBox spacing="5">
+
+                <TextField fx:id="commentField"
+                           promptText="Write message..."
+                           style="-fx-background-color: #374151; -fx-text-fill: white;"
+                           HBox.hgrow="ALWAYS"/>
+
+                <Button text="Send"
+                        onAction="#sendComment"
+                        style="-fx-background-color: #10b981; -fx-text-fill: white;"/>
+            </HBox>
+
+        </VBox>
+    </right>
+
+</BorderPane>
