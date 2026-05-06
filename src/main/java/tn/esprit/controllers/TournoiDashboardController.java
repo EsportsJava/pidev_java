@@ -5,6 +5,7 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.event.ActionEvent;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -138,6 +139,19 @@ public class TournoiDashboardController implements Initializable {
             loadTournois();
         } catch (IOException e) {
             showError("Erreur d'ouverture du formulaire : " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleOpenKpis(ActionEvent event) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/tournoiKpi.fxml"));
+            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root, 1280, 720));
+            stage.setTitle("KPIs Tournois");
+            stage.show();
+        } catch (IOException e) {
+            showError("Ouverture KPIs impossible : " + e.getMessage());
         }
     }
 

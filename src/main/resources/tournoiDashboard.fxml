@@ -20,6 +20,9 @@
                        style="-fx-text-fill: white; -fx-font-size: 28px; -fx-font-weight: bold;"/>
             </VBox>
             <Region HBox.hgrow="ALWAYS"/>
+            <Button text="📊 KPIs Tournois" onAction="#handleOpenKpis"
+                    style="-fx-background-color: #1d4ed8; -fx-text-fill: white; -fx-font-size: 13px;
+                           -fx-pref-height: 42px; -fx-pref-width: 170px; -fx-cursor: hand; -fx-background-radius: 8;"/>
             <Button text="+ Nouveau tournoi" onAction="#handleNewTournoi"
                     style="-fx-background-color: #7c3aed; -fx-text-fill: white; -fx-font-size: 14px;
                            -fx-pref-height: 42px; -fx-pref-width: 180px; -fx-cursor: hand; -fx-background-radius: 8;"/>

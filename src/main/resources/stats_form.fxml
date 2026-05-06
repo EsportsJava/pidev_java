@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #070b18;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.StatsDetailController">
+    <VBox style="-fx-background-color: linear-gradient(to bottom, #070b18, #101a34);" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <fx:include source="Navbar.fxml" />
+
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" style="-fx-background: transparent; -fx-background-color: transparent;" VBox.vgrow="ALWAYS">
+            <content>
+                <VBox spacing="20.0" style="-fx-padding: 26;">
+                    <Button onAction="#handleBack" prefHeight="36.0" style="-fx-background-color: transparent; -fx-text-fill: #94a3b8; -fx-underline: true;" text="← Retour aux cartes Stats" />
+
+                    <VBox spacing="8.0" style="-fx-background-color: #111a30; -fx-background-radius: 18; -fx-border-color: #2a3b6e; -fx-border-radius: 18; -fx-padding: 22;">
+                        <Label fx:id="pageTitleLabel" style="-fx-text-fill: white; -fx-font-size: 26; -fx-font-weight: bold;" text="STATS" />
+                        <Label fx:id="pageSubtitleLabel" style="-fx-text-fill: #94a3b8; -fx-font-size: 13;" text="" wrapText="true" />
+
+                        <VBox fx:id="riotSection" spacing="10.0" style="-fx-padding: 16 0 0 0;">
+                            <Label style="-fx-text-fill: #e2e8f0;" text="Riot ID (gameName)" />
+                            <TextField fx:id="riotNameField" promptText="Ex: PseudoRiot" style="-fx-background-color: #0f172a; -fx-text-fill: white; -fx-prompt-text-fill: #64748b; -fx-background-radius: 10;" />
+                            <Label style="-fx-text-fill: #e2e8f0;" text="Tag (sans #)" />
+                            <Label style="-fx-text-fill: #64748b; -fx-font-size: 11;" text="Ce n'est pas votre serveur : copiez le tag exact apres # depuis le client Riot (ex: 1234, NA1)." wrapText="true" />
+                            <TextField fx:id="riotTagField" promptText="Ex: 2106 ou NA1 (pas EUW sauf si affiche ainsi)" style="-fx-background-color: #0f172a; -fx-text-fill: white; -fx-prompt-text-fill: #64748b; -fx-background-radius: 10;" />
+                        </VBox>
+
+                        <VBox fx:id="steamSection" managed="false" spacing="10.0" style="-fx-padding: 16 0 0 0;" visible="false">
+                            <Label style="-fx-text-fill: #e2e8f0;" text="SteamID64 (17 chiffres) — optionnel" />
+                            <TextField fx:id="steamIdField" promptText="Ex: 76561198000000000"
+                                       style="-fx-background-color: #0f172a; -fx-text-fill: white; -fx-prompt-text-fill: #64748b; -fx-background-radius: 10;" />
+                            <Label style="-fx-text-fill: #e2e8f0;" text="Nom du jeu (Steam Store)" />
+                            <TextField fx:id="steamGameField" promptText="Ex: Counter-Strike 2" style="-fx-background-color: #0f172a; -fx-text-fill: white; -fx-prompt-text-fill: #64748b; -fx-background-radius: 10;" />
+                        </VBox>
+
+                        <HBox spacing="12.0">
+                            <Button fx:id="submitPrimaryButton" onAction="#handleSubmit" prefHeight="44.0" style="-fx-background-color: linear-gradient(to right, #e11d48, #dc2626); -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 12;" text="🔍 LANCER LA RECHERCHE" />
+                        </HBox>
+
+                        <Label fx:id="statusLabel" style="-fx-text-fill: #cbd5e1;" text="Prêt." wrapText="true" />
+                        <HBox alignment="CENTER_LEFT" spacing="8.0">
+                            <Label style="-fx-text-fill: #93c5fd; -fx-font-weight: bold;" text="Lien Steam :" />
+                            <Label fx:id="steamLinkLabel" style="-fx-text-fill: #dbeafe;" text="" wrapText="true" />
+                        </HBox>
+
+                        <VBox fx:id="playerStatsBox" spacing="12.0" style="-fx-background-color: #0a0e18; -fx-background-radius: 14; -fx-border-color: #1e293b; -fx-border-radius: 14; -fx-padding: 18;" visible="false" managed="false" />
+                    </VBox>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </VBox>
+</AnchorPane>

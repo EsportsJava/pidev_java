@@ -44,7 +44,8 @@ public class NavbarController {
         try {
             loadScene(event, "/tournoiCatalog.fxml", "Tournoi");
         } catch (IOException e) {
-            System.out.println("Unable to open tournement.");
+            e.printStackTrace();
+            System.out.println("Unable to open tournement: " + e.getMessage());
         }
     }
 
@@ -72,6 +73,15 @@ public class NavbarController {
             loadScene(event, "/AfficherBlogs.fxml", "Blogs");
         } catch (IOException e) {
             System.out.println("Unable to open blogs.");
+        }
+    }
+
+    @FXML
+    private void goToStats(ActionEvent event) {
+        try {
+            loadScene(event, "/stats.fxml", "Stats");
+        } catch (IOException e) {
+            System.out.println("Unable to open stats.");
         }
     }
 
@@ -131,4 +141,13 @@ public class NavbarController {
         }
     }
 
+    @FXML
+    private void goToNotifications(ActionEvent event) {
+        try {
+            loadScene(event, "/notifications.fxml", "Notifications");
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Unable to open notifications: " + e.getMessage());
+        }
+    }
 }

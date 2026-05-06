@@ -27,6 +27,11 @@
             <Button onAction="#goToTeam" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold; -fx-cursor: hand;" text="Team" />
             <Button onAction="#goToTournement" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold; -fx-cursor: hand;" text="Tournoi" />
             <Button onAction="#goToAbout" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold; -fx-cursor: hand;" text="Blog" />
+            <Button onAction="#goToStats" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold; -fx-cursor: hand;" text="Stats" />
+            <Button onAction="#goToLive"
+                    style="-fx-background-color: transparent; -fx-text-fill: white;
+               -fx-font-size: 15px; -fx-font-weight: bold; -fx-cursor: hand;"
+                    text="LIVE" />
             <!-- 🎥 VIDEO BUTTON (AMÉLIORÉ) -->
             <!-- 🎥 VIDEO USER (MÊME STYLE) -->
             <Button onAction="#showUserVideos" text="Videos"
@@ -45,6 +50,10 @@
                     style="-fx-background-color: transparent; -fx-text-fill: white;
                        -fx-font-size: 20px; -fx-cursor: hand;"
                     text="🛒" />
+            <Button onAction="#goToNotifications"
+                    style="-fx-background-color: transparent; -fx-text-fill: white;
+                       -fx-font-size: 20px; -fx-cursor: hand;"
+                    text="🔔" />
 
             <Button fx:id="profileUserButton" onAction="#goToUser" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold; -fx-cursor: hand;" text="Profile User" />
 

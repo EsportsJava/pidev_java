@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #0b0e14;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.StatsDashboardController">
+    <VBox style="-fx-background-color: linear-gradient(to bottom, #0b0e14, #121826);" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <fx:include source="Navbar.fxml" />
+
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" style="-fx-background: transparent; -fx-background-color: transparent;" VBox.vgrow="ALWAYS">
+            <content>
+                <VBox spacing="20.0" style="-fx-padding: 28;">
+                    <VBox spacing="6.0">
+                        <Label style="-fx-text-fill: white; -fx-font-size: 34; -fx-font-weight: bold;" text="STATS JOUEUR" />
+                        <Label style="-fx-text-fill: #8892a8; -fx-font-size: 14;" text="Choisissez votre jeu puis saisissez vos identifiants sur la page suivante." wrapText="true" />
+                    </VBox>
+
+                    <HBox alignment="CENTER" spacing="20.0" style="-fx-padding: 8 0 0 0;">
+                        <!-- LoL -->
+                        <VBox prefWidth="400.0" spacing="14.0" style="-fx-background-color: linear-gradient(to bottom, #151b28, #0f141d); -fx-background-radius: 22; -fx-border-color: #2a3548; -fx-border-radius: 22; -fx-border-width: 1; -fx-padding: 22;">
+                            <Label style="-fx-text-fill: white; -fx-font-size: 42;" text="⚔" />
+                            <Label style="-fx-text-fill: white; -fx-font-size: 22; -fx-font-weight: bold;" text="LEAGUE OF LEGENDS" wrapText="true" />
+                            <Label style="-fx-text-fill: #9aa7c7; -fx-font-size: 13; -fx-line-spacing: 4;" text="Consultez votre rang, vos stats, et votre historique de matchs LoL." wrapText="true" />
+                            <HBox spacing="28.0" style="-fx-padding: 12 0 8 0;">
+                                <VBox>
+                                    <Label style="-fx-text-fill: #ff4f6d; -fx-font-weight: bold; -fx-font-size: 22;" text="Rang" />
+                                    <Label style="-fx-text-fill: #6b758c; -fx-font-size: 11;" text="SOLO/DUO" />
+                                </VBox>
+                                <VBox>
+                                    <Label style="-fx-text-fill: #ff4f6d; -fx-font-weight: bold; -fx-font-size: 22;" text="K/D/A" />
+                                    <Label style="-fx-text-fill: #6b758c; -fx-font-size: 11;" text="STATS" />
+                                </VBox>
+                                <VBox>
+                                    <Label style="-fx-text-fill: #ff4f6d; -fx-font-weight: bold; -fx-font-size: 22;" text="Matchs" />
+                                    <Label style="-fx-text-fill: #6b758c; -fx-font-size: 11;" text="HISTORIQUE" />
+                                </VBox>
+                            </HBox>
+                            <VBox VBox.vgrow="ALWAYS" />
+                            <Button onAction="#handleLolRechercher" prefHeight="48.0" style="-fx-background-color: #c9183a; -fx-text-fill: white; -fx-font-size: 16; -fx-font-weight: bold; -fx-background-radius: 14; -fx-cursor: hand;" text="🔍  RECHERCHER" />
+                            <HBox style="-fx-padding: 4 0 0 0;">
+                                <Label style="-fx-background-color: #232a39; -fx-text-fill: #8b95aa; -fx-font-size: 11; -fx-padding: 4 12; -fx-background-radius: 20;" text="⚡ API Riot Games" />
+                            </HBox>
+                        </VBox>
+
+                        <!-- Valorant (accent) -->
+                        <VBox prefWidth="400.0" spacing="14.0" style="-fx-background-color: linear-gradient(to bottom, #151b28, #0f141d); -fx-background-radius: 22; -fx-border-color: #ff375f; -fx-border-radius: 22; -fx-border-width: 2; -fx-effect: dropshadow(gaussian, rgba(255,55,95,0.35), 18, 0.2, 0, 0); -fx-padding: 22;">
+                            <Label style="-fx-text-fill: white; -fx-font-size: 42;" text="🎯" />
+                            <Label style="-fx-text-fill: white; -fx-font-size: 22; -fx-font-weight: bold;" text="VALORANT" wrapText="true" />
+                            <Label style="-fx-text-fill: #9aa7c7; -fx-font-size: 13; -fx-line-spacing: 4;" text="Analysez votre rang compétitif et vos performances Valorant." wrapText="true" />
+                            <HBox spacing="28.0" style="-fx-padding: 12 0 8 0;">
+                                <VBox>
+                                    <Label style="-fx-text-fill: #ff4f6d; -fx-font-weight: bold; -fx-font-size: 22;" text="Rang" />
+                                    <Label style="-fx-text-fill: #6b758c; -fx-font-size: 11;" text="COMPÉTITIVE" />
+                                </VBox>
+                                <VBox>
+                                    <Label style="-fx-text-fill: #ff4f6d; -fx-font-weight: bold; -fx-font-size: 22;" text="K/D" />
+                                    <Label style="-fx-text-fill: #6b758c; -fx-font-size: 11;" text="RATIO" />
+                                </VBox>
+                                <VBox>
+                                    <Label style="-fx-text-fill: #ff4f6d; -fx-font-weight: bold; -fx-font-size: 22;" text="RR" />
+                                    <Label style="-fx-text-fill: #6b758c; -fx-font-size: 11;" text="POINTS" />
+                                </VBox>
+                            </HBox>
+                            <VBox VBox.vgrow="ALWAYS" />
+                            <Button onAction="#handleValorantRechercher" prefHeight="48.0" style="-fx-background-color: linear-gradient(to right, #ff375f, #e63946); -fx-text-fill: white; -fx-font-size: 16; -fx-font-weight: bold; -fx-background-radius: 14; -fx-cursor: hand;" text="🔍  RECHERCHER" />
+                            <HBox style="-fx-padding: 4 0 0 0;">
+                                <Label style="-fx-background-color: #232a39; -fx-text-fill: #8b95aa; -fx-font-size: 11; -fx-padding: 4 12; -fx-background-radius: 20;" text="⚡ API Riot Games" />
+                            </HBox>
+                        </VBox>
+
+                        <!-- CS2 / Steam -->
+                        <VBox prefWidth="400.0" spacing="14.0" style="-fx-background-color: linear-gradient(to bottom, #10231d, #0c1a17); -fx-background-radius: 22; -fx-border-color: #15803d; -fx-border-radius: 22; -fx-border-width: 1; -fx-padding: 22;">
+                            <Label style="-fx-text-fill: white; -fx-font-size: 42;" text="🟢" />
+                            <Label style="-fx-text-fill: white; -fx-font-size: 22; -fx-font-weight: bold;" text="CS2 / STEAM" wrapText="true" />
+                            <Label style="-fx-text-fill: #9db9b0; -fx-font-size: 13; -fx-line-spacing: 4;" text="Affichez vos stats Counter-Strike 2 via SteamID64, ou récupérez le lien officiel Steam du jeu." wrapText="true" />
+                            <HBox spacing="28.0" style="-fx-padding: 12 0 8 0;">
+                                <VBox>
+                                    <Label style="-fx-text-fill: #34d399; -fx-font-weight: bold; -fx-font-size: 22;" text="K/D" />
+                                    <Label style="-fx-text-fill: #5c8f7a; -fx-font-size: 11;" text="RATIO" />
+                                </VBox>
+                                <VBox>
+                                    <Label style="-fx-text-fill: #34d399; -fx-font-weight: bold; -fx-font-size: 22;" text="Wins" />
+                                    <Label style="-fx-text-fill: #5c8f7a; -fx-font-size: 11;" text="MATCHS" />
+                                </VBox>
+                                <VBox>
+                                    <Label style="-fx-text-fill: #34d399; -fx-font-weight: bold; -fx-font-size: 22;" text="Kills" />
+                                    <Label style="-fx-text-fill: #5c8f7a; -fx-font-size: 11;" text="TOTAL" />
+                                </VBox>
+                            </HBox>
+                            <VBox VBox.vgrow="ALWAYS" />
+                            <Button onAction="#handleSteamRechercher" prefHeight="48.0" style="-fx-background-color: linear-gradient(to right, #22c55e, #059669); -fx-text-fill: white; -fx-font-size: 16; -fx-font-weight: bold; -fx-background-radius: 14; -fx-cursor: hand;" text="🔍  RECHERCHER" />
+                            <HBox style="-fx-padding: 4 0 0 0;">
+                                <Label style="-fx-background-color: #14302a; -fx-text-fill: #7ecfae; -fx-font-size: 11; -fx-padding: 4 12; -fx-background-radius: 20;" text="⚡ API Steam" />
+                            </HBox>
+                        </VBox>
+                    </HBox>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </VBox>
+</AnchorPane>
