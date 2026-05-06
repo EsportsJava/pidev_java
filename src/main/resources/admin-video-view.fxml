@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="tn.esprit.controllers.Stream.AdminVideoController"
+      spacing="18"
+      style="-fx-background-color: linear-gradient(to bottom, #0f172a, #020617);
+             -fx-padding:25;">
+
+    <!-- HEADER -->
+    <Label text="🎬 Video Management Panel"
+           style="-fx-text-fill:white;
+                  -fx-font-size:22px;
+                  -fx-font-weight:bold;"/>
+
+    <!-- ACTION BAR -->
+    <HBox spacing="12"
+          style="-fx-background-color: rgba(255,255,255,0.03);
+                 -fx-padding:12;
+                 -fx-background-radius:12;
+                 -fx-alignment: CENTER_LEFT;">
+
+        <Button text="📥 Upload Video"
+                onAction="#uploadFromPC"
+                style="-fx-background-color: linear-gradient(to right, #22c55e, #16a34a);
+                       -fx-text-fill:white;
+                       -fx-font-weight:bold;
+                       -fx-padding:8 18;
+                       -fx-background-radius:10;
+                       -fx-cursor: hand;"/>
+
+        <Label fx:id="statusLabel"
+               text="Ready"
+               style="-fx-text-fill:#94a3b8;
+                      -fx-font-size:13px;
+                      -fx-padding:0 0 0 10;"/>
+    </HBox>
+
+    <!-- VIDEO GRID -->
+    <ScrollPane fitToWidth="true"
+                style="-fx-background:transparent;
+                       -fx-border-color:transparent;">
+
+        <FlowPane fx:id="videoContainer"
+                  hgap="20"
+                  vgap="20"
+                  prefWrapLength="1000"
+                  style="-fx-padding:15;"/>
+
+    </ScrollPane>
+
+</VBox>

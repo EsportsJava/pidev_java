@@ -92,10 +92,42 @@ CREATE TABLE IF NOT EXISTS stream_reaction (
 CREATE TABLE IF NOT EXISTS video (
                                      id INT AUTO_INCREMENT PRIMARY KEY,
                                      title VARCHAR(255),
-    path TEXT
+    path TEXT,
+    public_id VARCHAR(255),
+    thumbnail VARCHAR(500)
     );
 
+CREATE TABLE IF NOT EXISTS stream_comment (
+                                              id INT AUTO_INCREMENT PRIMARY KEY,
+                                              stream_id INT NOT NULL,
+                                              username VARCHAR(255) NOT NULL,
+    body TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    KEY idx_stream_comment_stream (stream_id)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS video_comment (
+                                             id INT AUTO_INCREMENT PRIMARY KEY,
+                                             video_id INT NOT NULL,
+                                             username VARCHAR(255) NOT NULL,
+    body TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    KEY idx_video_comment_video (video_id)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS video_reaction (
+                                              id INT AUTO_INCREMENT PRIMARY KEY,
+                                              video_id INT NOT NULL,
+                                              username VARCHAR(255) NOT NULL,
+    type VARCHAR(50) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    KEY idx_video_reaction_video (video_id)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Exemple de flux HLS par défaut (une seule ligne si la table est vide)
 INSERT INTO stream (url, is_active)
+SELECT 'http://100.89.37.94:8080/hls/match1.m3u8', 1
+    WHERE NOT EXISTS (SELECT 1 FROM stream LIMIT 1);
 SELECT 'http://192.168.100.81:8080/hls/match1.m3u8', 1
     WHERE NOT EXISTS (SELECT 1 FROM stream LIMIT 1);
 
