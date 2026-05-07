@@ -137,27 +137,16 @@ The application currently starts from the login screen:
 
 `/Login.fxml`
 
-## Testing
 
-Run the test suite with:
-
-```bash
-mvn test
-```
-
-Existing tests cover several services and modules, including:
-
-- Users
-- Tournaments
-- Games
-- Blogs
-- Products
-- Teams
-- Match management
 
 ## Contributors
 
-- Add your team members here
+Rajhi Mohamed Aziz
+Chaabani Sarra
+Saada Maryem
+Benmansour Salma
+Jery Mouhamed Amine
+Laamouri Tayssir
 
 ## Academic Context
 
