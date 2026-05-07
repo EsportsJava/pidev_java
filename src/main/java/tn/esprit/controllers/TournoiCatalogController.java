@@ -11,18 +11,29 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
+import javafx.scene.control.ListCell;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import tn.esprit.entities.Equipe;
 import tn.esprit.entities.Jeu;
 import tn.esprit.entities.Tournoi;
 import tn.esprit.entities.User;
+import tn.esprit.services.NotificationService;
 import tn.esprit.services.ServiceJeu;
 import tn.esprit.services.ServiceTournoi;
 import tn.esprit.services.ServiceTournoiInscription;
@@ -43,6 +54,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Predicate;
 
@@ -89,6 +101,7 @@ public class TournoiCatalogController implements Initializable {
     private final ServiceTournoi serviceTournoi = new ServiceTournoi();
     private final ServiceJeu serviceJeu = new ServiceJeu();
     private final ServiceTournoiInscription serviceInscription = new ServiceTournoiInscription();
+    private final NotificationService notificationService = new NotificationService();
     private final Map<Integer, String> jeuNoms = new HashMap<>();
     private final Map<Integer, Integer> participantsByTournoi = new HashMap<>();
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -161,8 +174,13 @@ public class TournoiCatalogController implements Initializable {
         card.setPadding(new Insets(16, 22, 18, 22));
         card.setAlignment(Pos.CENTER_LEFT);
         card.setStyle(CARD_BASE);
+        card.setCursor(Cursor.HAND);
         card.setOnMouseEntered(e -> card.setStyle(CARD_HOVER));
         card.setOnMouseExited(e -> card.setStyle(CARD_BASE));
+        card.setOnMouseClicked(e -> {
+            if (e.getTarget() instanceof Button) return; // don't navigate if clicking a button
+            openMatchsPage(t);
+        });
 
         Label title = new Label(t.getNom() == null ? "Tournoi" : t.getNom());
         title.setStyle("-fx-text-fill: #ffffff; -fx-font-size: 17px; -fx-font-weight: 600;");
@@ -197,18 +215,45 @@ public class TournoiCatalogController implements Initializable {
         HBox.setHgrow(spacer2, Priority.ALWAYS);
 
         Node statusPill = createStatusPill(t);
-        Button registerBtn = new Button("S'inscrire");
-        registerBtn.setCursor(Cursor.HAND);
-        registerBtn.setDisable(!canRegister(t));
-        registerBtn.setOpacity(registerBtn.isDisabled() ? 0.45 : 1);
-        registerBtn.setStyle(
-                "-fx-background-color: linear-gradient(to right, #db2777, #9333ea); "
-                        + "-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 13px; "
-                        + "-fx-background-radius: 999; -fx-padding: 10 26; -fx-cursor: hand;");
-        registerBtn.setOnAction(e -> {
-            e.consume();
-            openInscriptionPage(t);
-        });
+
+        // Check if user already has a team inscribed
+        User currentUser = SessionManager.getCurrentUser();
+        Equipe alreadyInscribed = null;
+        if (currentUser != null && currentUser.getId() > 0) {
+            try {
+                alreadyInscribed = serviceInscription.getInscribedEquipeForUser(t.getId(), currentUser.getId());
+            } catch (SQLException ignored) {}
+        }
+
+        Button registerBtn;
+        if (alreadyInscribed != null) {
+            // Team already registered — show "Quitter" button
+            final Equipe inscribedEquipe = alreadyInscribed;
+            registerBtn = new Button("Quitter");
+            registerBtn.setCursor(Cursor.HAND);
+            registerBtn.setStyle(
+                    "-fx-background-color: linear-gradient(to right, #dc2626, #b91c1c); "
+                            + "-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 13px; "
+                            + "-fx-background-radius: 999; -fx-padding: 10 26; -fx-cursor: hand;");
+            registerBtn.setOnAction(e -> {
+                e.consume();
+                handleQuitterTournoi(t, currentUser, inscribedEquipe);
+            });
+        } else {
+            // Not registered — show "S'inscrire" button
+            registerBtn = new Button("S'inscrire");
+            registerBtn.setCursor(Cursor.HAND);
+            registerBtn.setDisable(!canRegister(t));
+            registerBtn.setOpacity(registerBtn.isDisabled() ? 0.45 : 1);
+            registerBtn.setStyle(
+                    "-fx-background-color: linear-gradient(to right, #db2777, #9333ea); "
+                            + "-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 13px; "
+                            + "-fx-background-radius: 999; -fx-padding: 10 26; -fx-cursor: hand;");
+            registerBtn.setOnAction(e -> {
+                e.consume();
+                showInscriptionPopup(t);
+            });
+        }
 
         VBox right = new VBox(12, statusPill, registerBtn);
         right.setAlignment(Pos.CENTER_RIGHT);
@@ -336,20 +381,258 @@ public class TournoiCatalogController implements Initializable {
         info.showAndWait();
     }
 
-    private void openInscriptionPage(Tournoi tournoi) {
+    private void openMatchsPage(Tournoi tournoi) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/tournoiInscription.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/tournoiMatchs.fxml"));
             Parent root = loader.load();
-            TournoiInscriptionController controller = loader.getController();
+            TournoiMatchsController controller = loader.getController();
             controller.setTournoi(tournoi, jeuNoms.getOrDefault(tournoi.getJeuId(), "—"));
             Stage stage = (Stage) cardsContainer.getScene().getWindow();
             stage.setScene(new Scene(root, 1280, 720));
-            stage.setTitle("Inscription tournoi");
+            stage.setTitle("Matchs — " + (tournoi.getNom() != null ? tournoi.getNom() : "Tournoi"));
             stage.show();
         } catch (IOException e) {
             messageLabel.setStyle("-fx-text-fill: #f87171;");
-            messageLabel.setText("Ouverture inscription impossible : " + e.getMessage());
+            messageLabel.setText("Ouverture impossible : " + e.getMessage());
         }
+    }
+
+    private void showInscriptionPopup(Tournoi tournoi) {
+        User user = SessionManager.getCurrentUser();
+        if (user == null || user.getId() <= 0) {
+            showAlert(Alert.AlertType.WARNING, "Connexion requise", "Connectez-vous pour inscrire une équipe.");
+            return;
+        }
+
+        List<Equipe> ownedTeams;
+        try {
+            ownedTeams = serviceInscription.getOwnedEquipesForUser(user.getId());
+        } catch (SQLException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de charger vos équipes : " + e.getMessage());
+            return;
+        }
+
+        if (ownedTeams.isEmpty()) {
+            showAlert(Alert.AlertType.WARNING, "Aucune équipe",
+                    "Vous ne possédez aucune équipe.\nCréez une équipe d'abord pour pouvoir l'inscrire.");
+            return;
+        }
+
+        // ── Custom dark-themed popup ──
+        Stage popup = new Stage();
+        popup.initModality(Modality.APPLICATION_MODAL);
+        popup.initStyle(StageStyle.TRANSPARENT);
+        popup.initOwner(cardsContainer.getScene().getWindow());
+
+        // ── Header with gradient ──
+        Label icon = new Label("🏆");
+        icon.setStyle("-fx-font-size: 28px;");
+        StackPane iconCircle = new StackPane(icon);
+        iconCircle.setMinSize(56, 56);
+        iconCircle.setMaxSize(56, 56);
+        iconCircle.setStyle("-fx-background-color: linear-gradient(to bottom right, #7c3aed, #db2777); -fx-background-radius: 50;");
+
+        Label titleLabel = new Label("Inscription au tournoi");
+        titleLabel.setStyle("-fx-text-fill: #f8fafc; -fx-font-size: 20px; -fx-font-weight: 800;");
+
+        String tName = tournoi.getNom() == null ? "Tournoi" : tournoi.getNom();
+        Label subtitleLabel = new Label(tName);
+        subtitleLabel.setStyle("-fx-text-fill: #f472b6; -fx-font-size: 14px; -fx-font-weight: 600;");
+
+        // Places info
+        int used = 0;
+        try { used = serviceInscription.countByTournoi(tournoi.getId()); } catch (SQLException ignored) {}
+        int max = Math.max(0, tournoi.getMaxParticipants());
+        Label placesLabel = new Label("📊  Places : " + used + " / " + max);
+        placesLabel.setStyle("-fx-text-fill: #94a3b8; -fx-font-size: 12px;");
+
+        VBox headerInfo = new VBox(4, titleLabel, subtitleLabel, placesLabel);
+        headerInfo.setAlignment(Pos.CENTER_LEFT);
+
+        HBox header = new HBox(16, iconCircle, headerInfo);
+        header.setAlignment(Pos.CENTER_LEFT);
+        header.setPadding(new Insets(24, 28, 16, 28));
+        header.setStyle("-fx-background-color: linear-gradient(to right, #0d1b3e, #1a0b2e); -fx-background-radius: 16 16 0 0;");
+
+        // ── Separator ──
+        Region separator = new Region();
+        separator.setMinHeight(2);
+        separator.setMaxHeight(2);
+        separator.setStyle("-fx-background-color: linear-gradient(to right, #7c3aed, #db2777, #7c3aed);");
+
+        // ── Body ──
+        Label selectLabel = new Label("Choisir l'équipe à inscrire");
+        selectLabel.setStyle("-fx-text-fill: #e2e8f0; -fx-font-size: 14px; -fx-font-weight: 700;");
+
+        ComboBox<Equipe> combo = new ComboBox<>();
+        combo.setCellFactory(param -> new ListCell<>() {
+            @Override
+            protected void updateItem(Equipe item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setStyle("-fx-background-color: #1e293b; -fx-text-fill: #94a3b8;");
+                } else {
+                    setText("👥  " + item.getNom());
+                    setStyle("-fx-background-color: #1e293b; -fx-text-fill: #f1f5f9; -fx-font-size: 13px; -fx-padding: 8 12;");
+                }
+            }
+        });
+        combo.setButtonCell(new ListCell<>() {
+            @Override
+            protected void updateItem(Equipe item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText("👥  " + item.getNom());
+                }
+                setStyle("-fx-text-fill: #f1f5f9; -fx-font-size: 13px; -fx-background-color: #1e293b;");
+            }
+        });
+        combo.getItems().addAll(ownedTeams);
+        combo.getSelectionModel().selectFirst();
+        combo.setMaxWidth(Double.MAX_VALUE);
+        combo.setStyle("-fx-background-color: #1e293b; -fx-background-radius: 10; -fx-font-size: 13px; -fx-pref-height: 42; -fx-mark-color: #e2e8f0;");
+
+        Label statusLabel = new Label("");
+        statusLabel.setWrapText(true);
+        statusLabel.setStyle("-fx-font-size: 12px;");
+
+        VBox body = new VBox(12, selectLabel, combo, statusLabel);
+        body.setPadding(new Insets(20, 28, 10, 28));
+
+        // ── Buttons ──
+        Button confirmBtn = new Button("✅  Inscrire l'équipe");
+        confirmBtn.setMaxWidth(Double.MAX_VALUE);
+        confirmBtn.setCursor(Cursor.HAND);
+        String confirmStyle = "-fx-background-color: linear-gradient(to right, #db2777, #9333ea); "
+                + "-fx-text-fill: white; -fx-font-weight: 800; -fx-font-size: 14px; "
+                + "-fx-background-radius: 12; -fx-pref-height: 46; -fx-cursor: hand; "
+                + "-fx-effect: dropshadow(gaussian, rgba(219,39,119,0.45), 12, 0, 0, 4);";
+        String confirmHover = "-fx-background-color: linear-gradient(to right, #ec4899, #a855f7); "
+                + "-fx-text-fill: white; -fx-font-weight: 800; -fx-font-size: 14px; "
+                + "-fx-background-radius: 12; -fx-pref-height: 46; -fx-cursor: hand; "
+                + "-fx-effect: dropshadow(gaussian, rgba(236,72,153,0.65), 18, 0, 0, 5);";
+        confirmBtn.setStyle(confirmStyle);
+        confirmBtn.setOnMouseEntered(e -> confirmBtn.setStyle(confirmHover));
+        confirmBtn.setOnMouseExited(e -> confirmBtn.setStyle(confirmStyle));
+
+        Button cancelBtn = new Button("Annuler");
+        cancelBtn.setMaxWidth(Double.MAX_VALUE);
+        cancelBtn.setCursor(Cursor.HAND);
+        String cancelStyle = "-fx-background-color: transparent; -fx-text-fill: #94a3b8; "
+                + "-fx-font-size: 13px; -fx-background-radius: 10; -fx-pref-height: 38; "
+                + "-fx-border-color: #334155; -fx-border-radius: 10; -fx-cursor: hand;";
+        String cancelHover = "-fx-background-color: rgba(51,65,85,0.3); -fx-text-fill: #e2e8f0; "
+                + "-fx-font-size: 13px; -fx-background-radius: 10; -fx-pref-height: 38; "
+                + "-fx-border-color: #475569; -fx-border-radius: 10; -fx-cursor: hand;";
+        cancelBtn.setStyle(cancelStyle);
+        cancelBtn.setOnMouseEntered(e -> cancelBtn.setStyle(cancelHover));
+        cancelBtn.setOnMouseExited(e -> cancelBtn.setStyle(cancelStyle));
+        cancelBtn.setOnAction(e -> popup.close());
+
+        VBox buttons = new VBox(10, confirmBtn, cancelBtn);
+        buttons.setPadding(new Insets(6, 28, 24, 28));
+
+        // ── Assemble ──
+        VBox root = new VBox(0, header, separator, body, buttons);
+        root.setStyle("-fx-background-color: #0f172a; -fx-background-radius: 16; "
+                + "-fx-border-color: rgba(124,58,237,0.3); -fx-border-radius: 16; -fx-border-width: 1.5;");
+        root.setEffect(new DropShadow(30, Color.rgb(0, 0, 0, 0.7)));
+        root.setPrefWidth(440);
+
+        StackPane wrapper = new StackPane(root);
+        wrapper.setStyle("-fx-background-color: rgba(0,0,0,0.55);");
+        wrapper.setPadding(new Insets(40));
+
+        confirmBtn.setOnAction(e -> {
+            Equipe selected = combo.getSelectionModel().getSelectedItem();
+            if (selected == null) {
+                statusLabel.setStyle("-fx-text-fill: #ef4444; -fx-font-size: 12px;");
+                statusLabel.setText("Veuillez sélectionner une équipe.");
+                return;
+            }
+            popup.close();
+            doInscrireEquipe(tournoi, user, selected);
+        });
+
+        Scene scene = new Scene(wrapper);
+        scene.setFill(Color.TRANSPARENT);
+        popup.setScene(scene);
+        popup.showAndWait();
+    }
+
+    private void doInscrireEquipe(Tournoi tournoi, User user, Equipe equipe) {
+        try {
+            serviceInscription.ensureTable();
+            int used = serviceInscription.countByTournoi(tournoi.getId());
+            int max = Math.max(0, tournoi.getMaxParticipants());
+            if (max > 0 && used >= max) {
+                showAlert(Alert.AlertType.WARNING, "Tournoi complet",
+                        "Plus de places disponibles (" + used + "/" + max + ").");
+                return;
+            }
+            if (serviceInscription.existsForEquipe(tournoi.getId(), equipe.getId())) {
+                showAlert(Alert.AlertType.WARNING, "Déjà inscrite",
+                        "L'équipe \"" + equipe.getNom() + "\" est déjà inscrite à ce tournoi.");
+                return;
+            }
+            serviceInscription.inscrire(tournoi.getId(), user.getId(), equipe.getId(),
+                    user.getNom(), user.getEmail());
+            notificationService.createNotificationIfAbsent(
+                    user.getId(),
+                    "inscription_confirmed",
+                    "Inscription confirmée",
+                    "L'équipe \"" + equipe.getNom() + "\" est inscrite au tournoi \""
+                            + (tournoi.getNom() == null ? "Tournoi" : tournoi.getNom()) + "\".",
+                    "inscription:" + tournoi.getId() + ":equipe:" + equipe.getId());
+
+            // Refresh UI
+            loadParticipantsCounts();
+            updateHeaderStats();
+            showTournois(allTournois);
+
+            showAlert(Alert.AlertType.INFORMATION, "Inscription confirmée",
+                    "L'équipe \"" + equipe.getNom() + "\" a été inscrite avec succès !");
+        } catch (SQLException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur d'inscription",
+                    "Impossible d'inscrire l'équipe : " + e.getMessage());
+        }
+    }
+
+    private void handleQuitterTournoi(Tournoi tournoi, User user, Equipe equipe) {
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Quitter le tournoi");
+        confirm.setHeaderText(null);
+        confirm.setContentText("Retirer l'équipe \"" + equipe.getNom() + "\" du tournoi \""
+                + (tournoi.getNom() == null ? "Tournoi" : tournoi.getNom()) + "\" ?");
+        confirm.showAndWait().ifPresent(btn -> {
+            if (btn == ButtonType.OK) {
+                try {
+                    serviceInscription.desinscrireEquipe(tournoi.getId(), equipe.getId());
+
+                    // Refresh UI
+                    loadParticipantsCounts();
+                    updateHeaderStats();
+                    showTournois(allTournois);
+
+                    showAlert(Alert.AlertType.INFORMATION, "Désinscription confirmée",
+                            "L'équipe \"" + equipe.getNom() + "\" a été retirée du tournoi.");
+                } catch (SQLException e) {
+                    showAlert(Alert.AlertType.ERROR, "Erreur",
+                            "Impossible de quitter le tournoi : " + e.getMessage());
+                }
+            }
+        });
+    }
+
+    private void showAlert(Alert.AlertType type, String title, String content) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 
     private void updateHeaderStats() {

@@ -18,10 +18,12 @@ public class ServiceMatchGame implements IService<MatchGame> {
 
     public ServiceMatchGame() {
         conn = MyDatabase.getInstance().getConnection();
-        try {
-            ensureRoundRobinTables();
-        } catch (SQLException e) {
-            throw new RuntimeException("Initialisation de la table tournoi_equipe impossible: " + e.getMessage(), e);
+        if (conn != null) {
+            try {
+                ensureRoundRobinTables();
+            } catch (SQLException e) {
+                throw new RuntimeException("Initialisation des tables d'inscription equipe/tournoi impossible: " + e.getMessage(), e);
+            }
         }
     }
 
@@ -90,121 +92,33 @@ public class ServiceMatchGame implements IService<MatchGame> {
         return matchGames;
     }
 
-    public void registerEquipeToTournoi(int tournoiId, int equipeId) throws SQLException {
-        String sql = "INSERT IGNORE INTO tournoi_equipe(tournoi_id, equipe_id) VALUES (?, ?)";
+    public List<MatchGame> getByTournoi(int tournoiId) throws SQLException {
+        String sql = "SELECT * FROM match_game WHERE tournoi_id = ? ORDER BY date_match ASC";
+        List<MatchGame> matchGames = new ArrayList<>();
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, tournoiId);
-            ps.setInt(2, equipeId);
-            ps.executeUpdate();
-        }
-    }
-
-    public int registerAllEquipesToTournoi(int tournoiId) throws SQLException {
-        List<Integer> ids = new ArrayList<>();
-        String read = "SELECT id FROM equipe ORDER BY id ASC";
-        try (Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(read)) {
-            while (rs.next()) {
-                ids.add(rs.getInt("id"));
-            }
-        }
-
-        int inserted = 0;
-        for (Integer teamId : ids) {
-            String sql = "INSERT IGNORE INTO tournoi_equipe(tournoi_id, equipe_id) VALUES (?, ?)";
-            try (PreparedStatement ps = conn.prepareStatement(sql)) {
-                ps.setInt(1, tournoiId);
-                ps.setInt(2, teamId);
-                inserted += ps.executeUpdate();
-            }
-        }
-        return inserted;
-    }
-
-    public int seedSampleMatchGames() throws SQLException {
-        List<Integer> equipeIds = new ArrayList<>();
-        String readTeams = "SELECT id FROM equipe ORDER BY id ASC LIMIT 4";
-        try (Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(readTeams)) {
-            while (rs.next()) {
-                equipeIds.add(rs.getInt("id"));
-            }
-        }
-
-        if (equipeIds.size() < 2) {
-            throw new SQLException("Impossible de semer les matchs : au moins 2 équipes sont requises.");
-        }
-
-        Integer tournoiId = null;
-        try (Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery("SELECT id FROM tournoi ORDER BY id ASC LIMIT 1")) {
-            if (rs.next()) {
-                tournoiId = rs.getInt("id");
-            }
-        }
-        if (tournoiId == null) {
-            throw new SQLException("Impossible de semer les matchs : aucun tournoi trouvé.");
-        }
-
-        String checkSql = "SELECT COUNT(*) AS c FROM match_game WHERE date_match = ? AND equipe1_id = ? AND equipe2_id = ? AND tournoi_id = ?";
-        String insertSql = "INSERT INTO match_game(date_match, score_team1, score_team2, statut, equipe1_id, equipe2_id, tournoi_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        int inserted = 0;
-
-        try (PreparedStatement check = conn.prepareStatement(checkSql);
-             PreparedStatement ps = conn.prepareStatement(insertSql)) {
-            Object[][] seeds = new Object[][]{
-                {Timestamp.valueOf("2026-04-01 18:00:00"), 3, 1, "Termine", equipeIds.get(0), equipeIds.get(1)},
-                {Timestamp.valueOf("2026-04-02 19:30:00"), 2, 2, "Finished", equipeIds.get(0), equipeIds.get(1)},
-                {Timestamp.valueOf("2026-04-03 20:00:00"), 1, 0, "Termine", equipeIds.get(0), equipeIds.get(1)}
-            };
-
-            if (equipeIds.size() >= 3) {
-                seeds = new Object[][]{
-                    {Timestamp.valueOf("2026-04-01 18:00:00"), 3, 1, "Termine", equipeIds.get(0), equipeIds.get(1)},
-                    {Timestamp.valueOf("2026-04-02 19:30:00"), 2, 2, "Finished", equipeIds.get(1), equipeIds.get(2)},
-                    {Timestamp.valueOf("2026-04-03 20:00:00"), 1, 0, "Termine", equipeIds.get(0), equipeIds.get(2)},
-                    {Timestamp.valueOf("2026-04-10 17:00:00"), 0, 0, "Planifie", equipeIds.get(0), equipeIds.get(1)}
-                };
-            }
-            if (equipeIds.size() >= 4) {
-                seeds = new Object[][]{
-                    {Timestamp.valueOf("2026-04-01 18:00:00"), 3, 1, "Termine", equipeIds.get(0), equipeIds.get(1)},
-                    {Timestamp.valueOf("2026-04-02 19:30:00"), 2, 2, "Finished", equipeIds.get(1), equipeIds.get(2)},
-                    {Timestamp.valueOf("2026-04-03 20:00:00"), 1, 0, "Termine", equipeIds.get(0), equipeIds.get(2)},
-                    {Timestamp.valueOf("2026-04-04 16:15:00"), 0, 2, "Finished", equipeIds.get(2), equipeIds.get(3)},
-                    {Timestamp.valueOf("2026-04-10 17:00:00"), 0, 0, "Planifie", equipeIds.get(0), equipeIds.get(3)}
-                };
-            }
-
-            for (Object[] seed : seeds) {
-                check.setTimestamp(1, (Timestamp) seed[0]);
-                check.setInt(2, (Integer) seed[4]);
-                check.setInt(3, (Integer) seed[5]);
-                check.setInt(4, tournoiId);
-                try (ResultSet rs = check.executeQuery()) {
-                    int count = rs.next() ? rs.getInt("c") : 0;
-                    if (count > 0) {
-                        continue;
-                    }
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    matchGames.add(new MatchGame(
+                            rs.getInt("id"),
+                            rs.getTimestamp("date_match"),
+                            (Integer) rs.getObject("score_team1"),
+                            (Integer) rs.getObject("score_team2"),
+                            rs.getString("statut"),
+                            rs.getInt("equipe1_id"),
+                            rs.getInt("equipe2_id"),
+                            rs.getInt("tournoi_id")
+                    ));
                 }
-
-                ps.setTimestamp(1, (Timestamp) seed[0]);
-                ps.setInt(2, (Integer) seed[1]);
-                ps.setInt(3, (Integer) seed[2]);
-                ps.setString(4, (String) seed[3]);
-                ps.setInt(5, (Integer) seed[4]);
-                ps.setInt(6, (Integer) seed[5]);
-                ps.setInt(7, tournoiId);
-                inserted += ps.executeUpdate();
             }
         }
-
-        return inserted;
+        return matchGames;
     }
+
 
     public List<Integer> getRegisteredEquipeIds(int tournoiId) throws SQLException {
         List<Integer> equipeIds = new ArrayList<>();
-        String sql = "SELECT equipe_id FROM tournoi_equipe WHERE tournoi_id = ? ORDER BY equipe_id ASC";
+        String sql = "SELECT DISTINCT equipe_id FROM tournoi_inscription WHERE tournoi_id = ? AND equipe_id IS NOT NULL ORDER BY equipe_id ASC";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, tournoiId);
             try (ResultSet rs = ps.executeQuery()) {
@@ -266,7 +180,7 @@ public class ServiceMatchGame implements IService<MatchGame> {
                         ps.setTimestamp(1, matchDate);
                         ps.setInt(2, 0);
                         ps.setInt(3, 0);
-                        ps.setString(4, "Scheduled");
+                        ps.setString(4, "Planifié");
                         ps.setInt(5, equipeIds.get(i));
                         ps.setInt(6, equipeIds.get(j));
                         ps.setInt(7, tournoiId);
@@ -287,17 +201,20 @@ public class ServiceMatchGame implements IService<MatchGame> {
     }
 
     private void ensureRoundRobinTables() throws SQLException {
-        String sql = "CREATE TABLE IF NOT EXISTS tournoi_equipe ("
+        String createInscriptionTournoi = "CREATE TABLE IF NOT EXISTS inscription_tournoi ("
                 + "id INT AUTO_INCREMENT PRIMARY KEY, "
+                + "date_inscription DATETIME NOT NULL, "
                 + "tournoi_id INT NOT NULL, "
                 + "equipe_id INT NOT NULL, "
-                + "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, "
-                + "UNIQUE KEY uq_tournoi_equipe (tournoi_id, equipe_id), "
-                + "CONSTRAINT fk_tournoi_equipe_tournoi FOREIGN KEY (tournoi_id) REFERENCES tournoi(id) ON DELETE CASCADE, "
-                + "CONSTRAINT fk_tournoi_equipe_equipe FOREIGN KEY (equipe_id) REFERENCES equipe(id) ON DELETE CASCADE"
+                + "UNIQUE KEY uq_inscription_tournoi (tournoi_id, equipe_id), "
+                + "INDEX idx_inscription_tournoi_tournoi (tournoi_id), "
+                + "INDEX idx_inscription_tournoi_equipe (equipe_id), "
+                + "CONSTRAINT fk_inscription_tournoi_tournoi FOREIGN KEY (tournoi_id) REFERENCES tournoi(id), "
+                + "CONSTRAINT fk_inscription_tournoi_equipe FOREIGN KEY (equipe_id) REFERENCES equipe(id)"
                 + ")";
+
         try (Statement stmt = conn.createStatement()) {
-            stmt.execute(sql);
+            stmt.execute(createInscriptionTournoi);
         }
     }
 }

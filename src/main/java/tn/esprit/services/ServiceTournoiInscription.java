@@ -1,5 +1,6 @@
 package tn.esprit.services;
 
+import tn.esprit.entities.Equipe;
 import tn.esprit.utils.MyDatabase;
 
 import java.sql.Connection;
@@ -11,7 +12,9 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ServiceTournoiInscription {
@@ -28,15 +31,22 @@ public class ServiceTournoiInscription {
                   id INT AUTO_INCREMENT PRIMARY KEY,
                   tournoi_id INT NOT NULL,
                   user_id INT NULL,
+                  equipe_id INT NULL,
                   nom VARCHAR(255) NULL,
                   email VARCHAR(255) NULL,
                   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                   CONSTRAINT fk_ti_tournoi FOREIGN KEY (tournoi_id) REFERENCES tournoi(id) ON DELETE CASCADE,
-                  UNIQUE KEY uk_ti_unique (tournoi_id, user_id, email)
+                  CONSTRAINT fk_ti_equipe FOREIGN KEY (equipe_id) REFERENCES equipe(id) ON DELETE CASCADE
                 )
                 """;
         try (Statement st = conn.createStatement()) {
             st.execute(sql);
+        }
+        // Add equipe_id column if table already existed without it
+        try (Statement st = conn.createStatement()) {
+            st.execute("ALTER TABLE tournoi_inscription ADD COLUMN equipe_id INT NULL AFTER user_id");
+        } catch (SQLException ignored) {
+            // Column already exists
         }
     }
 
@@ -46,6 +56,17 @@ public class ServiceTournoiInscription {
             ps.setInt(1, tournoiId);
             ps.setObject(2, userId);
             ps.setString(3, email);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        }
+    }
+
+    public boolean existsForEquipe(int tournoiId, int equipeId) throws SQLException {
+        String sql = "SELECT 1 FROM tournoi_inscription WHERE tournoi_id=? AND equipe_id=? LIMIT 1";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, tournoiId);
+            ps.setInt(2, equipeId);
             try (ResultSet rs = ps.executeQuery()) {
                 return rs.next();
             }
@@ -84,13 +105,81 @@ public class ServiceTournoiInscription {
     }
 
     public void inscrire(int tournoiId, Integer userId, String nom, String email) throws SQLException {
+        inscrire(tournoiId, userId, null, nom, email);
+    }
+
+    public void inscrire(int tournoiId, Integer userId, Integer equipeId, String nom, String email) throws SQLException {
         ensureTable();
-        String sql = "INSERT INTO tournoi_inscription(tournoi_id, user_id, nom, email) VALUES (?,?,?,?)";
+        String sql = "INSERT INTO tournoi_inscription(tournoi_id, user_id, equipe_id, nom, email) VALUES (?,?,?,?,?)";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, tournoiId);
             ps.setObject(2, userId);
-            ps.setString(3, nom);
-            ps.setString(4, email);
+            ps.setObject(3, equipeId);
+            ps.setString(4, nom);
+            ps.setString(5, email);
+            ps.executeUpdate();
+        }
+    }
+
+    /**
+     * Get all equipes owned by a user that are available for inscription.
+     */
+    public List<Equipe> getOwnedEquipesForUser(int userId) throws SQLException {
+        List<Equipe> equipes = new ArrayList<>();
+        String sql = "SELECT * FROM equipe WHERE owner_id = ? ORDER BY nom ASC";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    equipes.add(new Equipe(
+                            rs.getInt("id"),
+                            rs.getString("nom"),
+                            rs.getInt("max_members"),
+                            rs.getString("logo")
+                    ));
+                }
+            }
+        }
+        return equipes;
+    }
+
+    /**
+     * Find which of the user's owned equipes is already inscribed to a tournoi (if any).
+     * Returns the Equipe if found, null otherwise.
+     */
+    public Equipe getInscribedEquipeForUser(int tournoiId, int userId) throws SQLException {
+        String sql = """
+                SELECT e.id, e.nom, e.max_members, e.logo
+                FROM tournoi_inscription ti
+                JOIN equipe e ON e.id = ti.equipe_id
+                WHERE ti.tournoi_id = ? AND e.owner_id = ?
+                LIMIT 1
+                """;
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, tournoiId);
+            ps.setInt(2, userId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return new Equipe(
+                            rs.getInt("id"),
+                            rs.getString("nom"),
+                            rs.getInt("max_members"),
+                            rs.getString("logo")
+                    );
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Remove a team's inscription from a tournament.
+     */
+    public void desinscrireEquipe(int tournoiId, int equipeId) throws SQLException {
+        String sql = "DELETE FROM tournoi_inscription WHERE tournoi_id = ? AND equipe_id = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, tournoiId);
+            ps.setInt(2, equipeId);
             ps.executeUpdate();
         }
     }

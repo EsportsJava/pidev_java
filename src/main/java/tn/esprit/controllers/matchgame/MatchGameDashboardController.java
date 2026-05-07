@@ -19,8 +19,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import tn.esprit.entities.Equipe;
 import tn.esprit.entities.MatchGame;
 import tn.esprit.entities.Tournoi;
+import tn.esprit.services.ServiceEquipe;
 import tn.esprit.services.ServiceMatchGame;
 import tn.esprit.services.ServiceTournoi;
 
@@ -29,8 +31,10 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -69,12 +73,28 @@ public class MatchGameDashboardController implements Initializable {
 
     private final ServiceMatchGame serviceMatchGame = new ServiceMatchGame();
     private final List<MatchGame> allMatchs = new ArrayList<>();
+    private final Map<Integer, String> tournoiNames = new HashMap<>();
+    private final Map<Integer, String> equipeNames = new HashMap<>();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        loadNameMaps();
         setupColumns();
         setupSearchAndSort();
         loadMatchs();
+    }
+
+    private void loadNameMaps() {
+        try {
+            for (Tournoi t : new ServiceTournoi().getAll()) {
+                tournoiNames.put(t.getId(), t.getNom() != null ? t.getNom() : "Tournoi #" + t.getId());
+            }
+        } catch (SQLException ignored) {}
+        try {
+            for (Equipe e : new ServiceEquipe().getAll()) {
+                equipeNames.put(e.getId(), e.getNom() != null ? e.getNom() : "Equipe #" + e.getId());
+            }
+        } catch (SQLException ignored) {}
     }
 
     private void setupSearchAndSort() {
@@ -200,7 +220,7 @@ public class MatchGameDashboardController implements Initializable {
             }
         });
 
-        // Styled equipe1 column
+        // Styled equipe1 column — show team name
         equipe1Col.setCellFactory(col -> new TableCell<>() {
             @Override
             protected void updateItem(Integer item, boolean empty) {
@@ -208,7 +228,8 @@ public class MatchGameDashboardController implements Initializable {
                 if (empty || item == null) {
                     setGraphic(null); setText(null);
                 } else {
-                    Label lbl = new Label(String.valueOf(item));
+                    String name = equipeNames.getOrDefault(item, "Equipe #" + item);
+                    Label lbl = new Label(name);
                     lbl.setStyle("-fx-text-fill: #cbd5e1; -fx-font-size: 12px;");
                     setGraphic(lbl); setText(null);
                 }
@@ -216,7 +237,7 @@ public class MatchGameDashboardController implements Initializable {
             }
         });
 
-        // Styled equipe2 column
+        // Styled equipe2 column — show team name
         equipe2Col.setCellFactory(col -> new TableCell<>() {
             @Override
             protected void updateItem(Integer item, boolean empty) {
@@ -224,7 +245,8 @@ public class MatchGameDashboardController implements Initializable {
                 if (empty || item == null) {
                     setGraphic(null); setText(null);
                 } else {
-                    Label lbl = new Label(String.valueOf(item));
+                    String name = equipeNames.getOrDefault(item, "Equipe #" + item);
+                    Label lbl = new Label(name);
                     lbl.setStyle("-fx-text-fill: #cbd5e1; -fx-font-size: 12px;");
                     setGraphic(lbl); setText(null);
                 }
@@ -232,7 +254,7 @@ public class MatchGameDashboardController implements Initializable {
             }
         });
 
-        // Styled tournoi column
+        // Styled tournoi column — show tournoi name
         tournoiCol.setCellFactory(col -> new TableCell<>() {
             @Override
             protected void updateItem(Integer item, boolean empty) {
@@ -240,7 +262,8 @@ public class MatchGameDashboardController implements Initializable {
                 if (empty || item == null) {
                     setGraphic(null); setText(null);
                 } else {
-                    Label lbl = new Label(String.valueOf(item));
+                    String name = tournoiNames.getOrDefault(item, "Tournoi #" + item);
+                    Label lbl = new Label(name);
                     lbl.setStyle("-fx-text-fill: #cbd5e1; -fx-font-size: 12px;");
                     setGraphic(lbl); setText(null);
                 }
@@ -407,18 +430,6 @@ public class MatchGameDashboardController implements Initializable {
         }
     }
 
-    @FXML
-    private void handleSeedTestMatches() {
-        try {
-            int inserted = serviceMatchGame.seedSampleMatchGames();
-            messageLabel.setStyle("-fx-text-fill: #27ae60;");
-            messageLabel.setText(inserted + " matchs de test ajoutes.");
-            loadMatchs();
-        } catch (SQLException e) {
-            messageLabel.setStyle("-fx-text-fill: #e74c3c;");
-            messageLabel.setText("Impossible de semer les matchs : " + e.getMessage());
-        }
-    }
 
     private void openEditWindow(MatchGame match) {
         try {
@@ -525,20 +536,6 @@ public class MatchGameDashboardController implements Initializable {
         }
 
         try {
-            List<Integer> registered = serviceMatchGame.getRegisteredEquipeIds(tournoiId);
-            if (registered.size() < 2) {
-                Alert ask = new Alert(Alert.AlertType.CONFIRMATION);
-                ask.setTitle("Inscription automatique");
-                ask.setHeaderText(null);
-                ask.setContentText("Moins de 2 equipes inscrites. Inscrire toutes les equipes existantes a ce tournoi ?");
-                Optional<ButtonType> answer = ask.showAndWait();
-                if (answer.isPresent() && answer.get() == ButtonType.OK) {
-                    int inserted = serviceMatchGame.registerAllEquipesToTournoi(tournoiId);
-                    messageLabel.setStyle("-fx-text-fill: #22c55e;");
-                    messageLabel.setText(inserted + " equipes inscrites automatiquement.");
-                }
-            }
-
             int created = serviceMatchGame.generateRoundRobinMatches(tournoiId, regenerate);
             messageLabel.setStyle("-fx-text-fill: #27ae60;");
             messageLabel.setText(created + " matchs round-robin crees pour " + selectedName + ".");

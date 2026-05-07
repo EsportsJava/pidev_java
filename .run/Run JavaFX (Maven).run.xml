@@ -5,17 +5,28 @@
       <option name="myRunnerSettings" />
       <option name="myRunnerParameters">
         <MavenRunnerParameters>
+          <option name="cmdOptions" />
           <option name="profiles">
             <set />
           </option>
           <option name="goals">
             <list>
-              <option value="javafx:run" />
+              <option value="--module-path" />
+              <option value="C:\Users\rajhi\.m2\repository\org\openjfx\javafx-controls\21.0.2\javafx-controls-21.0.2-win.jar;C:\Users\rajhi\.m2\repository\org\openjfx\javafx-fxml\21.0.2\javafx-fxml-21.0.2-win.jar;C:\Users\rajhi\.m2\repository\org\openjfx\javafx-graphics\21.0.2\javafx-graphics-21.0.2-win.jar;C:\Users\rajhi\.m2\repository\org\openjfx\javafx-base\21.0.2\javafx-base-21.0.2-win.jar;C:\Users\rajhi\.m2\repository\org\openjfx\javafx-web\21.0.2\javafx-web-21.0.2-win.jar;C:\Users\rajhi\.m2\repository\org\openjfx\javafx-media\21.0.2\javafx-media-21.0.2-win.jar" />
+              <option value="--add-modules" />
+              <option value="javafx.controls,javafx.fxml,javafx.web,javafx.media" />
             </list>
           </option>
+          <option name="multimoduleDir" />
           <option name="pomFileName" value="$PROJECT_DIR$/pom.xml" />
-          <option name="workingDirPath" value="$PROJECT_DIR$" />
+          <option name="profilesMap">
+            <map />
+          </option>
+          <option name="projectsCmdOptionValues">
+            <list />
+          </option>
           <option name="resolveToWorkspace" value="false" />
+          <option name="workingDirPath" value="$PROJECT_DIR$" />
         </MavenRunnerParameters>
       </option>
     </MavenSettings>
