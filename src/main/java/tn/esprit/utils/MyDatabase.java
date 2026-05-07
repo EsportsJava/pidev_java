@@ -10,7 +10,7 @@ public class MyDatabase {
     private Connection connection;
     private boolean ensuredStreamTables;
 
-    private static final String URL = "jdbc:mysql://localhost:4307/esport-db";
+    private static final String URL = "jdbc:mysql://localhost:3306/esport-db";
     private static final String USER = "root";
     private static final String PASSWORD = "";
 

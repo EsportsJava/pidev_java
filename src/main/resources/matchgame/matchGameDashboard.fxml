@@ -40,11 +40,6 @@
                            -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: 700;
                            -fx-background-radius: 10; -fx-pref-height: 40; -fx-pref-width: 170;
                            -fx-cursor: hand;"/>
-            <Button text="Seed Test Matches" onAction="#handleSeedTestMatches"
-                    style="-fx-background-color: linear-gradient(to right, #14b8a6, #06b6d4);
-                           -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: 700;
-                           -fx-background-radius: 10; -fx-pref-height: 40; -fx-pref-width: 170;
-                           -fx-cursor: hand;"/>
             <Button text="+ New Match" onAction="#handleNewMatch"
                     style="-fx-background-color: linear-gradient(to right, #7c3aed, #8b5cf6);
                            -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: 700;

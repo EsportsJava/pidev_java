@@ -29,17 +29,26 @@ public class ServiceEquipe implements IService<Equipe> {
 
     public ServiceEquipe() {
         conn = MyDatabase.getInstance().getConnection();
-        try {
-            ensureAdvancedTables();
-        } catch (SQLException e) {
-            throw new RuntimeException("Initialisation des tables equipe avancees impossible: " + e.getMessage(), e);
+        if (conn != null) {
+            try {
+                ensureAdvancedTables();
+            } catch (SQLException e) {
+                throw new RuntimeException("Initialisation des tables equipe avancees impossible: " + e.getMessage(), e);
+            }
         }
+    }
+
+    private Connection getConnection() throws SQLException {
+        if (conn == null) {
+            throw new SQLException("Database connection not available. Please check your database configuration.");
+        }
+        return conn;
     }
 
     @Override
     public void ajouter(Equipe equipe) throws SQLException {
         String sql = "INSERT INTO equipe(nom, max_members, logo, owner_id) VALUES (?, ?, ?, ?)";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (PreparedStatement ps = getConnection().prepareStatement(sql)) {
             ps.setString(1, equipe.getNom());
             ps.setInt(2, equipe.getMaxMembers());
             ps.setString(3, equipe.getLogo());
@@ -68,7 +77,7 @@ public class ServiceEquipe implements IService<Equipe> {
     @Override
     public void modifier(Equipe equipe) throws SQLException {
         String sql = "UPDATE equipe SET nom=?, max_members=?, logo=? WHERE id=?";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (PreparedStatement ps = getConnection().prepareStatement(sql)) {
             ps.setString(1, equipe.getNom());
             ps.setInt(2, equipe.getMaxMembers());
             ps.setString(3, equipe.getLogo());
@@ -80,7 +89,7 @@ public class ServiceEquipe implements IService<Equipe> {
     @Override
     public void supprimer(int id) throws SQLException {
         String sql = "DELETE FROM equipe WHERE id=?";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (PreparedStatement ps = getConnection().prepareStatement(sql)) {
             ps.setInt(1, id);
             ps.executeUpdate();
         }
@@ -88,6 +97,9 @@ public class ServiceEquipe implements IService<Equipe> {
 
     @Override
     public List<Equipe> getAll() throws SQLException {
+        if (conn == null) {
+            return new ArrayList<>();
+        }
         String sql = "SELECT * FROM equipe";
         List<Equipe> equipes = new ArrayList<>();
 
@@ -719,6 +731,9 @@ public class ServiceEquipe implements IService<Equipe> {
     }
 
     public List<EquipeStanding> getGlobalRanking() throws SQLException {
+        if (conn == null) {
+            return new ArrayList<>();
+        }
         List<Equipe> equipes = getAll();
         Map<Integer, EquipeStanding> standings = new HashMap<>();
 
