@@ -9,7 +9,7 @@
       prefHeight="720.0" prefWidth="1280.0"
       style="-fx-background-color: #0d1b3e;">
 
-    <fx:include source="/Navbar.fxml"/>
+
 
     <VBox spacing="18" VBox.vgrow="ALWAYS" style="-fx-padding: 28 40 32 40;">
         <HBox alignment="CENTER_LEFT" spacing="16">
