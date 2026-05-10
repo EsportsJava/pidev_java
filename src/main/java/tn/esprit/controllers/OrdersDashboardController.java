@@ -34,7 +34,6 @@ public class OrdersDashboardController implements Initializable {
     }
 
     private void setupTable() {
-        colId.setCellValueFactory(d -> new SimpleStringProperty(String.valueOf(d.getValue().getId())));
         colOrderNumber.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getOrderNumber()));
         colName.setCellValueFactory(d -> new SimpleStringProperty(
                 d.getValue().getFirstName() + " " + d.getValue().getLastName()

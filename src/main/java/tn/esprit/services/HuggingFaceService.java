@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class HuggingFaceService {
 
-    private static final String API_KEY = "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";
+    private static final String API_KEY = "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";
 
     public String generateDescription(String productName) {
         OkHttpClient client = new OkHttpClient();
