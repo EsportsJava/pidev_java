@@ -14,8 +14,8 @@ public class ServiceBlogRating {
     }
 
     public void rateOrUpdate(int blogId, int userId, int rating) {
-        String sql = "INSERT INTO blog_rating (blog_id, user_id, rating) VALUES (?,?,?) " +
-                "ON DUPLICATE KEY UPDATE rating=?";
+        String sql = "INSERT INTO rating (blog_id, user_id, value, created_at, updated_at) VALUES (?,?,?,NOW(),NOW()) " +
+                "ON DUPLICATE KEY UPDATE value=?, updated_at=NOW()";
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
             ps.setInt(1, blogId);
             ps.setInt(2, userId);
@@ -28,7 +28,7 @@ public class ServiceBlogRating {
     }
 
     public double getAverageRating(int blogId) {
-        String sql = "SELECT AVG(rating) as avg_rating FROM blog_rating WHERE blog_id=?";
+        String sql = "SELECT AVG(value) as avg_rating FROM rating WHERE blog_id=?";
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
             ps.setInt(1, blogId);
             ResultSet rs = ps.executeQuery();
@@ -40,7 +40,7 @@ public class ServiceBlogRating {
     }
 
     public int getRatingCount(int blogId) {
-        String sql = "SELECT COUNT(*) as cnt FROM blog_rating WHERE blog_id=?";
+        String sql = "SELECT COUNT(*) as cnt FROM rating WHERE blog_id=?";
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
             ps.setInt(1, blogId);
             ResultSet rs = ps.executeQuery();
@@ -52,12 +52,12 @@ public class ServiceBlogRating {
     }
 
     public int getUserRating(int blogId, int userId) {
-        String sql = "SELECT rating FROM blog_rating WHERE blog_id=? AND user_id=?";
+        String sql = "SELECT value FROM rating WHERE blog_id=? AND user_id=?";
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
             ps.setInt(1, blogId);
             ps.setInt(2, userId);
             ResultSet rs = ps.executeQuery();
-            if (rs.next()) return rs.getInt("rating");
+            if (rs.next()) return rs.getInt("value");
         } catch (SQLException e) {
             e.printStackTrace();
         }
