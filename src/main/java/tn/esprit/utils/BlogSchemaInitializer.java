@@ -34,11 +34,11 @@ public final class BlogSchemaInitializer {
             );
 
             statement.executeUpdate(
-                    "CREATE TABLE IF NOT EXISTS blog_rating (" +
+                    "CREATE TABLE IF NOT EXISTS rating (" +
                             "id INT AUTO_INCREMENT PRIMARY KEY, " +
                             "blog_id INT NOT NULL, " +
                             "user_id INT NOT NULL, " +
-                            "rating INT NOT NULL, " +
+                            "value INT NOT NULL, " +
                             "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, " +
                             "updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, " +
                             "UNIQUE KEY uq_blog_rating (blog_id, user_id), " +
@@ -48,6 +48,28 @@ public final class BlogSchemaInitializer {
                             "CONSTRAINT fk_blog_rating_user FOREIGN KEY (user_id) REFERENCES `user`(id) ON DELETE CASCADE" +
                             ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
             );
+
+            if (!columnExists(connection, "rating", "value") && columnExists(connection, "rating", "rating")) {
+                statement.executeUpdate("ALTER TABLE rating CHANGE COLUMN rating value INT NOT NULL");
+            }
+
+            if (columnExists(connection, "rating", "created_at")) {
+                statement.executeUpdate("ALTER TABLE rating MODIFY COLUMN created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP");
+            }
+
+            if (columnExists(connection, "rating", "updated_at")) {
+                statement.executeUpdate("ALTER TABLE rating MODIFY COLUMN updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP");
+            }
+
+            if (tableExists(connection, "blog_rating")) {
+                statement.executeUpdate(
+                        "INSERT INTO rating (blog_id, user_id, value, created_at, updated_at) " +
+                                "SELECT blog_id, user_id, rating, created_at, updated_at FROM blog_rating " +
+                                "ON DUPLICATE KEY UPDATE " +
+                                "value = VALUES(value), " +
+                                "updated_at = VALUES(updated_at)"
+                );
+            }
 
             addColumnIfMissing(connection, statement, "comment", "user_country", "VARCHAR(100) NULL");
             addColumnIfMissing(connection, statement, "comment", "user_country_code", "VARCHAR(10) NULL");
@@ -79,6 +101,13 @@ public final class BlogSchemaInitializer {
         DatabaseMetaData metaData = connection.getMetaData();
         try (ResultSet columns = metaData.getColumns(connection.getCatalog(), null, tableName, columnName)) {
             return columns.next();
+        }
+    }
+
+    private static boolean tableExists(Connection connection, String tableName) throws SQLException {
+        DatabaseMetaData metaData = connection.getMetaData();
+        try (ResultSet tables = metaData.getTables(connection.getCatalog(), null, tableName, new String[]{"TABLE"})) {
+            return tables.next();
         }
     }
 }
