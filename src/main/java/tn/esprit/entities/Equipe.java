@@ -1,10 +1,14 @@
 package tn.esprit.entities;
 
+import java.util.List;
+
 public class Equipe {
     private int id;
     private String nom;
     private int maxMembers;
     private String logo;
+    private User owner;
+    private List<User> members;
 
     public Equipe() {
     }
@@ -54,12 +58,29 @@ public class Equipe {
         this.logo = logo;
     }
 
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
+    }
+
+    public List<User> getMembers() {
+        return members;
+    }
+
+    public void setMembers(List<User> members) {
+        this.members = members;
+    }
+
     @Override
     public String toString() {
         return "Equipe{" +
                 "id=" + id +
                 ", nom='" + nom + '\'' +
                 ", maxMembers=" + maxMembers +
+                ", owner=" + (owner != null ? owner.getNom() : "null") +
                 '}';
     }
 }

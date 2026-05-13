@@ -201,17 +201,18 @@ public class ServiceMatchGame implements IService<MatchGame> {
     }
 
     private void ensureRoundRobinTables() throws SQLException {
-        String createInscriptionTournoi = "CREATE TABLE IF NOT EXISTS inscription_tournoi ("
+        String createInscriptionTournoi = "CREATE TABLE IF NOT EXISTS tournoi_inscription ("
                 + "id INT AUTO_INCREMENT PRIMARY KEY, "
-                + "date_inscription DATETIME NOT NULL, "
                 + "tournoi_id INT NOT NULL, "
-                + "equipe_id INT NOT NULL, "
-                + "UNIQUE KEY uq_inscription_tournoi (tournoi_id, equipe_id), "
-                + "INDEX idx_inscription_tournoi_tournoi (tournoi_id), "
-                + "INDEX idx_inscription_tournoi_equipe (equipe_id), "
-                + "CONSTRAINT fk_inscription_tournoi_tournoi FOREIGN KEY (tournoi_id) REFERENCES tournoi(id), "
-                + "CONSTRAINT fk_inscription_tournoi_equipe FOREIGN KEY (equipe_id) REFERENCES equipe(id)"
-                + ")";
+                + "user_id INT NULL, "
+                + "equipe_id INT NULL, "
+                + "nom VARCHAR(255), "
+                + "email VARCHAR(255), "
+                + "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, "
+                + "CONSTRAINT fk_ti_tournoi FOREIGN KEY (tournoi_id) REFERENCES tournoi(id) ON DELETE CASCADE, "
+                + "CONSTRAINT fk_ti_user FOREIGN KEY (user_id) REFERENCES `user`(id) ON DELETE CASCADE, "
+                + "CONSTRAINT fk_ti_equipe FOREIGN KEY (equipe_id) REFERENCES equipe(id) ON DELETE CASCADE"
+                + ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
 
         try (Statement stmt = conn.createStatement()) {
             stmt.execute(createInscriptionTournoi);

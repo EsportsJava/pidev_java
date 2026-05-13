@@ -134,8 +134,6 @@ public class OwnerDashboardViewController implements Initializable {
             statusStyle = "-fx-background-color: rgba(124,58,237,0.18); -fx-text-fill: #c4b5fd;";
         } else if ("Pending".equalsIgnoreCase(member.getStatus())) {
             statusStyle = "-fx-background-color: rgba(245,158,11,0.18); -fx-text-fill: #fcd34d;";
-        } else if ("Invited".equalsIgnoreCase(member.getStatus())) {
-            statusStyle = "-fx-background-color: rgba(14,165,233,0.18); -fx-text-fill: #7dd3fc;";
         } else {
             statusStyle = "-fx-background-color: rgba(100,116,139,0.18); -fx-text-fill: #94a3b8;";
         }
@@ -168,16 +166,12 @@ public class OwnerDashboardViewController implements Initializable {
                 + "-fx-background-radius: 10; -fx-pref-height: 34; -fx-pref-width: 120; -fx-cursor: hand; -fx-font-size: 12px;");
             removeBtn.setOnAction(e -> handleRemoveMember(member));
             actionBox.getChildren().add(removeBtn);
-        } else if ("Invited".equalsIgnoreCase(member.getStatus())) {
-            Label invitedLabel = new Label("✉ Invitation envoyée");
-            invitedLabel.setStyle("-fx-text-fill: #a78bfa; -fx-font-size: 12px; -fx-font-weight: 700;");
-            actionBox.getChildren().add(invitedLabel);
         } else {
-            Button inviteBtn = new Button("✉ Inviter");
-            inviteBtn.setStyle("-fx-background-color: #7c3aed; -fx-text-fill: white; -fx-font-weight: 700;"
+            Button addBtn = new Button("+ Ajouter");
+            addBtn.setStyle("-fx-background-color: #10b981; -fx-text-fill: white; -fx-font-weight: 700;"
                 + "-fx-background-radius: 10; -fx-pref-height: 34; -fx-pref-width: 120; -fx-cursor: hand; -fx-font-size: 12px;");
-            inviteBtn.setOnAction(e -> handleInviteMember(member));
-            actionBox.getChildren().add(inviteBtn);
+            addBtn.setOnAction(e -> handleAddMember(member));
+            actionBox.getChildren().add(addBtn);
         }
 
         card.getChildren().addAll(topRow, badgeRow, spacer, actionBox);
@@ -229,23 +223,16 @@ public class OwnerDashboardViewController implements Initializable {
         }
     }
 
-    private void handleInviteMember(EquipeMemberView member) {
+    private void handleAddMember(EquipeMemberView member) {
         try {
-            List<tn.esprit.entities.Equipe> owned = serviceEquipe.getOwnedEquipes(
-                    tn.esprit.utils.SessionManager.getCurrentUser().getId());
-            if (owned.isEmpty()) {
-                messageLabel.setStyle("-fx-text-fill: #ef4444;");
-                messageLabel.setText("Aucune équipe trouvée.");
-                return;
-            }
-            serviceEquipe.createInvitation(owned.get(0).getId(), member.getJoueurId());
+            serviceEquipe.addMemberToFirstOwnedEquipe(member.getJoueurId());
             loadStats();
             loadTeamMembers();
             messageLabel.setStyle("-fx-text-fill: #a78bfa;");
-            messageLabel.setText("Invitation envoyée à " + member.getJoueurNom() + " (email de notification envoyé).");
+            messageLabel.setText("Membre ajouté à l'équipe : " + member.getJoueurNom() + ".");
         } catch (SQLException e) {
             messageLabel.setStyle("-fx-text-fill: #ef4444;");
-            messageLabel.setText("Invitation impossible : " + e.getMessage());
+            messageLabel.setText("Ajout impossible : " + e.getMessage());
         }
     }
 
