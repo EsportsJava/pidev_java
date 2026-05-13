@@ -25,7 +25,6 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import tn.esprit.entities.Equipe;
 import tn.esprit.entities.OwnerDashboardStats;
-import tn.esprit.entities.TeamInvitation;
 
 import tn.esprit.services.ServiceEquipe;
 import tn.esprit.utils.SessionManager;
@@ -51,8 +50,6 @@ public class AfficherEquipeController implements Initializable {
     private TextField searchField;
     @FXML
     private ComboBox<String> sortCombo;
-    @FXML
-    private VBox invitationsContainer;
 
     private final ServiceEquipe serviceEquipe = new ServiceEquipe();
     private final List<Equipe> allEquipes = new ArrayList<>();
@@ -61,7 +58,6 @@ public class AfficherEquipeController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setupSearchAndSort();
         loadEquipes();
-        loadInvitations();
     }
 
     private void setupSearchAndSort() {
@@ -129,89 +125,6 @@ public class AfficherEquipeController implements Initializable {
 
     private String safeLower(String value) {
         return value == null ? "" : value.toLowerCase(Locale.ROOT);
-    }
-
-    // ═══════════════════════════════════════════
-    //  INVITATION NOTIFICATIONS
-    // ═══════════════════════════════════════════
-
-    private void loadInvitations() {
-        invitationsContainer.getChildren().clear();
-        try {
-            List<TeamInvitation> invitations = serviceEquipe.getInvitationsForCurrentUser();
-            if (invitations.isEmpty()) return;
-
-            // Header label
-            Label header = new Label("✉ Invitations reçues (" + invitations.size() + ")");
-            header.setStyle("-fx-text-fill: #a78bfa; -fx-font-size: 14px; -fx-font-weight: 700;");
-            invitationsContainer.getChildren().add(header);
-
-            for (TeamInvitation inv : invitations) {
-                invitationsContainer.getChildren().add(buildInvitationCard(inv));
-            }
-        } catch (SQLException e) {
-            // Silent: invitations are optional UI
-            System.out.println("Invitations load error: " + e.getMessage());
-        }
-    }
-
-    private HBox buildInvitationCard(TeamInvitation inv) {
-        HBox card = new HBox(14);
-        card.setAlignment(Pos.CENTER_LEFT);
-        card.setStyle("-fx-background-color: #1e293b; -fx-background-radius: 12; -fx-padding: 12 18;"
-            + "-fx-border-color: rgba(124,58,237,0.25); -fx-border-radius: 12; -fx-border-width: 1;");
-
-        Label icon = new Label("✉");
-        icon.setStyle("-fx-font-size: 18px;");
-
-        VBox info = new VBox(2);
-        Label title = new Label("Invitation de " + inv.getOwnerNom() + " pour l'équipe " + inv.getEquipeNom());
-        title.setStyle("-fx-text-fill: #f1f5f9; -fx-font-size: 13px; -fx-font-weight: 700;");
-        Label date = new Label(inv.getCreatedAt() != null ? inv.getCreatedAt().toString() : "");
-        date.setStyle("-fx-text-fill: #64748b; -fx-font-size: 11px;");
-        info.getChildren().addAll(title, date);
-        HBox.setHgrow(info, Priority.ALWAYS);
-
-        Button acceptBtn = new Button("✓ Accepter");
-        acceptBtn.setStyle("-fx-background-color: #7c3aed; -fx-text-fill: white; -fx-font-weight: 700;"
-            + "-fx-background-radius: 10; -fx-pref-height: 32; -fx-pref-width: 110; -fx-cursor: hand; -fx-font-size: 12px;");
-        acceptBtn.setOnAction(e -> handleAcceptInvitation(inv));
-
-        Button refuseBtn = new Button("✕ Refuser");
-        refuseBtn.setStyle("-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-weight: 700;"
-            + "-fx-background-radius: 10; -fx-pref-height: 32; -fx-pref-width: 110; -fx-cursor: hand; -fx-font-size: 12px;");
-        refuseBtn.setOnAction(e -> handleRefuseInvitation(inv));
-
-        Region spacer = new Region();
-        HBox.setHgrow(spacer, Priority.ALWAYS);
-
-        card.getChildren().addAll(icon, info, spacer, acceptBtn, refuseBtn);
-        return card;
-    }
-
-    private void handleAcceptInvitation(TeamInvitation inv) {
-        try {
-            serviceEquipe.respondToInvitation(inv.getId(), true);
-            messageLabel.setStyle("-fx-text-fill: #a78bfa;");
-            messageLabel.setText("Invitation acceptée ! Vous avez rejoint l'équipe " + inv.getEquipeNom() + ".");
-            loadEquipes();
-            loadInvitations();
-        } catch (SQLException e) {
-            messageLabel.setStyle("-fx-text-fill: #f87171;");
-            messageLabel.setText("Erreur : " + e.getMessage());
-        }
-    }
-
-    private void handleRefuseInvitation(TeamInvitation inv) {
-        try {
-            serviceEquipe.respondToInvitation(inv.getId(), false);
-            messageLabel.setStyle("-fx-text-fill: #a78bfa;");
-            messageLabel.setText("Invitation refusée.");
-            loadInvitations();
-        } catch (SQLException e) {
-            messageLabel.setStyle("-fx-text-fill: #f87171;");
-            messageLabel.setText("Erreur : " + e.getMessage());
-        }
     }
 
     private VBox buildCard(Equipe equipe, int rank) {

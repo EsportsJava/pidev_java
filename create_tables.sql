@@ -16,6 +16,25 @@ CREATE TABLE IF NOT EXISTS jeu (
     lien_officiel VARCHAR(500)
 );
 
+CREATE TABLE IF NOT EXISTS equipe (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nom VARCHAR(255) NOT NULL,
+    max_members INT DEFAULT 5,
+    logo VARCHAR(255),
+    owner_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_equipe_user FOREIGN KEY (owner_id) REFERENCES `user`(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS equipe_user (
+    equipe_id INT NOT NULL,
+    user_id INT NOT NULL,
+    joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (equipe_id, user_id),
+    CONSTRAINT fk_equipe_user_equipe FOREIGN KEY (equipe_id) REFERENCES equipe(id) ON DELETE CASCADE,
+    CONSTRAINT fk_equipe_user_user FOREIGN KEY (user_id) REFERENCES `user`(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE IF NOT EXISTS tournoi (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nom VARCHAR(255) NOT NULL,
@@ -29,8 +48,53 @@ CREATE TABLE IF NOT EXISTS tournoi (
     frais_inscription DOUBLE,
     description TEXT,
     jeu_id INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_tournoi_jeu FOREIGN KEY (jeu_id) REFERENCES jeu(id)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS match_game (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    date_match DATETIME,
+    score_team1 INT DEFAULT NULL,
+    score_team2 INT DEFAULT NULL,
+    statut VARCHAR(50) DEFAULT 'Planifié',
+    equipe1_id INT NOT NULL,
+    equipe2_id INT NOT NULL,
+    tournoi_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_match_equipe1 FOREIGN KEY (equipe1_id) REFERENCES equipe(id) ON DELETE CASCADE,
+    CONSTRAINT fk_match_equipe2 FOREIGN KEY (equipe2_id) REFERENCES equipe(id) ON DELETE CASCADE,
+    CONSTRAINT fk_match_tournoi FOREIGN KEY (tournoi_id) REFERENCES tournoi(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS tournoi_inscription (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    tournoi_id INT NOT NULL,
+    user_id INT DEFAULT NULL,
+    equipe_id INT DEFAULT NULL,
+    nom VARCHAR(255),
+    email VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_ti_tournoi FOREIGN KEY (tournoi_id) REFERENCES tournoi(id) ON DELETE CASCADE,
+    CONSTRAINT fk_ti_user FOREIGN KEY (user_id) REFERENCES `user`(id) ON DELETE CASCADE,
+    CONSTRAINT fk_ti_equipe FOREIGN KEY (equipe_id) REFERENCES equipe(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS join_request (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    equipe_id INT NOT NULL,
+    user_id INT NOT NULL,
+    status VARCHAR(50) DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_by_id INT,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    updated_by_id INT,
+    motif TEXT,
+    CONSTRAINT fk_jr_equipe FOREIGN KEY (equipe_id) REFERENCES equipe(id) ON DELETE CASCADE,
+    CONSTRAINT fk_jr_user FOREIGN KEY (user_id) REFERENCES `user`(id) ON DELETE CASCADE,
+    CONSTRAINT fk_jr_created_by FOREIGN KEY (created_by_id) REFERENCES `user`(id) ON DELETE SET NULL,
+    CONSTRAINT fk_jr_updated_by FOREIGN KEY (updated_by_id) REFERENCES `user`(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS profiling (
     id INT AUTO_INCREMENT PRIMARY KEY,

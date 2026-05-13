@@ -19,8 +19,10 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import tn.esprit.entities.Equipe;
+import tn.esprit.entities.User;
 import tn.esprit.services.PandaScoreService;
 import tn.esprit.services.ServiceEquipe;
+import tn.esprit.utils.SessionManager;
 
 import java.io.IOException;
 import java.net.URL;
@@ -187,7 +189,8 @@ public class EquipeDashboardController implements Initializable {
         actionsCol.setCellFactory(col -> new TableCell<>() {
             private final Button editBtn = new Button("✏");
             private final Button deleteBtn = new Button("🗑");
-            private final HBox box = new HBox(8, editBtn, deleteBtn);
+            private final Button manageBtn = new Button("👥");
+            private final HBox box = new HBox(8);
 
             private final String editDefault = "-fx-background-color: linear-gradient(to right, #7c3aed, #6d28d9);"
                 + "-fx-text-fill: #e9d5ff; -fx-font-size: 14px;"
@@ -209,16 +212,29 @@ public class EquipeDashboardController implements Initializable {
                 + "-fx-background-radius: 10; -fx-padding: 5 14;"
                 + "-fx-cursor: hand; -fx-min-height: 30; -fx-min-width: 38;"
                 + "-fx-effect: dropshadow(gaussian, rgba(225,29,72,0.55), 10, 0, 0, 3);";
+            private final String manageDefault = "-fx-background-color: linear-gradient(to right, #059669, #047857);"
+                + "-fx-text-fill: #d1fae5; -fx-font-size: 14px;"
+                + "-fx-background-radius: 10; -fx-padding: 5 14;"
+                + "-fx-cursor: hand; -fx-min-height: 30; -fx-min-width: 38;"
+                + "-fx-effect: dropshadow(gaussian, rgba(5,150,105,0.35), 6, 0, 0, 2);";
+            private final String manageHover = "-fx-background-color: linear-gradient(to right, #10b981, #059669);"
+                + "-fx-text-fill: white; -fx-font-size: 14px;"
+                + "-fx-background-radius: 10; -fx-padding: 5 14;"
+                + "-fx-cursor: hand; -fx-min-height: 30; -fx-min-width: 38;"
+                + "-fx-effect: dropshadow(gaussian, rgba(16,185,129,0.55), 10, 0, 0, 3);";
 
             {
                 box.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
                 editBtn.setStyle(editDefault);
                 deleteBtn.setStyle(deleteDefault);
+                manageBtn.setStyle(manageDefault);
 
                 editBtn.setOnMouseEntered(e -> editBtn.setStyle(editHover));
                 editBtn.setOnMouseExited(e -> editBtn.setStyle(editDefault));
                 deleteBtn.setOnMouseEntered(e -> deleteBtn.setStyle(deleteHover));
                 deleteBtn.setOnMouseExited(e -> deleteBtn.setStyle(deleteDefault));
+                manageBtn.setOnMouseEntered(e -> manageBtn.setStyle(manageHover));
+                manageBtn.setOnMouseExited(e -> manageBtn.setStyle(manageDefault));
 
                 editBtn.setOnAction(e -> {
                     Equipe equipe = getTableView().getItems().get(getIndex());
@@ -228,13 +244,30 @@ public class EquipeDashboardController implements Initializable {
                     Equipe equipe = getTableView().getItems().get(getIndex());
                     confirmDelete(equipe);
                 });
+                manageBtn.setOnAction(e -> {
+                    Equipe equipe = getTableView().getItems().get(getIndex());
+                    openManageMembersWindow(equipe);
+                });
             }
 
             @Override
             protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
-                setGraphic(empty ? null : box);
-                setText(null);
+                if (empty) {
+                    setGraphic(null);
+                    setText(null);
+                } else {
+                    Equipe equipe = getTableView().getItems().get(getIndex());
+                    User currentUser = SessionManager.getCurrentUser();
+                    box.getChildren().clear();
+                    if (currentUser != null && equipe.getOwner() != null && currentUser.getId() == equipe.getOwner().getId()) {
+                        box.getChildren().addAll(editBtn, manageBtn, deleteBtn);
+                    } else {
+                        box.getChildren().addAll(editBtn, deleteBtn);
+                    }
+                    setGraphic(box);
+                    setText(null);
+                }
                 setStyle("-fx-background-color: transparent;");
             }
         });
@@ -340,6 +373,23 @@ public class EquipeDashboardController implements Initializable {
         } catch (IOException e) {
             messageLabel.setStyle("-fx-text-fill: #e74c3c;");
             messageLabel.setText("Erreur ouverture formulaire : " + e.getMessage());
+        }
+    }
+
+    private void openManageMembersWindow(Equipe equipe) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/equipe/manageMembers.fxml"));
+            Parent root = loader.load();
+            ManageMembersController controller = loader.getController();
+            controller.setEquipe(equipe);
+            Stage stage = new Stage();
+            stage.setTitle("Gérer les membres - " + equipe.getNom());
+            stage.setScene(new Scene(root));
+            stage.showAndWait();
+            loadEquipes();
+        } catch (IOException e) {
+            messageLabel.setStyle("-fx-text-fill: #e74c3c;");
+            messageLabel.setText("Erreur ouverture gestion membres : " + e.getMessage());
         }
     }
 

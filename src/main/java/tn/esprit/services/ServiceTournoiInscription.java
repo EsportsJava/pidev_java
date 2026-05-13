@@ -36,17 +36,12 @@ public class ServiceTournoiInscription {
                   email VARCHAR(255) NULL,
                   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                   CONSTRAINT fk_ti_tournoi FOREIGN KEY (tournoi_id) REFERENCES tournoi(id) ON DELETE CASCADE,
+                  CONSTRAINT fk_ti_user FOREIGN KEY (user_id) REFERENCES `user`(id) ON DELETE CASCADE,
                   CONSTRAINT fk_ti_equipe FOREIGN KEY (equipe_id) REFERENCES equipe(id) ON DELETE CASCADE
-                )
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
                 """;
         try (Statement st = conn.createStatement()) {
             st.execute(sql);
-        }
-        // Add equipe_id column if table already existed without it
-        try (Statement st = conn.createStatement()) {
-            st.execute("ALTER TABLE tournoi_inscription ADD COLUMN equipe_id INT NULL AFTER user_id");
-        } catch (SQLException ignored) {
-            // Column already exists
         }
     }
 
